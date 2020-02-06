@@ -5,6 +5,8 @@ import SocketIo from 'socket.io'
 
 import Express from 'express'
 
+import * as ReceptionEvent from './socket/reception/index'
+
 export default class Server {
 
     static readonly PORT:number = 7070
@@ -24,6 +26,8 @@ export default class Server {
         })
         io.on('connect', (socket) => {
             console.log(`Connected client with id ${socket.id}`)
+            console.log(socket)
+            ReceptionEvent.loadEvents(socket)
         })
     }
 }
