@@ -1,33 +1,43 @@
- 
-import { Response, Request } from "express"
-import Http from 'http'
-import SocketIo from 'socket.io'
+import { Response, Request } from "express";
+import Http from "http";
+import fs from "fs";
+import SocketIo from "socket.io";
 
-import Express from 'express'
+import Express from "express";
 
-import * as ReceptionEvent from './socket/reception/index'
+import * as ReceptionEvents from "./socket/reception/index";
 
 export default class Server {
 
-    static readonly PORT:number = 7070
+  constructor() {}
 
-    constructor() {
-    }
+  public start():void {
+    this.loadConfig();
+    const app = Express();
+    const serverHttp = Http.createServer(app);
+    const io = SocketIo(serverHttp);
+    app.get("/status", (req: Request, res: Response) => {
+      res.send("Server running");
+    });
+    serverHttp.listen(global.globalConfig.port, () => {
+      console.log(`Server launch on port:${global.globalConfig.port}`);
+    });
+    io.on("connect", socket => {
+      console.log(`Connected client with id ${socket.id}`);
+      console.log(socket);
+      ReceptionEvents.loadEvents(socket);
+    });
+  }
 
-    public start() {
-        const app = Express()
-        const serverHttp = Http.createServer(app)
-        const io = SocketIo(serverHttp)
-        app.get('/status', (req: Request, res: Response) => {
-            res.send('Server running')
-        })
-        serverHttp.listen(Server.PORT, () => {
-            console.log(`Server launch on port:${Server.PORT}`)
-        })
-        io.on('connect', (socket) => {
-            console.log(`Connected client with id ${socket.id}`)
-            console.log(socket)
-            ReceptionEvent.loadEvents(socket)
-        })
+  private loadConfig():void {
+    try {
+      global.globalConfig = JSON.parse(
+        fs
+          .readFileSync(__dirname + "/../../config/server-config.json")
+          .toString()
+      );
+    } catch (error) {
+        console.error("Problem when loading global config:", error)
     }
+  }
 }
