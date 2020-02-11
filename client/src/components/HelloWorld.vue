@@ -10,12 +10,11 @@ import io from 'socket.io-client';
 
 @Component
 export default class HelloWorld extends Vue {
-  @Prop() private msg!: string;
 
   mounted() {
     console.log("Everything is alright")
-    const socket = io("http://localhost:7070")
-    console.log("socket", socket)
+    //const socket = io("http://localhost:7070")
+    //console.log("socket", socket)
   }
 }
 </script>

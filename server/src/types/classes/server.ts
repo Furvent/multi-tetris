@@ -5,14 +5,16 @@ import SocketIo from "socket.io";
 
 import Express from "express";
 
-import * as ReceptionEvents from "./socket/reception/index";
+import loadServerEvents from "../../socket/server/index";
+import { LobbiesManager } from "./LobbiesManager";
 
 export default class Server {
 
   constructor() {}
 
   public start():void {
-    this.loadConfig();
+    this.loadConfig()
+    this.initManagers()
     const app = Express();
     const serverHttp = Http.createServer(app);
     const io = SocketIo(serverHttp);
@@ -20,12 +22,11 @@ export default class Server {
       res.send("Server running");
     });
     serverHttp.listen(global.globalConfig.port, () => {
-      console.log(`Server launch on port:${global.globalConfig.port}`);
+      console.log(`Server launch on port:${global.globalConfig.port}`)
     });
     io.on("connect", socket => {
-      console.log(`Connected client with id ${socket.id}`);
-      console.log(socket);
-      ReceptionEvents.loadEvents(socket);
+      console.log(`Connected client with id ${socket.id}`)
+      loadServerEvents(socket);
     });
   }
 
@@ -33,11 +34,18 @@ export default class Server {
     try {
       global.globalConfig = JSON.parse(
         fs
-          .readFileSync(__dirname + "/../../config/server-config.json")
+          .readFileSync(__dirname + "/../../../../config/server-config.json")
           .toString()
       );
     } catch (error) {
         console.error("Problem when loading global config:", error)
+        console.error("Server will stop now, can't load config file")
+        process.exit()
     }
+  }
+
+  // Managers = controllers
+  private initManagers() {
+    LobbiesManager.getInstance()
   }
 }

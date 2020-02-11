@@ -1,8 +1,11 @@
 import { Player } from "../classes/Player";
+import { Socket } from "dgram";
 
 export interface IRoom {
     players: Player[]
-    id: number
 
     isFull(): boolean
+    getId(): number
+    getSocketRoom(): string
+    addPlayer(socket: SocketIO.Socket)
 }
