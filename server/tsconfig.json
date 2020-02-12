@@ -3,7 +3,8 @@
         "outDir": "dist",
         "target": "es6",
         "module": "CommonJS", // L'utilisation de 'import from' sera transformé en require pour node
-        "esModuleInterop": true // Permet d'importer directement des modules, pas juste des classes ou des types. Comme par exemple : "import express from 'express'"
+        "esModuleInterop": true, // Permet d'importer directement des modules, pas juste des classes ou des types. Comme par exemple : "import express from 'express'"
+        "noResolve": false // Bad patch to resolve problem of imports outside server folder
     },
     "include": [
         "./src/**/*.ts"

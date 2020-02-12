@@ -11,21 +11,23 @@ import { LobbiesManager } from "./LobbiesManager";
 
 export default class Server {
 
+  public static io: SocketIO.Server
+
   constructor() {}
 
   public start():void {
     this.loadConfig()
     this.initManagers()
-    const app = Express();
-    const serverHttp = Http.createServer(app);
-    const io = SocketIo(serverHttp);
+    const app = Express()
+    const serverHttp = Http.createServer(app)
+    Server.io = SocketIo(serverHttp)
     app.get("/status", (req: Request, res: Response) => {
       res.send("Server running");
     });
     serverHttp.listen(global.globalConfig.port, () => {
       console.log(`Server launch on port:${global.globalConfig.port}`)
     });
-    io.on("connect", socket => {
+    Server.io.on("connect", socket => {
       console.log(`Connected client with id ${socket.id}`)
       loadServerEvents(socket);
       loadLobbyEventsListener(socket);
