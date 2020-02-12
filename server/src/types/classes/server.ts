@@ -6,6 +6,7 @@ import SocketIo from "socket.io";
 import Express from "express";
 
 import loadServerEvents from "../../socket/server/index";
+import {loadLobbyEventsListener} from "../../socket/lobby";
 import { LobbiesManager } from "./LobbiesManager";
 
 export default class Server {
@@ -27,6 +28,7 @@ export default class Server {
     io.on("connect", socket => {
       console.log(`Connected client with id ${socket.id}`)
       loadServerEvents(socket);
+      loadLobbyEventsListener(socket);
     });
   }
 

@@ -1,5 +1,7 @@
-import { createLobbyEvent } from "./lobbyEvents";
+import { lobbyEventsListener } from "./lobbyEvents";
 
-export default function loadLobbyEvents(socket: SocketIO.Socket) {
-    createLobbyEvent(socket);
+export function loadLobbyEventsListener(socket: SocketIO.Socket) {
+    lobbyEventsListener(socket)
 }
+
+export 

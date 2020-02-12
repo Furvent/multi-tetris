@@ -20,7 +20,7 @@ export class Lobby implements IRoom {
     return this.id;
   }
 
-  getSocketRoom() {
+  getSocketRoom(): string {
     return this.socketRoomName;
   }
 
