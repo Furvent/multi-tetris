@@ -6,15 +6,15 @@ import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby
 export class Lobby implements IRoom {
   players: Player[];
   private id: number;
-  // Later, player will have the possibility to change it
   private roomName: string
   // room == socket.io special channel
   private socketRoomName: string;
 
-  constructor(id: number, creator: SocketIO.Socket) {
+  constructor(id: number, creator: SocketIO.Socket, roomName: string) {
     this.id = id;
     this.socketRoomName = `room${this.id}`
-    console.log(`New lobby is created by user ${creator.id}, with id ${id}`)
+    this.roomName = roomName
+    console.log(`New lobby is created by user ${creator.id}, with id ${id}. SocketRoomName: ${this.socketRoomName}, roomName: ${this.roomName}`)
     this.addPlayer(creator);
   }
 

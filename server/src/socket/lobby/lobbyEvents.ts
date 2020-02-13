@@ -3,18 +3,23 @@ import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby";
 
 export function lobbyEventsListener(socket: SocketIO.Socket) {
-  socket.on("lobby:createNewLobby", () => {
+  socket.on("lobby:createNewLobby", (roomName: string) => {
     console.log(
-      `User with socket's id ${socket.id} want to create a new lobby`
+      `Player with socket's id ${socket.id} want to create a new lobby with name: ${roomName}`
     );
-    LobbiesManager.getInstance().playerCreateLobby(socket);
+    LobbiesManager.getInstance().playerCreateLobby(socket, roomName);
   });
 
   socket.on("lobby:joinLobbyWithId", id => {
     console.log(
-      `User with socket's id ${socket.id} want to join lobby with id ${id}`
+      `Player with socket's id ${socket.id} want to join lobby with id ${id}`
     );
     LobbiesManager.getInstance().playerJoinLobbyWithId(id, socket);
+  });
+
+  socket.on("lobby:getLobbies", () => {
+    console.log(`Player with socket's id ${socket.id} asked lobbies`);
+    LobbiesManager.getInstance().playerAskPublicLobbies(socket)
   });
 }
 
@@ -25,7 +30,7 @@ export function emitCreateNewLobby(
   socket: SocketIO.Socket,
   newLobby: PayloadPublicLobby
 ) {
-  socket.emit("lobby:newLobbyCreated", newLobby);
+  socket.broadcast.emit("lobby:newLobbyCreated", newLobby);
 }
 
 export function emitUpdatePrivateLobbyData(
@@ -34,4 +39,11 @@ export function emitUpdatePrivateLobbyData(
   socketRoomName: string
 ) {
   socket.to(socketRoomName).emit("lobby:newPlayerAdded", lobbyData);
+}
+
+export function emitPublicLobbies(
+  socket: SocketIO.Socket,
+  lobbies: PayloadPublicLobby[]
+) {
+  socket.emit("lobby:allLobbies", lobbies)
 }

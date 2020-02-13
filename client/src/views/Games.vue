@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import TetrisGameLayout from "@/components/game-layout/Tetris-game-layout.vue";
+import TetrisGameLayout from "@/components/game-layout/tetris/components/Tetris-game-layout.vue";
 
 export default Vue.extend({
   name: "games",

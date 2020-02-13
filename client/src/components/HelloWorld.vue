@@ -13,13 +13,10 @@ export default class HelloWorld extends Vue {
 
   mounted() {
     console.log("Everything is alright")
-    //const socket = io("http://localhost:7070")
-    //console.log("socket", socket)
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
   margin: 40px 0 0;

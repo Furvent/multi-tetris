@@ -9,10 +9,13 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false, // Problem whith socket property in tetris main component
+    // "noImplicitAny": false, // Bad patch to vuex store declaration problem. TODO: find another solution!!!
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
+      "webpack-env",
+      "socket.io-client"
     ],
     "paths": {
       "@/*": [

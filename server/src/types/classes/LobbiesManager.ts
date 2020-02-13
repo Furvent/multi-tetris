@@ -1,5 +1,5 @@
 import { Lobby } from "./Lobby";
-import { emitUpdatePrivateLobbyData, emitCreateNewLobby } from "../../socket/lobby";
+import { emitUpdatePrivateLobbyData, emitCreateNewLobby, emitPublicLobbies } from "../../socket/lobby";
 
 /**
  * Is singleton
@@ -9,6 +9,7 @@ import { emitUpdatePrivateLobbyData, emitCreateNewLobby } from "../../socket/lob
 export class LobbiesManager {
   private static instance: LobbiesManager;
   private constructor() {
+    this.lobbies = [];
     this.idUsedIncrementator = 0;
   }
   static getInstance(): LobbiesManager {
@@ -20,20 +21,25 @@ export class LobbiesManager {
   private lobbies: Lobby[];
   private idUsedIncrementator: number;
 
-  deleteLobbyWithId(id: number) {
-    try {
-      const index = this.lobbies.findIndex(lobby => lobby.getId() === id);
-      if (index === -1) {
-        throw "No Lobby with that id";
-      }
-      this.lobbies.splice(index, 1);
-      // TODO: EMIT CODE
-    } catch (error) {
-      console.error(
-        `Problem when trying to delete lobby with id ${id}: ${error}`
-      );
-    }
-  }
+  // WIP
+  // deleteLobbyWithId(id: number) {
+  //   try {
+  //     const index = this.lobbies.findIndex(lobby => lobby.getId() === id);
+  //     if (index === -1) {
+  //       throw "No Lobby with that id";
+  //     }
+  //     this.lobbies.splice(index, 1);
+  //     // TODO: EMIT CODE
+  //   } catch (error) {
+  //     console.error(
+  //       `Problem when trying to delete lobby with id ${id}: ${error}`
+  //     );
+  //   }
+  // }
+  
+  // Player Leave Lobby
+
+  // Launch party
 
   playerJoinLobbyWithId(id: number, player: SocketIO.Socket): void {
     try {
@@ -53,14 +59,13 @@ export class LobbiesManager {
     }
   }
 
-  playerCreateLobby(player: SocketIO.Socket): void {
+  playerCreateLobby(player: SocketIO.Socket, roomName: string): void {
     try {
       if (this.isPlayerAlreadyInAnotherLobby(player)) {
         throw `Player ${player.id} is already in another lobby`;
       }
-      const newLobby = new Lobby(this.idUsedIncrementator++, player);
+      const newLobby = new Lobby(this.idUsedIncrementator++, player, roomName);
       this.lobbies.push(newLobby);
-      // TODO emit event
       emitCreateNewLobby(player, newLobby.exportInPublicLobby())
       emitUpdatePrivateLobbyData(player, newLobby.exportInPrivateLobby(), newLobby.getSocketRoom())
     } catch (error) {
@@ -68,6 +73,11 @@ export class LobbiesManager {
         `Problem when player ${player.id} tried to create new lobby: ${error}`
       );
     }
+  }
+
+  playerAskPublicLobbies(player:SocketIO.Socket): void {
+    const publicLobbies = this.lobbies.map((lobby) => lobby.exportInPublicLobby())
+    emitPublicLobbies(player, publicLobbies)
   }
 
   private getLobbyWithId(id: number): Lobby | null {

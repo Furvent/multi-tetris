@@ -4,4 +4,4 @@ export function loadLobbyEventsListener(socket: SocketIO.Socket) {
     lobbyEventsListener(socket)
 }
 
-export {emitCreateNewLobby, emitUpdatePrivateLobbyData} from "./lobbyEvents"
+export {emitCreateNewLobby, emitUpdatePrivateLobbyData, emitPublicLobbies} from "./lobbyEvents"

@@ -9,6 +9,7 @@ import loadServerEvents from "../../socket/server/index";
 import {loadLobbyEventsListener} from "../../socket/lobby";
 import { LobbiesManager } from "./LobbiesManager";
 
+// TODO: Create Party Manager
 export default class Server {
 
   public static io: SocketIO.Server
