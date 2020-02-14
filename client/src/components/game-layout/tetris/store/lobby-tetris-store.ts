@@ -1,11 +1,12 @@
 import { PayloadPublicLobby } from "../../../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../../../share/types/PayloadPrivateLobby";
 
+// Not type safe for now, to further amelioration, search vuex-module-decorator
 export default {
   state: {
     testingDatum: "boblebob",
-    publicLobbyes: [],
-    privateLobby: null
+    publicLobbyes: new Array(),
+    privateLobby: {}
   },
 
   getters: {

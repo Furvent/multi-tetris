@@ -1,6 +1,8 @@
 import { LobbiesManager } from "../../types/classes/LobbiesManager";
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby";
+import {logEmit} from "./../../utils/index"
+import Server from '../../types/classes/server'
 
 export function lobbyEventsListener(socket: SocketIO.Socket) {
   socket.on("lobby:createNewLobby", (roomName: string) => {
@@ -25,12 +27,15 @@ export function lobbyEventsListener(socket: SocketIO.Socket) {
 
 /**
  * TODO(BIG): Rework the project structure, because the event emit on all clients, including clients already playing
+ * For now, this event is not used
  */
 export function emitCreateNewLobby(
   socket: SocketIO.Socket,
   newLobby: PayloadPublicLobby
 ) {
-  socket.broadcast.emit("lobby:newLobbyCreated", newLobby);
+  const eventName = 'lobby:newLobbyCreated'
+  logEmit(eventName, newLobby)
+  socket.broadcast.emit(eventName, newLobby);
 }
 
 export function emitUpdatePrivateLobbyData(
@@ -38,12 +43,16 @@ export function emitUpdatePrivateLobbyData(
   lobbyData: PayloadPrivateLobby,
   socketRoomName: string
 ) {
-  socket.to(socketRoomName).emit("lobby:newPlayerAdded", lobbyData);
+  const eventName = "lobby:updatedPrivateLobby"
+  logEmit(eventName, lobbyData, socketRoomName)
+  Server.io.to(socketRoomName).emit(eventName, lobbyData);
 }
 
 export function emitPublicLobbies(
   socket: SocketIO.Socket,
   lobbies: PayloadPublicLobby[]
 ) {
-  socket.emit("lobby:allLobbies", lobbies)
+  const eventName = "lobby:allLobbies"
+  logEmit(eventName, lobbies)
+  socket.emit(eventName, lobbies)
 }

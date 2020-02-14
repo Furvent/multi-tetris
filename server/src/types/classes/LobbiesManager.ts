@@ -21,21 +21,8 @@ export class LobbiesManager {
   private lobbies: Lobby[];
   private idUsedIncrementator: number;
 
-  // WIP
-  // deleteLobbyWithId(id: number) {
-  //   try {
-  //     const index = this.lobbies.findIndex(lobby => lobby.getId() === id);
-  //     if (index === -1) {
-  //       throw "No Lobby with that id";
-  //     }
-  //     this.lobbies.splice(index, 1);
-  //     // TODO: EMIT CODE
-  //   } catch (error) {
-  //     console.error(
-  //       `Problem when trying to delete lobby with id ${id}: ${error}`
-  //     );
-  //   }
-  // }
+
+  // deleteLobbyWithId
   
   // Player Leave Lobby
 
@@ -64,9 +51,10 @@ export class LobbiesManager {
       if (this.isPlayerAlreadyInAnotherLobby(player)) {
         throw `Player ${player.id} is already in another lobby`;
       }
-      const newLobby = new Lobby(this.idUsedIncrementator++, player, roomName);
+      const newLobby = new Lobby(this.idUsedIncrementator++, player.id, roomName);
+      newLobby.addPlayer(player)
       this.lobbies.push(newLobby);
-      emitCreateNewLobby(player, newLobby.exportInPublicLobby())
+      this.playerAskPublicLobbies(player)
       emitUpdatePrivateLobbyData(player, newLobby.exportInPrivateLobby(), newLobby.getSocketRoom())
     } catch (error) {
       console.error(
@@ -85,12 +73,12 @@ export class LobbiesManager {
     return lobbySearched !== undefined ? lobbySearched : null;
   }
 
-  private isPlayerAlreadyInAnotherLobby(user): boolean {
-    this.lobbies.forEach(lobby => {
-      lobby.players.forEach(player => {
-        if (player.id === user.id) return true;
-      });
-    });
-    return false;
+  private isPlayerAlreadyInAnotherLobby(playerSearched: SocketIO.Socket): boolean {
+    const answer = this.lobbies.some(lobby => {
+      return lobby.players.some(player => {
+        return player.id === playerSearched.id
+      })
+    })
+    return answer;
   }
 }

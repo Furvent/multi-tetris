@@ -9,6 +9,7 @@ export class Player {
         this.id = socket.id
         this.pseudo = `pseudoTemp${this.id}`
         this.socket = socket
+        console.log(`New player created. Pseudo: ${this.pseudo}`)
     }
 
     exportToLobbyPlayer(): PayloadLobbyPlayer {
