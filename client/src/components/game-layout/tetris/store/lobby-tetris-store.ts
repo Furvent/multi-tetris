@@ -6,7 +6,8 @@ export default {
   state: {
     testingDatum: "boblebob",
     publicLobbies: new Array(),
-    privateLobby: {}
+    privateLobby: {},
+    playerSocket: undefined
   },
 
   getters: {
@@ -18,6 +19,9 @@ export default {
     },
     getPrivateLobby: (state: State) => {
       return state.privateLobby
+    },
+    getPlayerSocket: (state: State) => {
+      return state.playerSocket
     }
   },
 
@@ -30,12 +34,16 @@ export default {
     },
     setPrivateLobby: (state: State, lobby: PayloadPrivateLobby) => {
       state.privateLobby = lobby
+    },
+    setPlayerSocket: (state: State, socket: SocketIOClient.Socket) => {
+      state.playerSocket = socket
     }
   }
 };
 
-interface State {
+export interface State {
   testingDatum: string;
   publicLobbies: PayloadPublicLobby[];
   privateLobby: PayloadPrivateLobby;
+  playerSocket: SocketIOClient.Socket
 }

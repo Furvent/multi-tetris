@@ -63,7 +63,8 @@ export class Lobby implements IRoom {
     return {
       id: this.id,
       isFull: this.isFull(),
-      name: this.roomName
+      name: this.roomName,
+      numberOfPlayers: this.players.length
     };
   }
 
