@@ -1,8 +1,9 @@
 import { LobbiesManager } from "../../types/classes/LobbiesManager";
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby";
-import {logEmit} from "./../../utils/index"
-import Server from '../../types/classes/server'
+import { PayloadPlayerAvailability } from "../../../../share/types/PayloadPlayerAvailability";
+import { logEmit } from "./../../utils/index";
+import Server from "../../types/classes/server";
 
 export function lobbyEventsListener(socket: SocketIO.Socket) {
   socket.on("lobby:createNewLobby", (roomName: string) => {
@@ -21,8 +22,22 @@ export function lobbyEventsListener(socket: SocketIO.Socket) {
 
   socket.on("lobby:getLobbies", () => {
     console.log(`Player with socket's id ${socket.id} asked lobbies`);
-    LobbiesManager.getInstance().playerAskPublicLobbies(socket)
+    LobbiesManager.getInstance().playerAskPublicLobbies(socket);
   });
+
+  socket.on(
+    "lobby:changePlayerAvailability",
+    (payload: PayloadPlayerAvailability) => {
+      console.log(
+        `Player with socket's id ${socket.id} changed his availability in loby ${payload.lobbyId}`
+      );
+      LobbiesManager.getInstance().playerChangeAvailabiltyStatusInPrivateLobby(
+        socket,
+        payload.lobbyId,
+        payload.availability
+      );
+    }
+  );
 }
 
 /**
@@ -33,18 +48,17 @@ export function emitCreateNewLobby(
   socket: SocketIO.Socket,
   newLobby: PayloadPublicLobby
 ) {
-  const eventName = 'lobby:newLobbyCreated'
-  logEmit(eventName, newLobby)
+  const eventName = "lobby:newLobbyCreated";
+  logEmit(eventName, newLobby);
   socket.broadcast.emit(eventName, newLobby);
 }
 
 export function emitUpdatePrivateLobbyData(
-  socket: SocketIO.Socket,
   lobbyData: PayloadPrivateLobby,
   socketRoomName: string
 ) {
-  const eventName = "lobby:updatedPrivateLobby"
-  logEmit(eventName, lobbyData, socketRoomName)
+  const eventName = "lobby:updatedPrivateLobby";
+  logEmit(eventName, lobbyData, socketRoomName);
   Server.io.to(socketRoomName).emit(eventName, lobbyData);
 }
 
@@ -52,7 +66,7 @@ export function emitPublicLobbies(
   socket: SocketIO.Socket,
   lobbies: PayloadPublicLobby[]
 ) {
-  const eventName = "lobby:allLobbies"
-  logEmit(eventName, lobbies)
-  socket.emit(eventName, lobbies)
+  const eventName = "lobby:allLobbies";
+  logEmit(eventName, lobbies);
+  socket.emit(eventName, lobbies);
 }

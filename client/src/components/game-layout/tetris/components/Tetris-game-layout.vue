@@ -33,7 +33,7 @@
                 <v-col cols="4">{{ lobby.name }}</v-col>
                 <v-col cols="4">Players: {{ lobby.numberOfPlayers }}</v-col>
                 <v-col cols="4">
-                  <v-btn class="text-center" @click="joinLobby()">JOIN LOBBY</v-btn>
+                  <v-btn class="text-center" @click="joinLobby(lobby.id)">JOIN LOBBY</v-btn>
                 </v-col>
               </v-row>
             </v-container>
@@ -57,7 +57,9 @@ import { PayloadPrivateLobby } from "../../../../../../share/types/PayloadPrivat
 import { logListener } from "../../../../utils";
 import {
   emitGetLobbies,
-  loadLobbyEventsListener
+  loadLobbyEventsListener,
+  emitJoinLobby,
+  emitCreateNewLobby
 } from "../../socket/lobby-events";
 import TetrisPrivateLobby from "./Tetris-private-lobby.vue";
 
@@ -90,11 +92,11 @@ export default class extends Vue {
   }
 
   createNewLobby() {
-    this.getPlayerSocket().emit("lobby:createNewLobby", this.partyNameTextField);
+    emitCreateNewLobby(this.getPlayerSocket(), this.partyNameTextField)
   }
 
-  joinLobby() {
-    console.log("joinLobby not implemented yet");
+  joinLobby(id: number) {
+    emitJoinLobby(this.getPlayerSocket(), id)
   }
 }
 </script>

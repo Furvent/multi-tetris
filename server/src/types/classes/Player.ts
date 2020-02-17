@@ -1,6 +1,9 @@
 import { PayloadLobbyPlayer } from "../../../../share/types/PayloadLobbyPlayer"
 
 export class Player {
+    /**
+     * SocketIO.Socket.id
+     */
     id: string
     pseudo: string
     socket: SocketIO.Socket

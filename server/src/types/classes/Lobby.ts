@@ -36,7 +36,7 @@ export class Lobby implements IRoom {
 
   addPlayer(socket: SocketIO.Socket) {
     try {
-      if (this.getPlayerWithId(socket.id) !== null)
+      if (this.getPlayerWithId(socket.id) !== undefined)
         throw `Player with id ${socket.id} is already in loby ${this.id}`;
       else {
         const newPlayer = new Player(socket);
@@ -52,11 +52,8 @@ export class Lobby implements IRoom {
     }
   }
 
-  getPlayerWithId(id: string): Player | null {
-    this.players.forEach(player => {
-      if ((player.id = id)) return player;
-    });
-    return null;
+  getPlayerWithId(id: string): Player | undefined {
+    return this.players.find(player => player.id == id)
   }
 
   exportInPublicLobby(): PayloadPublicLobby {

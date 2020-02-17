@@ -28,20 +28,20 @@ export class LobbiesManager {
 
   // Launch party
 
-  playerJoinLobbyWithId(id: number, player: SocketIO.Socket): void {
+  playerJoinLobbyWithId(lobbyId: number, player: SocketIO.Socket): void {
     try {
-      const lobby = this.getLobbyWithId(id);
-      if (lobby === null) {
+      const lobby = this.getLobbyWithId(lobbyId);
+      if (lobby === undefined) {
         throw "No lobby with that id";
       } else if (this.isPlayerAlreadyInAnotherLobby(player)) {
         throw `User ${player.id} is already in another lobby`;
       } else {
         lobby.addPlayer(player);
-        emitUpdatePrivateLobbyData(player, lobby.exportInPrivateLobby(), lobby.getSocketRoom())
+        emitUpdatePrivateLobbyData(lobby.exportInPrivateLobby(), lobby.getSocketRoom())
       }
     } catch (error) {
       console.error(
-        `Problem when adding user ${player.id} to lobby with id ${id}: ${error}`
+        `Problem when adding user ${player.id} to lobby with id ${lobbyId}: ${error}`
       );
     }
   }
@@ -55,7 +55,7 @@ export class LobbiesManager {
       newLobby.addPlayer(player)
       this.lobbies.push(newLobby);
       this.playerAskPublicLobbies(player)
-      emitUpdatePrivateLobbyData(player, newLobby.exportInPrivateLobby(), newLobby.getSocketRoom())
+      emitUpdatePrivateLobbyData(newLobby.exportInPrivateLobby(), newLobby.getSocketRoom())
     } catch (error) {
       console.error(
         `Problem when player ${player.id} tried to create new lobby: ${error}`
@@ -68,9 +68,29 @@ export class LobbiesManager {
     emitPublicLobbies(player, publicLobbies)
   }
 
-  private getLobbyWithId(id: number): Lobby | null {
+  playerChangeAvailabiltyStatusInPrivateLobby(player: SocketIO.Socket, lobbyId: number, availability: boolean = false) {
+    try {
+      const lobby = this.getLobbyWithId(lobbyId)
+      if (lobby == undefined) {
+        throw `No lobby with id ${lobbyId}`
+      }
+
+      const playerSearched = lobby.getPlayerWithId(player.id)
+      if (playerSearched == undefined) {
+        throw `Player ${player.id} is not in lobby with id ${lobbyId}`
+      }
+      playerSearched.isReadyInPrivateLobby = availability
+      emitUpdatePrivateLobbyData(lobby.exportInPrivateLobby(), lobby.getSocketRoom())
+    } catch (error) {
+      console.error(
+        `In method playerChangeAvailabiltyStatusInPrivateLobby(), call by player ${player.id} problem: ${error}`
+      )
+    }
+  }
+
+  private getLobbyWithId(id: number): Lobby | undefined {
     const lobbySearched = this.lobbies.find(lobby => lobby.getId() === id);
-    return lobbySearched !== undefined ? lobbySearched : null;
+    return lobbySearched
   }
 
   private isPlayerAlreadyInAnotherLobby(playerSearched: SocketIO.Socket): boolean {
