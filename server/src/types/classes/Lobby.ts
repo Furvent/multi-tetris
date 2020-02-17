@@ -7,16 +7,16 @@ export class Lobby implements IRoom {
   players: Player[];
   private id: number;
   private roomName: string;
-  // room == socket.io special channel
+  // socketRoomName == socket.io special channel's name
   private socketRoomName: string;
-  private creatorId: string;
+  private inChargePlayerId: string;
 
   constructor(id: number, creatorId: string, roomName: string) {
     this.id = id;
     this.socketRoomName = `room${this.id}`;
     this.roomName = roomName;
     this.players = [];
-    this.creatorId = creatorId;
+    this.inChargePlayerId = creatorId;
     console.log(
       `New lobby is created by user ${creatorId}, with id ${id}. SocketRoomName: ${this.socketRoomName}, roomName: ${this.roomName}`
     );

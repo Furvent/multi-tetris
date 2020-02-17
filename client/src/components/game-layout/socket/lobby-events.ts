@@ -25,6 +25,6 @@ export function loadLobbyEventsListener(
         `EventListener: lobby:allLobbies was called with payload: ${lobbies}`
       );
     }
-    store.state.publicLobbyes = lobbies
+    store.state.publicLobbies = lobbies
   });
 }

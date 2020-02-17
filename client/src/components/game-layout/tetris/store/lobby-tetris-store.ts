@@ -5,7 +5,7 @@ import { PayloadPrivateLobby } from "../../../../../../share/types/PayloadPrivat
 export default {
   state: {
     testingDatum: "boblebob",
-    publicLobbyes: new Array(),
+    publicLobbies: new Array(),
     privateLobby: {}
   },
 
