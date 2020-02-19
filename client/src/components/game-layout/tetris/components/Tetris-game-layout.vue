@@ -1,46 +1,48 @@
 <template>
   <div class="tetris-main-component-container">
     <!-- To show and create Lobbies -->
-    <v-container v-if="!hasJoinedPrivateLobby">
+    <v-container>
       <v-row justify="center">
         <v-col cols="8">
           <!-- Add Lobby  -->
-          <v-card>
-            <v-container>
-              <v-row align="center">
-                <v-col cols="8">
-                  <v-text-field
-                    name="name"
-                    label="Enter lobby's name"
-                    id="id"
-                    v-model="partyNameTextField"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                  <v-btn
-                    class="text-center"
-                    :disabled="partyNameTextField == ''"
-                    @click="createNewLobby()"
-                  >CREATE LOBBY</v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-          <!-- Lobbies  -->
-          <v-card v-for="lobby in publicLobbies" :key="lobby.id">
-            <v-container>
-              <v-row align="center">
-                <v-col cols="4">{{ lobby.name }}</v-col>
-                <v-col cols="4">Players: {{ lobby.numberOfPlayers }}</v-col>
-                <v-col cols="4">
-                  <v-btn class="text-center" @click="joinLobby(lobby.id)">JOIN LOBBY</v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
+          <div class="tetris-lobby-searched" v-if="!hasJoinedPrivateLobby">
+            <v-card>
+              <v-container>
+                <v-row align="center">
+                  <v-col cols="8">
+                    <v-text-field
+                      name="name"
+                      label="Enter lobby's name"
+                      id="id"
+                      v-model="partyNameTextField"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-btn
+                      class="text-center"
+                      :disabled="partyNameTextField == ''"
+                      @click="createNewLobby()"
+                    >CREATE LOBBY</v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+            <!-- Lobbies  -->
+            <v-card v-for="lobby in publicLobbies" :key="lobby.id">
+              <v-container>
+                <v-row align="center">
+                  <v-col cols="4">{{ lobby.name }}</v-col>
+                  <v-col cols="4">Players: {{ lobby.numberOfPlayers }}</v-col>
+                  <v-col cols="4">
+                    <v-btn class="text-center" @click="joinLobby(lobby.id)">JOIN LOBBY</v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+          </div>
           <!-- When inside a private lobby -->
           <tetris-private-lobby>
-
+            
           </tetris-private-lobby>
         </v-col>
       </v-row>
@@ -74,7 +76,8 @@ export default class extends Vue {
   hasJoinedPrivateLobby = false;
 
   mounted() {
-    if (this.getPlayerSocket() === undefined) this.$store.commit('setPlayerSocket', io("http://localhost:7070"))
+    if (this.getPlayerSocket() === undefined)
+      this.$store.commit("setPlayerSocket", io("http://localhost:7070"));
     loadLobbyEventsListener(this.getPlayerSocket(), this.$store, true);
     emitGetLobbies(this.getPlayerSocket());
   }
@@ -92,11 +95,12 @@ export default class extends Vue {
   }
 
   createNewLobby() {
-    emitCreateNewLobby(this.getPlayerSocket(), this.partyNameTextField)
+    emitCreateNewLobby(this.getPlayerSocket(), this.partyNameTextField);
+    this.partyNameTextField = "";
   }
 
   joinLobby(id: number) {
-    emitJoinLobby(this.getPlayerSocket(), id)
+    emitJoinLobby(this.getPlayerSocket(), id);
   }
 }
 </script>
