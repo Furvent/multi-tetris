@@ -23,7 +23,7 @@ export class Lobby implements IRoom {
   }
 
   isFull(): boolean {
-    return this.players.length >= 4
+    return this.players.length >= 4;
   }
 
   getId(): number {
@@ -34,26 +34,44 @@ export class Lobby implements IRoom {
     return this.socketRoomName;
   }
 
-  addPlayer(socket: SocketIO.Socket) {
+  addPlayer(player: SocketIO.Socket): void {
     try {
-      if (this.getPlayerWithId(socket.id) !== undefined)
-        throw `Player with id ${socket.id} is already in loby ${this.id}`;
+      if (this.getPlayerWithId(player.id) !== undefined)
+        throw this.errorPlayerIsAlreadyInLobby(player.id);
       else {
-        const newPlayer = new Player(socket);
+        const newPlayer = new Player(player);
         this.players.push(newPlayer);
         // Add player to the private lobby's room (room == socket.io special channel)
-        socket.join(this.socketRoomName);
+        player.join(this.socketRoomName);
         console.log(
-          `Player ${socket.id} was added to lobby ${this.id}`
+          `In lobby with id ${this.id}, player ${player.id} was added to lobby ${this.id}`
         );
       }
     } catch (error) {
-      console.error(`Problem when trying to create a new player: ${error}`);
+      console.error(
+        `In lobby with id ${this.id}, problem when trying to create a new player: ${error}`
+      );
+    }
+  }
+
+  removePlayer(playerToRemove: SocketIO.Socket): void {
+    try {
+      const playerIndex = this.players.findIndex(
+        player => player.id === playerToRemove.id
+      );
+      if (playerIndex === -1) {
+        throw this.errorThisPlayerIsNotInsideLobby(playerToRemove.id);
+      }
+      this.players.slice(playerIndex, 1);
+    } catch (error) {
+      console.error(
+        `In lobby with id ${this.id}, problem when trying to delete a player: ${error}`
+      );
     }
   }
 
   getPlayerWithId(id: string): Player | undefined {
-    return this.players.find(player => player.id == id)
+    return this.players.find(player => player.id == id);
   }
 
   exportInPublicLobby(): PayloadPublicLobby {
@@ -70,5 +88,13 @@ export class Lobby implements IRoom {
       ...this.exportInPublicLobby(),
       players: this.players.map(player => player.exportToLobbyPlayer())
     };
+  }
+
+  private errorPlayerIsAlreadyInLobby(playerId): string {
+    return `Player with id ${playerId} is already in loby ${this.id}`;
+  }
+
+  private errorThisPlayerIsNotInsideLobby(playerId: string): string {
+    return `Player ${playerId} is not inside`;
   }
 }

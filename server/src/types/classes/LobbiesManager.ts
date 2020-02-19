@@ -6,8 +6,6 @@ import {
 
 /**
  * Is singleton
- *
- * TODO: Rename user var's and func's names to player
  */
 export class LobbiesManager {
   private static instance: LobbiesManager;
@@ -90,7 +88,7 @@ export class LobbiesManager {
 
       const playerSearched = lobby.getPlayerWithId(player.id);
       if (playerSearched == undefined) {
-        throw this.errorPlayerIsNotInLobby(player.id, lobbyId)
+        throw this.errorPlayerIsNotInThisLobby(player.id, lobbyId)
       }
       playerSearched.isReadyInPrivateLobby = availability;
       emitUpdatePrivateLobbyData(
@@ -105,6 +103,11 @@ export class LobbiesManager {
   }
 
   playerLeavePrivateLobby(player: SocketIO.Socket): void {
+    const playerLobby = this.findPlayerLobby(player)
+    if (playerLobby === undefined) {
+      throw this.errorPlayerHasNoLobby(player.id)
+    }
+
 
   }
 
@@ -126,15 +129,19 @@ export class LobbiesManager {
     }
   }
 
-  private errorPlayerIsAlreadyInAnotherLobby(playerId: string, lobbyId: number) {
+  private errorPlayerIsAlreadyInAnotherLobby(playerId: string, lobbyId: number):string {
     return `Player ${playerId} is already in lobby: ${lobbyId}`
   }
 
-  private errorNoLobbyWithThatId(id: number) {
+  private errorNoLobbyWithThatId(id: number):string {
     return `No lobby with id: ${id}`
   }
 
-  private errorPlayerIsNotInLobby(playerId: string, lobbyId: number) {
-    return `Player ${playerId} is not in lobby with id ${lobbyId}`
+  private errorPlayerIsNotInThisLobby(playerId: string, lobbyId: number):string {
+    return `Player ${playerId} is not in lobby: ${lobbyId}`
+  }
+
+  private errorPlayerHasNoLobby(playerId: string):string {
+    return `Player ${playerId} has no lobby`
   }
 }
