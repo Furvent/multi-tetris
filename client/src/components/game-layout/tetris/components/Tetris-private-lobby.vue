@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title primary-title> Welcome in lobby: {{ lobbyTitle }}</v-card-title>
+    <v-card-title primary-title>Welcome in lobby: {{ lobbyTitle }}</v-card-title>
     <v-card-text>
       <div v-for="player in lobbyPlayers" :key="player.pseudo">
         <v-container>
@@ -19,7 +19,7 @@
       <v-container>
         <v-row align="center" justify="center">
           <v-col cols="4">
-            <v-btn>Left Lobby</v-btn>
+            <v-btn @click.prevent="leavePrivateLobby()">Left Lobby</v-btn>
           </v-col>
           <v-col cols="4">
             <v-btn @click.prevent="changeAvailabilityStatus()">{{ readyCheckText }}</v-btn>
@@ -35,7 +35,10 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 import { PayloadLobbyPlayer } from "../../../../../../share/types/PayloadLobbyPlayer";
-import { emitChangePlayerAvailabilityInPrivateLobby } from "../../socket/lobby-events";
+import {
+  emitChangePlayerAvailabilityInPrivateLobby,
+  emitLeavePrivateLobby
+} from "../../socket/lobby-events";
 
 @Component({
   name: "tetris-private-lobby"
@@ -80,6 +83,12 @@ export default class extends Vue {
       availability: this.isReady,
       lobbyId: this.getPrivateLobbyId()
     });
+  }
+
+  leavePrivateLobby() {
+    emitLeavePrivateLobby(this.getPlayerSocket());
+    this.$store.commit("setPrivateLobby", {});
+    this.isReady = false;
   }
 }
 </script>

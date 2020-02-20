@@ -26,6 +26,10 @@ export class Lobby implements IRoom {
     return this.players.length >= 4;
   }
 
+  isEmpty(): boolean {
+    return this.players.length <= 0;
+  }
+
   getId(): number {
     return this.id;
   }
@@ -62,7 +66,8 @@ export class Lobby implements IRoom {
       if (playerIndex === -1) {
         throw this.errorThisPlayerIsNotInsideLobby(playerToRemove.id);
       }
-      this.players.slice(playerIndex, 1);
+      this.players.splice(playerIndex, 1);
+      playerToRemove.leave(this.socketRoomName)
     } catch (error) {
       console.error(
         `In lobby with id ${this.id}, problem when trying to delete a player: ${error}`

@@ -1,8 +1,6 @@
 import { Lobby } from "./Lobby";
-import {
-  emitUpdatePrivateLobbyData,
-  emitPublicLobbies
-} from "../../socket/lobby";
+import { emitUpdatePrivateLobby, emitPublicLobbies } from "../../socket/lobby";
+import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 
 /**
  * Is singleton
@@ -28,14 +26,14 @@ export class LobbiesManager {
 
   playerJoinLobbyWithId(lobbyId: number, player: SocketIO.Socket): void {
     try {
-      this.checkIfPlayerIsInAnotherLobbyAndThrowError(player);
+      this.checkIfPlayerIsInAnotherLobby(player);
       const lobbyToJoin = this.getLobbyWithId(lobbyId);
       if (lobbyToJoin === undefined) {
         throw this.errorNoLobbyWithThatId(lobbyId);
       }
 
       lobbyToJoin.addPlayer(player);
-      emitUpdatePrivateLobbyData(
+      emitUpdatePrivateLobby(
         lobbyToJoin.exportInPrivateLobby(),
         lobbyToJoin.getSocketRoom()
       );
@@ -48,7 +46,7 @@ export class LobbiesManager {
 
   playerCreateLobby(player: SocketIO.Socket, roomName: string): void {
     try {
-      this.checkIfPlayerIsInAnotherLobbyAndThrowError(player);
+      this.checkIfPlayerIsInAnotherLobby(player);
       const newLobby = new Lobby(
         this.idUsedIncrementator++,
         player.id,
@@ -57,7 +55,7 @@ export class LobbiesManager {
       newLobby.addPlayer(player);
       this.lobbies.push(newLobby);
       this.playerAskPublicLobbies(player);
-      emitUpdatePrivateLobbyData(
+      emitUpdatePrivateLobby(
         newLobby.exportInPrivateLobby(),
         newLobby.getSocketRoom()
       );
@@ -69,10 +67,7 @@ export class LobbiesManager {
   }
 
   playerAskPublicLobbies(player: SocketIO.Socket): void {
-    const publicLobbies = this.lobbies.map(lobby =>
-      lobby.exportInPublicLobby()
-    );
-    emitPublicLobbies(player, publicLobbies);
+    emitPublicLobbies(this.exportAllLobbies());
   }
 
   playerChangeAvailabiltyStatusInPrivateLobby(
@@ -91,7 +86,7 @@ export class LobbiesManager {
         throw this.errorPlayerIsNotInThisLobby(player.id, lobbyId);
       }
       playerSearched.isReadyInPrivateLobby = availability;
-      emitUpdatePrivateLobbyData(
+      emitUpdatePrivateLobby(
         lobby.exportInPrivateLobby(),
         lobby.getSocketRoom()
       );
@@ -108,14 +103,27 @@ export class LobbiesManager {
       if (playerLobby === undefined) {
         throw this.errorPlayerHasNoLobby(player.id);
       }
-      playerLobby.removePlayer(player);
-      emitUpdatePrivateLobbyData(
-        playerLobby.exportInPrivateLobby(),
-        playerLobby.getSocketRoom()
-      );
+      this.removePlayerFromLobby(playerLobby, player);
     } catch (error) {
-      console.error(`Problem when player ${player.id} tried to leave lobby: ${error}`)
+      console.error(
+        `Problem when player ${player.id} tried to leave lobby: ${error}`
+      );
     }
+  }
+
+  playerDeconnectedFromClient(player: SocketIO.Socket): void {
+    try {
+      const playerLobby = this.findPlayerLobby(player);
+      if (playerLobby !== undefined) {
+        this.removePlayerFromLobby(playerLobby, player);
+      }
+    } catch (error) {
+      `Problem when player ${player.id} deconnected`;
+    }
+  }
+
+  private exportAllLobbies(): PayloadPublicLobby[] {
+    return this.lobbies.map(lobby => lobby.exportInPublicLobby());
   }
 
   private getLobbyWithId(id: number): Lobby | undefined {
@@ -129,13 +137,45 @@ export class LobbiesManager {
     });
   }
 
-  private checkIfPlayerIsInAnotherLobbyAndThrowError(player: SocketIO.Socket) {
+  private checkIfPlayerIsInAnotherLobby(player: SocketIO.Socket) {
     const lobbyAlreadyOccupied = this.findPlayerLobby(player);
     if (lobbyAlreadyOccupied !== undefined) {
       throw this.errorPlayerIsAlreadyInAnotherLobby(
         player.id,
         lobbyAlreadyOccupied.getId()
       );
+    }
+  }
+
+  private removePlayerFromLobby(
+    playerLobby: Lobby,
+    player: SocketIO.Socket
+  ): void {
+    playerLobby.removePlayer(player);
+    if (playerLobby.isEmpty()) {
+      this.deleteEmptyLobby(playerLobby);
+      emitPublicLobbies(this.exportAllLobbies());
+    }
+    emitUpdatePrivateLobby(
+      playerLobby.exportInPrivateLobby(),
+      playerLobby.getSocketRoom()
+    );
+  }
+
+  private deleteEmptyLobby(lobbyToDelete: Lobby) {
+    try {
+      if (!lobbyToDelete.isEmpty()) {
+        throw this.errorCantDeleteLobbyWithPlayerInside(
+          lobbyToDelete.getId(),
+          lobbyToDelete.players.length
+        );
+      }
+      const lobbyToDeleteIndex = this.lobbies.findIndex(
+        lobby => lobby.getId() === lobbyToDelete.getId()
+      );
+      this.lobbies.splice(lobbyToDeleteIndex, 1);
+    } catch (error) {
+      `Problem when trying to delete supposedly empty lobby with id ${lobbyToDelete.getId()}: ${error}`;
     }
   }
 
@@ -159,5 +199,12 @@ export class LobbiesManager {
 
   private errorPlayerHasNoLobby(playerId: string): string {
     return `Player ${playerId} has no lobby`;
+  }
+
+  private errorCantDeleteLobbyWithPlayerInside(
+    lobbyId: number,
+    numberOfPlayers: number
+  ): string {
+    return `Can't delete lobby with id ${lobbyId}, still ${numberOfPlayers} player(s) inside`;
   }
 }

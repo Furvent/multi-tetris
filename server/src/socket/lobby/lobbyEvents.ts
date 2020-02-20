@@ -43,22 +43,14 @@ export function lobbyEventsListener(socket: SocketIO.Socket) {
     console.log(`Player with id ${socket.id} want to leave his private lobby`)
     LobbiesManager.getInstance().playerLeavePrivateLobby(socket)
   })
+
+  socket.on("disconnect", () => {
+    console.log(`Player with id ${socket.id} unexpectedly deconnected from client lobby area. That's so sad... :'/`)
+    LobbiesManager.getInstance().playerDeconnectedFromClient(socket)
+  })
 }
 
-/**
- * TODO(BIG): Rework the project structure, because the event emit on all clients, including clients already playing
- * For now, this event is not used
- */
-export function emitCreateNewLobby(
-  socket: SocketIO.Socket,
-  newLobby: PayloadPublicLobby
-) {
-  const eventName = "lobby:newLobbyCreated";
-  logEmit(eventName, newLobby);
-  socket.broadcast.emit(eventName, newLobby);
-}
-
-export function emitUpdatePrivateLobbyData(
+export function emitUpdatePrivateLobby(
   lobbyData: PayloadPrivateLobby,
   socketRoomName: string
 ) {
@@ -67,11 +59,15 @@ export function emitUpdatePrivateLobbyData(
   Server.io.to(socketRoomName).emit(eventName, lobbyData);
 }
 
+/**
+ * @param lobbies Lobbies to send
+ * @param socket Optionnal. If filled, send lobbies only to this socket
+ */
 export function emitPublicLobbies(
-  socket: SocketIO.Socket,
-  lobbies: PayloadPublicLobby[]
+  lobbies: PayloadPublicLobby[],
+  socket?: SocketIO.Socket
 ) {
   const eventName = "lobby:allLobbies";
   logEmit(eventName, lobbies);
-  socket.emit(eventName, lobbies);
+  (typeof socket == "undefined") ? Server.io.emit(eventName, lobbies) : socket.emit(eventName, lobbies);
 }

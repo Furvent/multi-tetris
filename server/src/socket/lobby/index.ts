@@ -1,7 +1,7 @@
-import { lobbyEventsListener } from "./lobbyEvents"
+import { lobbyEventsListener } from "./lobbyEvents";
 
 export function loadLobbyEventsListener(socket: SocketIO.Socket) {
-    lobbyEventsListener(socket)
+  lobbyEventsListener(socket);
 }
 
-export {emitCreateNewLobby, emitUpdatePrivateLobbyData, emitPublicLobbies} from "./lobbyEvents"
+export { emitUpdatePrivateLobby, emitPublicLobbies } from "./lobbyEvents";

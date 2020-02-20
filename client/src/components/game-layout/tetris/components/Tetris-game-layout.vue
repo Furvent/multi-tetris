@@ -31,7 +31,7 @@
             <v-card v-for="lobby in publicLobbies" :key="lobby.id">
               <v-container>
                 <v-row align="center">
-                  <v-col cols="4">{{ lobby.name }}</v-col>
+                  <v-col cols="4">Lobby's name: {{ lobby.name }}</v-col>
                   <v-col cols="4">Players: {{ lobby.numberOfPlayers }}</v-col>
                   <v-col cols="4">
                     <v-btn class="text-center" @click="joinLobby(lobby.id)">JOIN LOBBY</v-btn>
