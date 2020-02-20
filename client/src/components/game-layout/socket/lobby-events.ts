@@ -35,7 +35,6 @@ export function loadLobbyEventsListener(
       logListener("lobby:allLobbies", lobbies);
     }
     store.commit("setPublicLobbies", lobbies);
-    console.log(socket);
   });
 }
 

@@ -5,7 +5,7 @@
       <v-row justify="center">
         <v-col cols="8">
           <!-- Add Lobby  -->
-          <div class="tetris-lobby-searched" v-if="!hasJoinedPrivateLobby">
+          <div class="tetris-lobby-searched" v-if="!isInPrivateLobby">
             <v-card>
               <v-container>
                 <v-row align="center">
@@ -41,7 +41,9 @@
             </v-card>
           </div>
           <!-- When inside a private lobby -->
-          <tetris-private-lobby>
+          <tetris-private-lobby
+            v-if="isInPrivateLobby"
+          >
             
           </tetris-private-lobby>
         </v-col>
@@ -88,6 +90,10 @@ export default class extends Vue {
 
   get privateLobby() {
     return this.$store.getters.getPrivateLobby;
+  }
+
+  get isInPrivateLobby(): boolean {
+    return this.$store.getters.getPrivateLobby.players !== undefined
   }
 
   getPlayerSocket() {
