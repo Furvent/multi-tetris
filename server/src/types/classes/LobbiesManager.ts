@@ -28,10 +28,10 @@ export class LobbiesManager {
 
   playerJoinLobbyWithId(lobbyId: number, player: SocketIO.Socket): void {
     try {
-      this.checkIfPlayerIsInAnotherLobbyAndThrowError(player)
+      this.checkIfPlayerIsInAnotherLobbyAndThrowError(player);
       const lobbyToJoin = this.getLobbyWithId(lobbyId);
       if (lobbyToJoin === undefined) {
-        throw this.errorNoLobbyWithThatId(lobbyId)
+        throw this.errorNoLobbyWithThatId(lobbyId);
       }
 
       lobbyToJoin.addPlayer(player);
@@ -83,12 +83,12 @@ export class LobbiesManager {
     try {
       const lobby = this.getLobbyWithId(lobbyId);
       if (lobby === undefined) {
-        throw this.errorNoLobbyWithThatId(lobbyId)
+        throw this.errorNoLobbyWithThatId(lobbyId);
       }
 
       const playerSearched = lobby.getPlayerWithId(player.id);
       if (playerSearched == undefined) {
-        throw this.errorPlayerIsNotInThisLobby(player.id, lobbyId)
+        throw this.errorPlayerIsNotInThisLobby(player.id, lobbyId);
       }
       playerSearched.isReadyInPrivateLobby = availability;
       emitUpdatePrivateLobbyData(
@@ -103,12 +103,19 @@ export class LobbiesManager {
   }
 
   playerLeavePrivateLobby(player: SocketIO.Socket): void {
-    const playerLobby = this.findPlayerLobby(player)
-    if (playerLobby === undefined) {
-      throw this.errorPlayerHasNoLobby(player.id)
+    try {
+      const playerLobby = this.findPlayerLobby(player);
+      if (playerLobby === undefined) {
+        throw this.errorPlayerHasNoLobby(player.id);
+      }
+      playerLobby.removePlayer(player);
+      emitUpdatePrivateLobbyData(
+        playerLobby.exportInPrivateLobby(),
+        playerLobby.getSocketRoom()
+      );
+    } catch (error) {
+      console.error(`Problem when player ${player.id} tried to leave lobby: ${error}`)
     }
-
-
   }
 
   private getLobbyWithId(id: number): Lobby | undefined {
@@ -125,23 +132,32 @@ export class LobbiesManager {
   private checkIfPlayerIsInAnotherLobbyAndThrowError(player: SocketIO.Socket) {
     const lobbyAlreadyOccupied = this.findPlayerLobby(player);
     if (lobbyAlreadyOccupied !== undefined) {
-      throw this.errorPlayerIsAlreadyInAnotherLobby(player.id, lobbyAlreadyOccupied.getId());
+      throw this.errorPlayerIsAlreadyInAnotherLobby(
+        player.id,
+        lobbyAlreadyOccupied.getId()
+      );
     }
   }
 
-  private errorPlayerIsAlreadyInAnotherLobby(playerId: string, lobbyId: number):string {
-    return `Player ${playerId} is already in lobby: ${lobbyId}`
+  private errorPlayerIsAlreadyInAnotherLobby(
+    playerId: string,
+    lobbyId: number
+  ): string {
+    return `Player ${playerId} is already in lobby: ${lobbyId}`;
   }
 
-  private errorNoLobbyWithThatId(id: number):string {
-    return `No lobby with id: ${id}`
+  private errorNoLobbyWithThatId(id: number): string {
+    return `No lobby with id: ${id}`;
   }
 
-  private errorPlayerIsNotInThisLobby(playerId: string, lobbyId: number):string {
-    return `Player ${playerId} is not in lobby: ${lobbyId}`
+  private errorPlayerIsNotInThisLobby(
+    playerId: string,
+    lobbyId: number
+  ): string {
+    return `Player ${playerId} is not in lobby: ${lobbyId}`;
   }
 
-  private errorPlayerHasNoLobby(playerId: string):string {
-    return `Player ${playerId} has no lobby`
+  private errorPlayerHasNoLobby(playerId: string): string {
+    return `Player ${playerId} has no lobby`;
   }
 }

@@ -38,6 +38,11 @@ export function lobbyEventsListener(socket: SocketIO.Socket) {
       );
     }
   );
+
+  socket.on("lobby:playerLeavePrivateLobby", () => {
+    console.log(`Player with id ${socket.id} want to leave his private lobby`)
+    LobbiesManager.getInstance().playerLeavePrivateLobby(socket)
+  })
 }
 
 /**

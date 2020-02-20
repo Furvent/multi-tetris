@@ -68,3 +68,9 @@ export function emitJoinLobby(socket: SocketIOClient.Socket, lobbyId: number): v
   socket.emit(eventName, lobbyId)
   logEmit(eventName, lobbyId)
 }
+
+export function emitLeavePrivateLobby(socket: SocketIOClient.Socket) {
+  const eventName = "lobby:playerLeavePrivateLobby"
+  socket.emit(eventName)
+  logEmit(eventName)
+}
