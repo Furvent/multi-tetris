@@ -8,6 +8,7 @@ import Express from "express";
 import loadServerEvents from "../../socket/server/index";
 import {loadLobbyEventsListener} from "../../socket/lobby";
 import { LobbiesManager } from "./LobbiesManager";
+import log from '../../private-module/PrivateLogger'
 
 // TODO: Create Party Manager
 export default class Server {
@@ -26,10 +27,10 @@ export default class Server {
       res.send("Server running");
     });
     serverHttp.listen(global.globalConfig.port, () => {
-      console.log(`Server launch on port:${global.globalConfig.port}`)
+      log.info(`Server launch on port:${global.globalConfig.port}`)
     });
     Server.io.on("connect", socket => {
-      console.log(`Connected client with id ${socket.id}`)
+      log.info(`Connected client with id ${socket.id}`)
       loadServerEvents(socket);
       loadLobbyEventsListener(socket);
     });
@@ -43,8 +44,8 @@ export default class Server {
           .toString()
       );
     } catch (error) {
-        console.error("Problem when loading global config:", error)
-        console.error("Server will stop now, can't load config file")
+        log.error(`Problem when loading global config:, ${error}`)
+        log.error("Server will stop now, can't load config file")
         process.exit()
     }
   }

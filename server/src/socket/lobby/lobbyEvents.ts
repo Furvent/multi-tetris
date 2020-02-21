@@ -4,31 +4,32 @@ import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby
 import { PayloadPlayerAvailability } from "../../../../share/types/PayloadPlayerAvailability";
 import { logEmit } from "./../../utils/index";
 import Server from "../../types/classes/server";
+import log from '../../private-module/PrivateLogger'
 
 export function lobbyEventsListener(socket: SocketIO.Socket) {
   socket.on("lobby:createNewLobby", (roomName: string) => {
-    console.log(
+    log.info(
       `Player with socket's id ${socket.id} want to create a new lobby with name: ${roomName}`
     );
     LobbiesManager.getInstance().playerCreateLobby(socket, roomName);
   });
 
   socket.on("lobby:joinLobbyWithId", id => {
-    console.log(
+    log.info(
       `Player with socket's id ${socket.id} want to join lobby with id ${id}`
     );
     LobbiesManager.getInstance().playerJoinLobbyWithId(id, socket);
   });
 
   socket.on("lobby:getLobbies", () => {
-    console.log(`Player with socket's id ${socket.id} asked lobbies`);
+    log.info(`Player with socket's id ${socket.id} asked lobbies`);
     LobbiesManager.getInstance().playerAskPublicLobbies(socket);
   });
 
   socket.on(
     "lobby:changePlayerAvailability",
     (payload: PayloadPlayerAvailability) => {
-      console.log(
+      log.info(
         `Player with socket's id ${socket.id} changed his availability in loby ${payload.lobbyId}`
       );
       LobbiesManager.getInstance().playerChangeAvailabiltyStatusInPrivateLobby(
@@ -40,12 +41,12 @@ export function lobbyEventsListener(socket: SocketIO.Socket) {
   );
 
   socket.on("lobby:playerLeavePrivateLobby", () => {
-    console.log(`Player with id ${socket.id} want to leave his private lobby`)
+    log.info(`Player with id ${socket.id} want to leave his private lobby`)
     LobbiesManager.getInstance().playerLeavePrivateLobby(socket)
   })
 
   socket.on("disconnect", () => {
-    console.log(`Player with id ${socket.id} unexpectedly deconnected from client lobby area. That's so sad... :'/`)
+    log.info(`Player with id ${socket.id} unexpectedly deconnected from client lobby area. That's so sad... :'/`)
     LobbiesManager.getInstance().playerDeconnectedFromClient(socket)
   })
 }

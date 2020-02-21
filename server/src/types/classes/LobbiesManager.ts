@@ -1,6 +1,7 @@
 import { Lobby } from "./Lobby";
 import { emitUpdatePrivateLobby, emitPublicLobbies } from "../../socket/lobby";
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
+import log from '../../private-module/PrivateLogger'
 
 /**
  * Is singleton
@@ -20,8 +21,6 @@ export class LobbiesManager {
   private lobbies: Lobby[];
   private idUsedIncrementator: number;
 
-  // deleteLobbyWithId
-
   // Launch party
 
   playerJoinLobbyWithId(lobbyId: number, player: SocketIO.Socket): void {
@@ -38,7 +37,7 @@ export class LobbiesManager {
         lobbyToJoin.getSocketRoom()
       );
     } catch (error) {
-      console.error(
+      log.error(
         `Problem when adding user ${player.id} to lobby with id ${lobbyId}: ${error}`
       );
     }
@@ -60,7 +59,7 @@ export class LobbiesManager {
         newLobby.getSocketRoom()
       );
     } catch (error) {
-      console.error(
+      log.error(
         `Problem when player ${player.id} tried to create new lobby: ${error}`
       );
     }
@@ -91,7 +90,7 @@ export class LobbiesManager {
         lobby.getSocketRoom()
       );
     } catch (error) {
-      console.error(
+      log.error(
         `In method playerChangeAvailabiltyStatusInPrivateLobby(), call by player ${player.id} problem: ${error}`
       );
     }
@@ -105,7 +104,7 @@ export class LobbiesManager {
       }
       this.removePlayerFromLobby(playerLobby, player);
     } catch (error) {
-      console.error(
+      log.error(
         `Problem when player ${player.id} tried to leave lobby: ${error}`
       );
     }
@@ -118,7 +117,7 @@ export class LobbiesManager {
         this.removePlayerFromLobby(playerLobby, player);
       }
     } catch (error) {
-      `Problem when player ${player.id} deconnected`;
+      log.error(`Problem when player ${player.id} deconnected: ${error}`);
     }
   }
 
@@ -175,7 +174,7 @@ export class LobbiesManager {
       );
       this.lobbies.splice(lobbyToDeleteIndex, 1);
     } catch (error) {
-      `Problem when trying to delete supposedly empty lobby with id ${lobbyToDelete.getId()}: ${error}`;
+      log.error(`Problem when trying to delete supposedly empty lobby with id ${lobbyToDelete.getId()}: ${error}`);
     }
   }
 
