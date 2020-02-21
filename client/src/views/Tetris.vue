@@ -21,5 +21,9 @@ import FurTetrisGameLayout from "@/components/game-layout/tetris/components/fur-
 })
 export default class extends Vue {
   userWantPlayTetris = false;
+
+  joinLobbyArea() {
+    this.userWantPlayTetris = true
+  }
 }
 </script>

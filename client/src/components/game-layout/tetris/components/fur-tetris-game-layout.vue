@@ -41,11 +41,7 @@
             </v-card>
           </div>
           <!-- When inside a private lobby -->
-          <fur-tetris-private-lobby
-            v-if="isInPrivateLobby"
-          >
-            
-          </fur-tetris-private-lobby>
+          <fur-tetris-private-lobby v-if="isInPrivateLobby"></fur-tetris-private-lobby>
         </v-col>
       </v-row>
     </v-container>
@@ -78,10 +74,9 @@ export default class extends Vue {
   hasJoinedPrivateLobby = false;
 
   mounted() {
-    if (this.getPlayerSocket() === undefined)
-      this.$store.commit("setPlayerSocket", io("http://localhost:7070"));
-    loadLobbyEventsListener(this.getPlayerSocket(), this.$store, true);
-    emitGetLobbies(this.getPlayerSocket());
+    if (this.getPlayerSocket() === undefined) {
+      this.createSocketAndLoadListeners();
+    }
   }
 
   get publicLobbies() {
@@ -93,7 +88,7 @@ export default class extends Vue {
   }
 
   get isInPrivateLobby(): boolean {
-    return this.$store.getters.getPrivateLobby.players !== undefined
+    return this.$store.getters.getPrivateLobby.players !== undefined;
   }
 
   getPlayerSocket() {
@@ -107,6 +102,12 @@ export default class extends Vue {
 
   joinLobby(id: number) {
     emitJoinLobby(this.getPlayerSocket(), id);
+  }
+
+  createSocketAndLoadListeners() {
+    this.$store.commit("setPlayerSocket", io("http://localhost:7070"));
+    loadLobbyEventsListener(this.getPlayerSocket(), this.$store, true);
+    emitGetLobbies(this.getPlayerSocket());
   }
 }
 </script>

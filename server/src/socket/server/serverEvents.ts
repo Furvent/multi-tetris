@@ -1,5 +1,7 @@
+import log from '../../private-module/PrivateLogger'
+
 export function disconnectEvent(socket: SocketIO.Socket) {
     socket.on('disconnect', () => {
-        console.log(`DISCONNECT: client with id ${socket.id}`)
+        log.info(`DISCONNECT: client with id ${socket.id}`)
     })
 }
