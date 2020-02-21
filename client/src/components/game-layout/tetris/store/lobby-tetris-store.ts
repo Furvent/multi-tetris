@@ -4,15 +4,15 @@ import { PayloadPrivateLobby } from "../../../../../../share/types/PayloadPrivat
 // Not type safe for now, to further amelioration, search vuex-module-decorator
 export default {
   state: {
-    testingDatum: "boblebob",
+    playerPseudo: "",
     publicLobbies: new Array(),
     privateLobby: {},
     playerSocket: undefined
   },
 
   getters: {
-    getDatum: (state: State) => {
-      return state.testingDatum;
+    getOwnPseudo: (state: State) => {
+      return state.playerPseudo;
     },
     getPublicLobbies: (state: State) => {
       return state.publicLobbies
@@ -26,8 +26,8 @@ export default {
   },
 
   mutations: {
-    setDatum: (state: State, newDatum: string) => {
-      state.testingDatum = newDatum;
+    setOwnPseudo: (state: State, newPseudo: string) => {
+      state.playerPseudo = newPseudo;
     },
     setPublicLobbies: (state: State, lobbies: PayloadPublicLobby[]) => {
       state.publicLobbies = lobbies
@@ -42,7 +42,7 @@ export default {
 };
 
 export interface State {
-  testingDatum: string;
+  playerPseudo: string;
   publicLobbies: PayloadPublicLobby[];
   privateLobby: PayloadPrivateLobby;
   playerSocket: SocketIOClient.Socket

@@ -6,6 +6,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '*',
+    name: 'home',
+    component: Home
+  },
+  {
     path: '/',
     name: 'home',
     component: Home
@@ -22,6 +27,11 @@ const routes = [
     path: '/games',
     name: 'games',
     component: () => import('../views/Games.vue')
+  },
+  {
+    path: '/tetris',
+    name: 'tetris',
+    component: () => import('../views/Tetris.vue')
   }
 ]
 

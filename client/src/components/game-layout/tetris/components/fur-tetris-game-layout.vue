@@ -41,11 +41,11 @@
             </v-card>
           </div>
           <!-- When inside a private lobby -->
-          <tetris-private-lobby
+          <fur-tetris-private-lobby
             v-if="isInPrivateLobby"
           >
             
-          </tetris-private-lobby>
+          </fur-tetris-private-lobby>
         </v-col>
       </v-row>
     </v-container>
@@ -65,12 +65,12 @@ import {
   emitJoinLobby,
   emitCreateNewLobby
 } from "../../socket/lobby-events";
-import TetrisPrivateLobby from "./Tetris-private-lobby.vue";
+import FurTetrisPrivateLobby from "./fur-tetris-private-lobby.vue";
 
 @Component({
-  name: "tetris-game-layout",
+  name: "fur-tetris-game-layout",
   components: {
-    TetrisPrivateLobby
+    FurTetrisPrivateLobby
   }
 })
 export default class extends Vue {

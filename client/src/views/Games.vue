@@ -1,20 +1,22 @@
 <template>
     <v-tabs :centered="true">
-      <v-tab>Tetris</v-tab>
+      <v-tab class="fur-link-game"><router-link to="tetris">Tetris</router-link></v-tab>
       <v-tab-item >
-        <tetris-game-layout class="mt-2"></tetris-game-layout>
+        
       </v-tab-item>
     </v-tabs>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import TetrisGameLayout from "@/components/game-layout/tetris/components/Tetris-game-layout.vue";
 
 export default Vue.extend({
-  name: "games",
-  components: {
-    TetrisGameLayout
-  }
+  name: "games"
 });
 </script>
+
+<style scoped>
+.fur-link-game a {
+  text-decoration: none;
+}
+</style>
