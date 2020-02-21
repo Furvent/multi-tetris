@@ -5,6 +5,27 @@
       <v-btn @click="debugLaunchParty()">Debug Launch Party</v-btn>
     </div>
     <fur-tetris-game-layout v-if="userWantPlayTetris"></fur-tetris-game-layout>
+    <!-- DIALOG -->
+    <v-dialog v-model="showDialogAskPseudo" persistent max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span>Choose a Pseudo</span>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="pseudo"
+            label="Your pseudo"
+            required
+          >
+          </v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn>Close</v-btn>
+          <v-btn>Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -20,10 +41,19 @@ import FurTetrisGameLayout from "@/components/game-layout/tetris/components/fur-
   }
 })
 export default class extends Vue {
-  userWantPlayTetris = false;
+  pseudo = ""
+  userWantJoinLobby = false;
+  userWantDebug = false;
+  showDialogAskPseudo = false;
+  playerChosePSeudo = false;
+
+  get userWantToPlayTetris() {
+    return this.showDialogAskPseudo && (this.userWantJoinLobby || this.userWantDebug)
+  }
 
   joinLobbyArea() {
-    this.userWantPlayTetris = true
+    this.showDialogAskPseudo = true;
+    this.userWantPlayTetris = true;
   }
 }
 </script>
