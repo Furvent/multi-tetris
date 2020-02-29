@@ -9,7 +9,7 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strictPropertyInitialization": false, // Problem whith socket property in tetris main component
+    // "strictPropertyInitialization": false, // Problem whith socket property in tetris main component
     // "noImplicitAny": false, // Bad patch to vuex store declaration problem. TODO: find another solution!!!
     "sourceMap": true,
     "baseUrl": ".",
