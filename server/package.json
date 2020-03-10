@@ -4,14 +4,17 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "concurrently -k -n \"Typescript,Node\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon dist/app.js\"",
-    "start": "tsc && node dist/index.js"
+    "dev": "concurrently -k -n \"Typescript,Node\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon dist/server.js\"",
+    "start": "tsc && node dist/index.js",
+    "test": "jest"
   },
   "author": "Furvent",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^25.1.4",
     "@types/node": "^13.5.0",
     "concurrently": "^5.0.2",
+    "jest": "^25.1.0",
     "nodemon": "^2.0.2",
     "typescript": "^3.7.5"
   },
