@@ -1,6 +1,3 @@
-import { Player } from "../../types/classes/Player";
-import SocketMock from "socket.io-mock";
-import log from "../../private-module/PrivateLogger";
 import { Lobby } from "../../types/classes/Lobby";
 import { createNewMockedSocket, createNewMockedPlayer } from "./Player.test";
 
@@ -65,5 +62,3 @@ test("Export in private lobby", () => {
     ]
   });
 });
-
-// -------------------------------------

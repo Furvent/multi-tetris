@@ -1,13 +1,17 @@
 import { Lobby } from "./Lobby";
 import { emitUpdatePrivateLobby, emitPublicLobbies } from "../../socket/lobby";
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
-import log from '../../private-module/PrivateLogger'
+import log from "../../private-module/PrivateLogger";
 
 /**
  * Is singleton
  */
 export class LobbiesManager {
   private static instance: LobbiesManager;
+
+  private lobbies: Lobby[];
+  private idUsedIncrementator: number;
+
   private constructor() {
     this.lobbies = [];
     this.idUsedIncrementator = 0;
@@ -17,9 +21,6 @@ export class LobbiesManager {
       LobbiesManager.instance = new LobbiesManager();
     return LobbiesManager.instance;
   }
-
-  private lobbies: Lobby[];
-  private idUsedIncrementator: number;
 
   // Launch party
 
@@ -121,6 +122,10 @@ export class LobbiesManager {
     }
   }
 
+  getLobbies():Lobby[] {
+    return this.lobbies
+  }
+
   private exportAllLobbies(): PayloadPublicLobby[] {
     return this.lobbies.map(lobby => lobby.exportInPublicLobby());
   }
@@ -153,8 +158,8 @@ export class LobbiesManager {
     playerLobby.removePlayer(player);
     if (playerLobby.isEmpty()) {
       this.deleteEmptyLobby(playerLobby);
-      emitPublicLobbies(this.exportAllLobbies());
     }
+    emitPublicLobbies(this.exportAllLobbies());
     emitUpdatePrivateLobby(
       playerLobby.exportInPrivateLobby(),
       playerLobby.getSocketRoom()
@@ -174,7 +179,9 @@ export class LobbiesManager {
       );
       this.lobbies.splice(lobbyToDeleteIndex, 1);
     } catch (error) {
-      log.error(`Problem when trying to delete supposedly empty lobby with id ${lobbyToDelete.getId()}: ${error}`);
+      log.error(
+        `Problem when trying to delete supposedly empty lobby with id ${lobbyToDelete.getId()}: ${error}`
+      );
     }
   }
 
