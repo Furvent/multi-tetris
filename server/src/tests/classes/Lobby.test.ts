@@ -2,6 +2,7 @@ import { Player } from "../../types/classes/Player";
 import SocketMock from "socket.io-mock";
 import log from "../../private-module/PrivateLogger";
 import { Lobby } from "../../types/classes/Lobby";
+import { createNewMockedSocket, createNewMockedPlayer } from "./Player.test";
 
 const player1 = createNewMockedPlayer("1");
 const mockedLobby = new Lobby(1, player1.id, "room 1");
@@ -66,14 +67,3 @@ test("Export in private lobby", () => {
 });
 
 // -------------------------------------
-
-function createNewMockedPlayer(id: string): Player {
-  const mockedPlayer = new Player(createNewMockedSocket(id));
-  return mockedPlayer;
-}
-
-function createNewMockedSocket(id: string): any {
-  const mockedSocket = new SocketMock();
-  mockedSocket.id = id;
-  return mockedSocket;
-}

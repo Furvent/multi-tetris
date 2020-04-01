@@ -1,13 +1,26 @@
 import { Player } from "../../types/classes/Player";
-import SocketMock from 'socket.io-mock';
-import log from '../../private-module/PrivateLogger'
+import SocketMock from "socket.io-mock";
 
-const mockedSocket = new SocketMock();
+const mockedPlayer = createNewMockedPlayer("1");
 
-const mockedPlayer = new Player(mockedSocket)
-log.info(`In mocked player, id: ${mockedPlayer.id}`)
+test("Get id from mocked player", () => {
+  expect(mockedPlayer.id == "1").toBe(true);
+});
 
-test('Get id from mocked player', () => {
-    expect(mockedPlayer.id == mockedSocket.id).toBe(true);
-})
+test("Export in private lobby", () => {
+  expect(mockedPlayer.exportToLobbyPlayer()).toEqual({
+    pseudo: "pseudoTemp1",
+    isReady: false
+  });
+});
 
+export function createNewMockedPlayer(id: string): Player {
+  const mockedPlayer = new Player(createNewMockedSocket(id));
+  return mockedPlayer;
+}
+
+export function createNewMockedSocket(id: string): any {
+  const mockedSocket = new SocketMock();
+  mockedSocket.id = id;
+  return mockedSocket;
+}
