@@ -1,8 +1,6 @@
 import { Player } from "../../types/classes/Player";
 import SocketMock from 'socket.io-mock';
 import log from '../../private-module/PrivateLogger'
-// jest.mock("../../types/classes/Player");
-// const mockedPlayer = <jest.Mock<Player>> Player;
 
 const mockedSocket = new SocketMock();
 
