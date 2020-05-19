@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently -k -n \"Typescript,Node\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon dist/app.js\"",
     "start": "tsc && node dist/index.js",
-    "test": "tsc && jest"
+    "test": "env NODE_ENV=test tsc && jest"
   },
   "author": "Furvent",
   "license": "MIT",

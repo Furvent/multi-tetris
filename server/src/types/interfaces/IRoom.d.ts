@@ -6,6 +6,6 @@ export interface IRoom {
 
     isFull(): boolean
     getId(): number
-    getSocketRoom(): string
+    getSocketIORoom(): string
     addPlayer(socket: SocketIO.Socket)
 }

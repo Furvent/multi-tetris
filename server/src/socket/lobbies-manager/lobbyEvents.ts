@@ -2,7 +2,7 @@ import { LobbiesManager } from "../../types/classes/LobbiesManager";
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby";
 import { PayloadPlayerAvailability } from "../../../../share/types/PayloadPlayerAvailability";
-import { logEmit } from "./../../utils/index";
+import { logEmit } from "../../utils/index";
 import Server from "../../types/classes/server";
 import log from '../../private-module/PrivateLogger'
 
@@ -53,11 +53,11 @@ export function lobbyEventsListener(socket: SocketIO.Socket) {
 
 export function emitUpdatePrivateLobby(
   lobbyData: PayloadPrivateLobby,
-  socketRoomName: string
+  socketIORoomName: string
 ) {
   const eventName = "lobby:updatedPrivateLobby";
-  logEmit(eventName, lobbyData, socketRoomName);
-  Server.io.to(socketRoomName).emit(eventName, lobbyData);
+  logEmit(eventName, lobbyData, socketIORoomName);
+  Server.io.to(socketIORoomName).emit(eventName, lobbyData);
 }
 
 /**

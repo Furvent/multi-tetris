@@ -13,13 +13,6 @@ export function loadLobbyEventsListener(
   store: Store<State>,
   debug: boolean
 ): void {
-  /**
-   * Not implement yet, maybe never ?!
-   */
-  socket.on("lobby:newLobbyCreated", (newPublicLobby: PayloadPublicLobby) => {
-    console.error(`EventListener: newLobbyCreated is not implemented`);
-  });
-
   socket.on(
     "lobby:updatedPrivateLobby",
     (updatedPrivateLobby: PayloadPrivateLobby) => {
@@ -57,19 +50,22 @@ export function emitChangePlayerAvailabilityInPrivateLobby(
   socket: SocketIOClient.Socket,
   payload: PayloadPlayerAvailability
 ): void {
-  const eventName = "lobby:changePlayerAvailability"
-  socket.emit(eventName, payload)
-  logEmit(eventName, payload)
+  const eventName = "lobby:changePlayerAvailability";
+  socket.emit(eventName, payload);
+  logEmit(eventName, payload);
 }
 
-export function emitJoinLobby(socket: SocketIOClient.Socket, lobbyId: number): void {
-  const eventName = "lobby:joinLobbyWithId"
-  socket.emit(eventName, lobbyId)
-  logEmit(eventName, lobbyId)
+export function emitJoinLobby(
+  socket: SocketIOClient.Socket,
+  lobbyId: number
+): void {
+  const eventName = "lobby:joinLobbyWithId";
+  socket.emit(eventName, lobbyId);
+  logEmit(eventName, lobbyId);
 }
 
 export function emitLeavePrivateLobby(socket: SocketIOClient.Socket) {
-  const eventName = "lobby:playerLeavePrivateLobby"
-  socket.emit(eventName)
-  logEmit(eventName)
+  const eventName = "lobby:playerLeavePrivateLobby";
+  socket.emit(eventName);
+  logEmit(eventName);
 }

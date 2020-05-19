@@ -38,7 +38,7 @@ import { PayloadLobbyPlayer } from "../../../../../../share/types/PayloadLobbyPl
 import {
   emitChangePlayerAvailabilityInPrivateLobby,
   emitLeavePrivateLobby
-} from "../../socket/lobby-events";
+} from "../../socket/lobbyEvents";
 
 @Component({
   name: "tetris-private-lobby"

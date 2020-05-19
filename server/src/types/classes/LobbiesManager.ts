@@ -1,5 +1,5 @@
 import { Lobby } from "./Lobby";
-import { emitUpdatePrivateLobby, emitPublicLobbies } from "../../socket/lobby";
+import { emitUpdatePrivateLobby, emitPublicLobbies } from "../../socket/lobbies-manager";
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 import log from "../../private-module/PrivateLogger";
 
@@ -35,7 +35,7 @@ export class LobbiesManager {
       lobbyToJoin.addPlayer(player);
       emitUpdatePrivateLobby(
         lobbyToJoin.exportInPrivateLobby(),
-        lobbyToJoin.getSocketRoom()
+        lobbyToJoin.getSocketIORoom()
       );
     } catch (error) {
       log.error(
@@ -57,7 +57,7 @@ export class LobbiesManager {
       this.playerAskPublicLobbies(player);
       emitUpdatePrivateLobby(
         newLobby.exportInPrivateLobby(),
-        newLobby.getSocketRoom()
+        newLobby.getSocketIORoom()
       );
     } catch (error) {
       log.error(
@@ -67,7 +67,7 @@ export class LobbiesManager {
   }
 
   playerAskPublicLobbies(player: SocketIO.Socket): void {
-    emitPublicLobbies(this.exportAllLobbies());
+    emitPublicLobbies(this.exportAllLobbies(), player);
   }
 
   playerChangeAvailabiltyStatusInPrivateLobby(
@@ -88,7 +88,7 @@ export class LobbiesManager {
       playerSearched.isReadyInPrivateLobby = availability;
       emitUpdatePrivateLobby(
         lobby.exportInPrivateLobby(),
-        lobby.getSocketRoom()
+        lobby.getSocketIORoom()
       );
     } catch (error) {
       log.error(
@@ -162,7 +162,7 @@ export class LobbiesManager {
     emitPublicLobbies(this.exportAllLobbies());
     emitUpdatePrivateLobby(
       playerLobby.exportInPrivateLobby(),
-      playerLobby.getSocketRoom()
+      playerLobby.getSocketIORoom()
     );
   }
 

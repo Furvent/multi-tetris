@@ -56,11 +56,12 @@ import { PayloadPublicLobby } from "../../../../../../share/types/PayloadPublicL
 import { PayloadPrivateLobby } from "../../../../../../share/types/PayloadPrivateLobby";
 import { logListener } from "../../../../utils";
 import {
-  emitGetLobbies,
   loadLobbyEventsListener,
+  emitGetLobbies,
   emitJoinLobby,
   emitCreateNewLobby
-} from "../../socket/lobby-events";
+} from "../../socket/lobbyEvents";
+import { emitCreateNewPlayer } from "../../socket/playerEvents"
 import FurTetrisPrivateLobby from "./fur-tetris-private-lobby.vue";
 
 @Component({
@@ -105,9 +106,11 @@ export default class extends Vue {
   }
 
   createSocketAndLoadListeners() {
-    this.$store.commit("setPlayerSocket", io("http://localhost:7070"));
-    loadLobbyEventsListener(this.getPlayerSocket(), this.$store, true);
-    emitGetLobbies(this.getPlayerSocket());
+    const socket = io("http://localhost:7070");
+    this.$store.commit("setPlayerSocket", socket);
+    loadLobbyEventsListener(socket, this.$store, true);
+    emitCreateNewPlayer(socket, this.$store.getters.getOwnPseudo);
+    emitGetLobbies(socket);
   }
 }
 </script>
