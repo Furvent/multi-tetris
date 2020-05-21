@@ -6,7 +6,8 @@
         "esModuleInterop": true, // Permet d'importer directement des modules, pas juste des classes ou des types. Comme par exemple : "import express from 'express'"
         "noResolve": false, // Bad patch to resolve problem of imports outside server folder
         "strictPropertyInitialization": true,
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "sourceMap": true
     },
     "include": [
         "./src/**/*.ts"

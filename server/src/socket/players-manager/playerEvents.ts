@@ -8,7 +8,7 @@ export function playerEventsListener(socket: SocketIO.Socket) {
     log.info(
       `Socket with id ${socket.id} want to create a player with ${pseudo ? "pseudo: " + pseudo : "no pseudo chosen"}.`
     );
-    PlayersManager.getInstance().addPlayer(socket, pseudo);
+    PlayersManager.getInstance().createPlayer(socket, pseudo);
   });
 
   socket.on("disconnect", () => {

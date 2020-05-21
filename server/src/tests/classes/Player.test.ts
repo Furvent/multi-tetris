@@ -1,26 +1,34 @@
-// import { Player } from "../../types/classes/Player";
-// import SocketMock from "socket.io-mock";
+import { Player } from "../../types/classes/Player";
+import SocketMock from "socket.io-mock";
+import { PlayersManager } from "../../types/classes/PlayersManager";
 
-// const mockedPlayer = createNewMockedPlayer("1");
+const id = "12345"
+const pseudo = "bob"
 
-// test("Get id from mocked player", () => {
-//   expect(mockedPlayer.id == "1").toBe(true);
-// });
+test("Create a new player", () => {
+  const mockedSocket = createNewMockedSocket(id)
+  const mockedPlayer = createNewMockedPlayer(mockedSocket, pseudo);
+  expect(mockedPlayer).toEqual({
+    id: id,
+    pseudo:pseudo,
+    socket: mockedSocket,
+    isReadyInPrivateLobby: false
+  });
+});
 
-// test("Export in private lobby", () => {
-//   expect(mockedPlayer.exportToLobbyPlayer()).toEqual({
-//     pseudo: "pseudoTemp1",
-//     isReady: false
-//   });
-// });
+test("Export in private lobby", () => {
+  expect(PlayersManager.getInstance().getPlayerWithSocketId(id)?.exportToLobbyPlayer()).toEqual({
+    pseudo: pseudo,
+    isReady: false
+  });
+});
 
-// export function createNewMockedPlayer(id: string): Player {
-//   const mockedPlayer = new Player(createNewMockedSocket(id), "bob");
-//   return mockedPlayer;
-// }
+export function createNewMockedPlayer(mockedSocket: SocketIO.Socket, pseudo?: string): Player | null {
+  return PlayersManager.getInstance().createPlayer(mockedSocket, pseudo)
+}
 
-// export function createNewMockedSocket(id: string): any {
-//   const mockedSocket = new SocketMock();
-//   mockedSocket.id = id;
-//   return mockedSocket;
-// }
+export function createNewMockedSocket(id: string): any {
+  const mockedSocket = new SocketMock();
+  mockedSocket.id = id;
+  return mockedSocket;
+}

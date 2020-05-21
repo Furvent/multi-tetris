@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "concurrently -k -n \"Typescript,Node\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon dist/app.js\"",
     "start": "tsc && node dist/index.js",
-    "test": "env NODE_ENV=test tsc && jest"
+    "test": "env NODE_ENV=test rimraf dist/tests/* && tsc && jest",
+    "cleanTests": "rimraf dist/tests/*"
   },
   "author": "Furvent",
   "license": "MIT",
@@ -25,6 +26,7 @@
     "@types/socket.io": "^2.1.4",
     "colors": "^1.4.0",
     "express": "^4.17.1",
+    "rimraf": "^3.0.2",
     "socket.io": "^2.3.0"
   }
 }

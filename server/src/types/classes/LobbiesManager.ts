@@ -49,7 +49,6 @@ export class LobbiesManager {
       this.checkIfPlayerIsInAnotherLobby(player);
       const newLobby = new Lobby(
         this.idUsedIncrementator++,
-        player.id,
         roomName
       );
       newLobby.addPlayer(player);
@@ -122,8 +121,37 @@ export class LobbiesManager {
     }
   }
 
-  getLobbies():Lobby[] {
-    return this.lobbies
+  /**
+   * Just to tests purpose
+   */
+  getLobbies():Lobby[] | string {
+    try {
+      if (process.env.NODE_ENV === "test") {
+        log.info("In LobbiesManager, getLobbies called")
+        return this.lobbies;
+      } else {
+        throw this.errorTryingGetAllLobbiesOutsideTestEnv();
+      }
+    } catch (error) {
+      log.error(error);
+      return "Can't get lobbies just like that you know"
+    }
+  }
+
+  /**
+   * Just to tests purpose
+   */
+  resetLobbies() {
+    try {
+      if (process.env.NODE_ENV === "test") {
+        log.info("In LobbiesManager, resetLobbies called")
+        this.lobbies = [];
+      } else {
+        throw this.errorTryingResetLobbiesOutsideTestEnv();
+      }
+    } catch (error) {
+      log.error(error);
+    }
   }
 
   private exportAllLobbies(): PayloadPublicLobby[] {
@@ -212,5 +240,13 @@ export class LobbiesManager {
     numberOfPlayers: number
   ): string {
     return `Can't delete lobby with id ${lobbyId}, still ${numberOfPlayers} player(s) inside`;
+  }
+
+  private errorTryingResetLobbiesOutsideTestEnv(): string {
+    return `WARNING: something try to reset lobbies outside test env`
+  }
+
+  private errorTryingGetAllLobbiesOutsideTestEnv(): string {
+    return `WARNING: something try to get all lobbies outside test env`
   }
 }

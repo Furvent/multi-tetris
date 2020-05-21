@@ -11,16 +11,14 @@ export class Lobby implements IRoom {
   private roomName: string;
   // socketIORoomName == socket.io special channel's name
   private socketIORoomName: string;
-  private inChargePlayerId: string;
 
-  constructor(id: number, creatorId: string, roomName: string) {
+  constructor(id: number, roomName) {
+    this.players = [];
     this.id = id;
     this.socketIORoomName = `room${this.id}`;
-    this.roomName = roomName;
-    this.players = [];
-    this.inChargePlayerId = creatorId;
+    this.roomName = roomName
     log.info(
-      `New lobby is created by user ${creatorId}, with id ${id}. SocketRoomName: ${this.socketIORoomName}, roomName: ${this.roomName}`
+      `New lobby is created with id ${id}. SocketIORoomName: ${this.socketIORoomName}, roomName: ${this.roomName}`
     );
   }
 
@@ -103,8 +101,15 @@ export class Lobby implements IRoom {
         `In lobby with id ${this.id}, player ${playerSocket.id} was added to lobby ${this.id}`
       );
     } else {
-      throw this.errorCantCreatePlayerWithPlayersManager(playerSocket.id)
+      throw this.errorCantCreatePlayerWithPlayersManager(playerSocket.id);
     }
+  }
+
+  private createRoomName(playerId: string): string {
+    const playerPseudo = PlayersManager.getInstance().getPlayerWithSocketId(
+      playerId
+    )?.pseudo;
+    return playerPseudo ? `${playerPseudo}'s room` : `room ${this.id}`;
   }
 
   private errorPlayerIsAlreadyInLobby(playerId): string {
