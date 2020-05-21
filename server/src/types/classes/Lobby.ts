@@ -5,6 +5,9 @@ import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby
 import { PlayersManager } from "./PlayersManager";
 import log from "../../private-module/PrivateLogger";
 
+/**
+ * NOTE : C'est dans cette classe que devrait être stocké le fait que les joueurs sont prêts, et non pas dans la classe Player.
+ */
 export class Lobby implements IRoom {
   players: Player[];
   private id: number;
@@ -70,7 +73,7 @@ export class Lobby implements IRoom {
   }
 
   getPlayerWithId(id: string): Player | undefined {
-    return this.players.find((player) => player.id == id);
+    return this.players.find((player) => player.id === id);
   }
 
   exportInPublicLobby(): PayloadPublicLobby {

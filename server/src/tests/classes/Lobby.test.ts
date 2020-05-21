@@ -1,7 +1,6 @@
 import { Lobby } from "../../types/classes/Lobby";
 import { createNewMockedSocket, createNewMockedPlayer } from "./Player.test";
 import { PlayersManager } from "../../types/classes/PlayersManager";
-import { LobbiesManager } from "../../types/classes/LobbiesManager";
 
 const id_1 = "12345";
 const pseudo_1 = "Bob";

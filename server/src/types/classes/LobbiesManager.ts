@@ -2,6 +2,7 @@ import { Lobby } from "./Lobby";
 import { emitUpdatePrivateLobby, emitPublicLobbies } from "../../socket/lobbies-manager";
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 import log from "../../private-module/PrivateLogger";
+import { PlayersManager } from "./PlayersManager";
 
 /**
  * Is singleton
@@ -181,9 +182,14 @@ export class LobbiesManager {
 
   private removePlayerFromLobby(
     playerLobby: Lobby,
-    player: SocketIO.Socket
+    playerSocket: SocketIO.Socket
   ): void {
-    playerLobby.removePlayer(player);
+    // TODO: implement try catch
+    const player = PlayersManager.getInstance().getPlayerWithSocketId(playerSocket.id);
+    if (player) {
+      player.isReadyInPrivateLobby = false;
+    }
+    playerLobby.removePlayer(playerSocket);
     if (playerLobby.isEmpty()) {
       this.deleteEmptyLobby(playerLobby);
     }
