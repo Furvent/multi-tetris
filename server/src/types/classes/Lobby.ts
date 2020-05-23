@@ -80,6 +80,8 @@ export class Lobby implements IRoom {
     return this.isFull() && this.areEveryPlayersReady();
   }
 
+  //createPartyFromLobby
+
   exportInPublicLobby(): PayloadPublicLobby {
     return {
       id: this.id,
