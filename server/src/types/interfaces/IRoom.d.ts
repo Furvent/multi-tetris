@@ -1,5 +1,4 @@
 import { Player } from "../classes/Player";
-import { Socket } from "dgram";
 
 export interface IRoom {
     players: Player[]

@@ -1,6 +1,7 @@
 import { Lobby } from "../../types/classes/Lobby";
 import { createNewMockedSocket, createNewMockedPlayer } from "./Player.test";
 import { PlayersManager } from "../../types/classes/PlayersManager";
+import { LobbiesManager } from "../../types/classes/LobbiesManager";
 
 const id_1 = "12345";
 const pseudo_1 = "Bob";
@@ -78,8 +79,69 @@ test("Export in private lobby", () => {
     players: [
       {
         pseudo: pseudo_1,
-        isReady: false
-      }
-    ]
+        isReady: false,
+      },
+    ],
   });
+});
+
+test("Lobby is full", () => {
+  mockedLobby.players = [];
+  PlayersManager.getInstance().resetPlayers();
+  for (let index = 0; index < 4; index++) {
+    mockedSocket = createNewMockedSocket(index.toString());
+    const mockedPlayer = PlayersManager.getInstance().createPlayer(
+      mockedSocket
+    );
+    if (mockedPlayer) mockedPlayer.isReadyInPrivateLobby = true;
+    mockedLobby.addPlayer(mockedSocket);
+  }
+  expect(mockedLobby.isFull()).toBe(true);
+});
+
+test("Lobby is full and ready", () => {
+  mockedLobby.players = [];
+  PlayersManager.getInstance().resetPlayers();
+  for (let index = 0; index < 4; index++) {
+    mockedSocket = createNewMockedSocket(index.toString());
+    const mockedPlayer = PlayersManager.getInstance().createPlayer(
+      mockedSocket
+    );
+    if (mockedPlayer) mockedPlayer.isReadyInPrivateLobby = true;
+    mockedLobby.addPlayer(mockedSocket);
+  }
+  expect(mockedLobby.isGameReadyToLaunch()).toBe(true);
+});
+
+test("Lobby is full but all not ready", () => {
+  mockedLobby.players = [];
+  PlayersManager.getInstance().resetPlayers();
+  for (let index = 0; index < 4; index++) {
+    mockedSocket = createNewMockedSocket(index.toString());
+    const mockedPlayer = PlayersManager.getInstance().createPlayer(
+      mockedSocket
+    );
+    if (mockedPlayer) {
+      if ((index === 1)) mockedPlayer.isReadyInPrivateLobby = false;
+      else mockedPlayer.isReadyInPrivateLobby = true;
+    }
+    mockedLobby.addPlayer(mockedSocket);
+  }
+  expect(mockedLobby.isGameReadyToLaunch()).toBe(false);
+});
+
+test("Lobby is not full but all ready", () => {
+  mockedLobby.players = [];
+  PlayersManager.getInstance().resetPlayers();
+  for (let index = 0; index < 3; index++) {
+    mockedSocket = createNewMockedSocket(index.toString());
+    const mockedPlayer = PlayersManager.getInstance().createPlayer(
+      mockedSocket
+    );
+    if (mockedPlayer) {
+      mockedPlayer.isReadyInPrivateLobby = true;
+    }
+    mockedLobby.addPlayer(mockedSocket);
+  }
+  expect(mockedLobby.isGameReadyToLaunch()).toBe(false);
 });

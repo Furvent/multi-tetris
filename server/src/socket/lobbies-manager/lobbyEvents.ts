@@ -7,7 +7,7 @@ import Server from "../../types/classes/server";
 import log from '../../private-module/PrivateLogger'
 
 export function lobbyEventsListener(socket: SocketIO.Socket) {
-  socket.on("lobby:createNewLobby", (roomName: string) => {
+  socket.on("lobby:createNewLobby", (roomName?: string) => {
     log.info(
       `Player with socket's id ${socket.id} want to create a new lobby with name: ${roomName}`
     );

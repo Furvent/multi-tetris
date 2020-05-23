@@ -22,7 +22,7 @@ export class PlayersManager {
       if (this.getPlayerWithSocketId(socket.id)) {
         throw this.errorSocketIsAlreadyReferenced(socket.id);
       } else {
-        const pseudo = playerName ? playerName : this.players.length + 1;
+        const pseudo = playerName ? playerName : `Anonymous player ${this.players.length + 1}`;
         const newPlayer = new Player(socket, pseudo);
         this.players.push(newPlayer);
         return newPlayer;

@@ -45,12 +45,12 @@ export class LobbiesManager {
     }
   }
 
-  playerCreateLobby(player: SocketIO.Socket, roomName: string): void {
+  playerCreateLobby(player: SocketIO.Socket, roomName?: string): void {
     try {
       this.checkIfPlayerIsInAnotherLobby(player);
       const newLobby = new Lobby(
         this.idUsedIncrementator++,
-        roomName
+        roomName ? roomName : this.createRoomName(player.id)
       );
       newLobby.addPlayer(player);
       this.lobbies.push(newLobby);
@@ -85,6 +85,7 @@ export class LobbiesManager {
       if (playerSearched == undefined) {
         throw this.errorPlayerIsNotInThisLobby(player.id, lobbyId);
       }
+
       playerSearched.isReadyInPrivateLobby = availability;
       emitUpdatePrivateLobby(
         lobby.exportInPrivateLobby(),
@@ -217,6 +218,13 @@ export class LobbiesManager {
         `Problem when trying to delete supposedly empty lobby with id ${lobbyToDelete.getId()}: ${error}`
       );
     }
+  }
+
+  private createRoomName(playerId: string): string {
+    const playerPseudo = PlayersManager.getInstance().getPlayerWithSocketId(
+      playerId
+    )?.pseudo;
+    return playerPseudo ? `${playerPseudo}'s room` : `room ${this.idUsedIncrementator}`;
   }
 
   private errorPlayerIsAlreadyInAnotherLobby(

@@ -15,11 +15,11 @@ export class Lobby implements IRoom {
   // socketIORoomName == socket.io special channel's name
   private socketIORoomName: string;
 
-  constructor(id: number, roomName) {
+  constructor(id: number, roomName: string) {
     this.players = [];
     this.id = id;
     this.socketIORoomName = `room${this.id}`;
-    this.roomName = roomName
+    this.roomName = roomName;
     log.info(
       `New lobby is created with id ${id}. SocketIORoomName: ${this.socketIORoomName}, roomName: ${this.roomName}`
     );
@@ -41,12 +41,12 @@ export class Lobby implements IRoom {
     return this.socketIORoomName;
   }
 
-  addPlayer(player: SocketIO.Socket): void {
+  addPlayer(socket: SocketIO.Socket): void {
     try {
-      if (this.getPlayerWithId(player.id) !== undefined)
-        throw this.errorPlayerIsAlreadyInLobby(player.id);
+      if (this.getPlayerWithId(socket.id) !== undefined)
+        throw this.errorPlayerIsAlreadyInLobby(socket.id);
       else {
-        this.addPlayerWithPlayersManager(player);
+        this.addPlayerWithPlayersManager(socket);
       }
     } catch (error) {
       log.error(
@@ -76,6 +76,10 @@ export class Lobby implements IRoom {
     return this.players.find((player) => player.id === id);
   }
 
+  isGameReadyToLaunch(): boolean {
+    return this.isFull() && this.areEveryPlayersReady();
+  }
+
   exportInPublicLobby(): PayloadPublicLobby {
     return {
       id: this.id,
@@ -101,18 +105,15 @@ export class Lobby implements IRoom {
       // Add player to the private lobby's room (room == socket.io special channel)
       playerSocket.join(this.socketIORoomName);
       log.info(
-        `In lobby with id ${this.id}, player ${playerSocket.id} was added to lobby ${this.id}`
+        `In lobby with id ${this.id}, player with id ${playerSocket.id} was added`
       );
     } else {
       throw this.errorCantCreatePlayerWithPlayersManager(playerSocket.id);
     }
   }
 
-  private createRoomName(playerId: string): string {
-    const playerPseudo = PlayersManager.getInstance().getPlayerWithSocketId(
-      playerId
-    )?.pseudo;
-    return playerPseudo ? `${playerPseudo}'s room` : `room ${this.id}`;
+  private areEveryPlayersReady() {
+    return this.players.every(player => player.isReadyInPrivateLobby)
   }
 
   private errorPlayerIsAlreadyInLobby(playerId): string {
