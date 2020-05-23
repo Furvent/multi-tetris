@@ -30,7 +30,6 @@ export class PartiesManager {
     try {
       const newParty = this.createParty(lobby);
       if (newParty) {
-        newParty.id = this.addIdToIParty();
         this.parties.push(newParty);
       }
     } catch (error) {

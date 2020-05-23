@@ -88,7 +88,7 @@ test("Export in private lobby", () => {
 test("Lobby is full", () => {
   mockedLobby.players = [];
   PlayersManager.getInstance().resetPlayers();
-  for (let index = 0; index < 4; index++) {
+  for (let index = 0; index < mockedLobby.MAX_PLAYER; index++) {
     mockedSocket = createNewMockedSocket(index.toString());
     const mockedPlayer = PlayersManager.getInstance().createPlayer(
       mockedSocket
@@ -102,7 +102,7 @@ test("Lobby is full", () => {
 test("Lobby is full and ready", () => {
   mockedLobby.players = [];
   PlayersManager.getInstance().resetPlayers();
-  for (let index = 0; index < 4; index++) {
+  for (let index = 0; index < mockedLobby.MAX_PLAYER; index++) {
     mockedSocket = createNewMockedSocket(index.toString());
     const mockedPlayer = PlayersManager.getInstance().createPlayer(
       mockedSocket
@@ -116,7 +116,7 @@ test("Lobby is full and ready", () => {
 test("Lobby is full but all not ready", () => {
   mockedLobby.players = [];
   PlayersManager.getInstance().resetPlayers();
-  for (let index = 0; index < 4; index++) {
+  for (let index = 0; index < mockedLobby.MAX_PLAYER; index++) {
     mockedSocket = createNewMockedSocket(index.toString());
     const mockedPlayer = PlayersManager.getInstance().createPlayer(
       mockedSocket
@@ -133,7 +133,7 @@ test("Lobby is full but all not ready", () => {
 test("Lobby is not full but all ready", () => {
   mockedLobby.players = [];
   PlayersManager.getInstance().resetPlayers();
-  for (let index = 0; index < 3; index++) {
+  for (let index = 0; index < mockedLobby.MAX_PLAYER - 1; index++) {
     mockedSocket = createNewMockedSocket(index.toString());
     const mockedPlayer = PlayersManager.getInstance().createPlayer(
       mockedSocket

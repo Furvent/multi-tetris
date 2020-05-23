@@ -9,6 +9,8 @@ import { ISocketIORoom } from "../interfaces/ISocketIORoom";
  * NOTE : C'est dans cette classe que devrait être stocké le fait que les joueurs sont prêts, et non pas dans la classe Player.
  */
 export class Lobby implements ISocketIORoom {
+  readonly MAX_PLAYER = 2
+
   players: Player[];
   private id: string;
   private roomName: string;
@@ -28,7 +30,7 @@ export class Lobby implements ISocketIORoom {
   }
 
   isFull(): boolean {
-    return this.players.length >= 4;
+    return this.players.length >= this.MAX_PLAYER;
   }
 
   isEmpty(): boolean {

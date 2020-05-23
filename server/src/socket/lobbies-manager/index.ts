@@ -1,6 +1,6 @@
 import { lobbyEventsListener } from "./lobbyEvents";
 
-export function loadLobbyEventsListener(socket: SocketIO.Socket) {
+export function loadLobbyEventsListener(socket: SocketIO.Socket): void {
   lobbyEventsListener(socket);
 }
 
