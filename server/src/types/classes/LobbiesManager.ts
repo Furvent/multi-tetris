@@ -26,7 +26,7 @@ export class LobbiesManager {
 
   // Launch party
 
-  playerJoinLobbyWithId(lobbyId: number, player: SocketIO.Socket): void {
+  playerJoinLobbyWithId(lobbyId: string, player: SocketIO.Socket): void {
     try {
       this.checkIfPlayerIsInAnotherLobby(player);
       const lobbyToJoin = this.getLobbyWithId(lobbyId);
@@ -50,7 +50,7 @@ export class LobbiesManager {
     try {
       this.checkIfPlayerIsInAnotherLobby(player);
       const newLobby = new Lobby(
-        this.idUsedIncrementator++,
+        (this.idUsedIncrementator++).toString(),
         roomName ? roomName : this.createRoomName(player.id)
       );
       newLobby.addPlayer(player);
@@ -73,7 +73,7 @@ export class LobbiesManager {
 
   playerChangeAvailabiltyStatusInPrivateLobby(
     player: SocketIO.Socket,
-    lobbyId: number,
+    lobbyId: string,
     availability: boolean = false
   ) {
     try {
@@ -166,7 +166,7 @@ export class LobbiesManager {
     return this.lobbies.map(lobby => lobby.exportInPublicLobby());
   }
 
-  private getLobbyWithId(id: number): Lobby | undefined {
+  private getLobbyWithId(id: string): Lobby | undefined {
     const lobbySearched = this.lobbies.find(lobby => lobby.getId() === id);
     return lobbySearched;
   }
@@ -235,18 +235,18 @@ export class LobbiesManager {
 
   private errorPlayerIsAlreadyInAnotherLobby(
     playerId: string,
-    lobbyId: number
+    lobbyId: string
   ): string {
     return `Player ${playerId} is already in lobby: ${lobbyId}`;
   }
 
-  private errorNoLobbyWithThatId(id: number): string {
+  private errorNoLobbyWithThatId(id: string): string {
     return `No lobby with id: ${id}`;
   }
 
   private errorPlayerIsNotInThisLobby(
     playerId: string,
-    lobbyId: number
+    lobbyId: string
   ): string {
     return `Player ${playerId} is not in lobby: ${lobbyId}`;
   }
@@ -256,7 +256,7 @@ export class LobbiesManager {
   }
 
   private errorCantDeleteLobbyWithPlayerInside(
-    lobbyId: number,
+    lobbyId: string,
     numberOfPlayers: number
   ): string {
     return `Can't delete lobby with id ${lobbyId}, still ${numberOfPlayers} player(s) inside`;

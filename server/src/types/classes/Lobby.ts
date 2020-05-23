@@ -1,23 +1,23 @@
-import { IRoom } from "../interfaces/IRoom";
 import { Player } from "./Player";
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby";
 import { PlayersManager } from "./PlayersManager";
 import log from "../../private-module/PrivateLogger";
+import { ISocketIORoom } from "../interfaces/ISocketIORoom";
 
 /**
  * NOTE : C'est dans cette classe que devrait être stocké le fait que les joueurs sont prêts, et non pas dans la classe Player.
  */
-export class Lobby implements IRoom {
+export class Lobby implements ISocketIORoom {
   players: Player[];
-  private id: number;
+  private id: string;
   private roomName: string;
   // socketIORoomName == socket.io special channel's name
   private socketIORoomName: string;
   // TODO: Meilleur implémentation (attribuer à la création le type de lobby)
   lobbyType = "tetris";
 
-  constructor(id: number, roomName: string) {
+  constructor(id: string, roomName: string) {
     this.players = [];
     this.id = id;
     this.socketIORoomName = `room${this.id}`;
@@ -35,7 +35,7 @@ export class Lobby implements IRoom {
     return this.players.length <= 0;
   }
 
-  getId(): number {
+  getId(): string {
     return this.id;
   }
 

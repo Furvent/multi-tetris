@@ -1,5 +1,5 @@
 export interface PayloadPublicLobby {
-    id: number
+    id: string
     isFull: boolean
     name: string
     numberOfPlayers: number
