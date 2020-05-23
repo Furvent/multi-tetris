@@ -1,5 +1,11 @@
 import { IParty } from "../../interfaces/IParty";
+import { Lobby } from "../Lobby";
+import log from "../../../private-module/PrivateLogger";
+import { TetrisParty } from "../../tetris/classes/TetrisParty";
 
+/**
+ * TODO: utiliser un module de création d'id pour les parties. Peut être même
+ */
 export class PartiesManager {
   const;
 
@@ -20,9 +26,16 @@ export class PartiesManager {
     return PartiesManager.instance;
   }
 
-  public addParty(party: IParty): void {
-    party.id = this.addIdToIParty();
-    this.parties.push(party);
+  public addParty(lobby: Lobby): void {
+    try {
+      const newParty = this.createParty(lobby);
+      if (newParty) {
+        newParty.id = this.addIdToIParty();
+        this.parties.push(newParty);
+      }
+    } catch (error) {
+      log.error(`In PartiesManager, problem when adding a party: ${error}`);
+    }
   }
 
   /**
@@ -35,6 +48,19 @@ export class PartiesManager {
         party.sendDataToClient();
       });
     }, 100);
+  }
+
+  private createParty(lobby: Lobby): IParty | undefined {
+    let newParty: IParty;
+    switch (lobby.lobbyType) {
+      case "tetris":
+        newParty = new TetrisParty(lobby, this.addIdToIParty());
+        return newParty;
+      default:
+        throw `Lobby with id ${lobby.getId()} doesn't have a valid lobby type: ${
+          lobby.lobbyType
+        }`;
+    }
   }
 
   private addIdToIParty(): string {

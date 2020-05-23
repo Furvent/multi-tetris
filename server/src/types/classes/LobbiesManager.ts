@@ -3,6 +3,7 @@ import { emitUpdatePrivateLobby, emitPublicLobbies } from "../../socket/lobbies-
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 import log from "../../private-module/PrivateLogger";
 import { PlayersManager } from "./PlayersManager";
+import { PartiesManager } from "./party/PartiesManager";
 
 /**
  * Is singleton
@@ -91,6 +92,11 @@ export class LobbiesManager {
         lobby.exportInPrivateLobby(),
         lobby.getSocketIORoom()
       );
+
+      // Launch game
+      if (lobby.isGameReadyToLaunch()) {
+        PartiesManager.getInstance().addParty(lobby);
+      }
     } catch (error) {
       log.error(
         `In method playerChangeAvailabiltyStatusInPrivateLobby(), call by player ${player.id} problem: ${error}`

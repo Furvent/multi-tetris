@@ -14,6 +14,8 @@ export class Lobby implements IRoom {
   private roomName: string;
   // socketIORoomName == socket.io special channel's name
   private socketIORoomName: string;
+  // TODO: Meilleur implémentation (attribuer à la création le type de lobby)
+  lobbyType = "tetris";
 
   constructor(id: number, roomName: string) {
     this.players = [];
@@ -80,7 +82,9 @@ export class Lobby implements IRoom {
     return this.isFull() && this.areEveryPlayersReady();
   }
 
-  //createPartyFromLobby
+  createPartyFromLobby() {
+
+  }
 
   exportInPublicLobby(): PayloadPublicLobby {
     return {
