@@ -7,7 +7,7 @@ export abstract class IParty {
   protected abstract gameState: string;
 
   abstract updateLoop(): void;
-  abstract sendDataToClient(): void;
+  abstract sendDataToClients(): void;
   abstract getId(): string;
   protected abstract connectPlayersSocketsToSocketIORoomAndLoadEventsListener(): void;
 }

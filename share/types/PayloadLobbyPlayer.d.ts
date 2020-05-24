@@ -1,4 +1,4 @@
 export interface PayloadLobbyPlayer {
-    pseudo: string
-    isReady: boolean
+    pseudo: string;
+    isReady: boolean;
 }

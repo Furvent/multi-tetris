@@ -4,4 +4,4 @@ export function loadTetrisEventsListener(socket: SocketIO.Socket): void {
   tetrisEventsListener(socket);
 }
 
-export { emitAskClientToLoadGame } from "./tetrisEvents"
+export { emitAskClientToLoadGame, emitTetrisGameData } from "./tetrisEvents"

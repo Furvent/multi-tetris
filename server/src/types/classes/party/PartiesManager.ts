@@ -44,9 +44,9 @@ export class PartiesManager {
     setInterval(() => {
       this.parties.forEach((party) => {
         party.updateLoop();
-        party.sendDataToClient();
+        party.sendDataToClients();
       });
-    }, 100);
+    }, 1000); // For debug, each second. TODO: put 100 back
   }
 
   private createParty(lobby: Lobby): IParty | undefined {
