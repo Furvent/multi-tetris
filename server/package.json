@@ -6,18 +6,18 @@
   "scripts": {
     "dev": "concurrently -k -n \"Typescript,Node\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon dist/app.js\"",
     "start": "tsc && node dist/index.js",
-    "test": "env NODE_ENV=test rimraf dist/tests/* && tsc && jest",
-    "cleanTests": "rimraf dist/tests/*"
+    "test": "jest"
   },
   "author": "Furvent",
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^25.1.4",
+    "@types/jest": "^25.2.3",
     "@types/node": "^13.5.0",
     "concurrently": "^5.0.2",
-    "jest": "^25.1.0",
+    "jest": "^26.0.1",
     "nodemon": "^2.0.2",
     "socket.io-mock": "^1.2.4",
+    "ts-jest": "^26.0.0",
     "typescript": "^3.7.5"
   },
   "dependencies": {
