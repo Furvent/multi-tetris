@@ -2,6 +2,7 @@ import { IParty } from "../../interfaces/IParty";
 import { Lobby } from "../Lobby";
 import log from "../../../private-module/PrivateLogger";
 import { TetrisParty } from "../../tetris/classes/TetrisParty";
+import { IngamePlayer } from "./IngamePlayer";
 
 /**
  * TODO: utiliser un module de création d'id pour les parties. Peut être même
@@ -37,6 +38,35 @@ export class PartiesManager {
     }
   }
 
+  public playerLoadedTheGame(playerSocket: SocketIO.Socket): void {
+    try {
+      // First we search if player exist, and get his IngamePlayer's ref
+      const ingamePlayer = this.getIngamePlayerWithId(playerSocket.id);
+      if (ingamePlayer === null) {
+        throw this.errorNoPlayerFoundWithThisSocketId(playerSocket.id);
+      }
+      // We verify ingamePlayer hasn't already loaded the game
+      if (ingamePlayer.hasLoadedGame) {
+        throw `Player with socket's id ${playerSocket.id} has already loaded the game, there must be a problem somewhere`;
+      }
+      // Then, we change the property hasLoadedGame
+      ingamePlayer.hasLoadedGame = true;
+    } catch (error) {
+      log.error(`Problem in method playerLoadedTheGame(): ${error}`);
+    }
+  }
+
+  private getIngamePlayerWithId(playerSocketId: string): IngamePlayer | null {
+    let playerSearched: IngamePlayer | null = null;
+    for (let party of this.parties) {
+      playerSearched = party.getPlayerWithId(playerSocketId);
+      if (playerSearched) {
+        break;
+      }
+    }
+    return playerSearched;
+  }
+
   /**
    * Call update loop in parties 10 times by second
    */
@@ -64,5 +94,9 @@ export class PartiesManager {
 
   private addIdToIParty(): string {
     return (this.idUsedIncrementator++).toString();
+  }
+
+  private errorNoPlayerFoundWithThisSocketId(playerSocketId: string) {
+    return `No player with socket's id ${playerSocketId} found`;
   }
 }

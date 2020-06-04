@@ -3,9 +3,14 @@ import Server from "../../types/classes/server";
 import { logEmit } from "../../utils/index";
 import log from '../../private-module/PrivateLogger'
 import { TetrisGameData } from "../../../../share/types/tetris/tetrisGameData";
+import { PartiesManager } from "../../types/classes/party/PartiesManager";
 
 export function tetrisEventsListener(socket: SocketIO.Socket) {
   // socket.on()
+  socket.on("tetris:clientLoadedGame", () => {
+    log.info(`Player with socket's id ${socket.id} informs that he has loaded the game`)
+    PartiesManager.getInstance().playerLoadedTheGame(socket);
+  })
 }
 
 export function emitAskClientToLoadGame(socketIORoomName: string): void {

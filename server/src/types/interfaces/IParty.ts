@@ -9,5 +9,6 @@ export abstract class IParty {
   abstract updateLoop(): void;
   abstract sendDataToClients(): void;
   abstract getId(): string;
+  abstract getPlayerWithId(playerSocketId: string): IngamePlayer | null;
   protected abstract connectPlayersSocketsToSocketIORoomAndLoadEventsListener(): void;
 }

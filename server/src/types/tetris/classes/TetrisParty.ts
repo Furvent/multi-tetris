@@ -6,6 +6,7 @@ import * as events from "../../../socket/tetris/index";
 import log from "../../../private-module/PrivateLogger";
 import { TetrisPublicPlayerGameData } from "../../../../../share/types/tetris/tetrisPublicPlayerGameData";
 import { TetrisGameData } from "../../../../../share/types/tetris/tetrisGameData";
+import { IngamePlayer } from "../../classes/party/IngamePlayer";
 
 export class TetrisParty extends IParty implements ISocketIORoom {
   id: string;
@@ -54,20 +55,38 @@ export class TetrisParty extends IParty implements ISocketIORoom {
     return this.socketIORoomName;
   }
 
+  getPlayerWithId(playerSearchedSocketId: string): IngamePlayer | null {
+    const playerToFind = this.players.find(
+      (player) => player.socket.id === playerSearchedSocketId
+    );
+    return playerToFind ? playerToFind : null;
+  }
+
   private initiateGame() {
     events.emitAskClientToLoadGame(this.socketIORoomName);
     throw new Error("Method not implemented.");
   }
 
+  /**
+   * Create an array with all public data from each player (positions on board)
+   */
   private createPlayersGameDataToEmit(): TetrisPublicPlayerGameData[] {
-    return this.players.map(player => player.exportPublicGameData())
+    return this.players.map((player) => player.exportPublicGameData());
   }
 
-  private sendDataToSocket(player: TetrisPlayer, playersGameData: TetrisPublicPlayerGameData[]) {
+  /**
+   * For each player send his private data and others players public data
+   */
+  private sendDataToSocket(
+    player: TetrisPlayer,
+    playersGameData: TetrisPublicPlayerGameData[]
+  ): void {
     const payload: TetrisGameData = {
-      private: player.exportPrivateGameData(),
-      otherPlayers: playersGameData.filter(otherPlayer => otherPlayer.gameId !== player.gameId)
-    }
-    events.emitTetrisGameData(player.socket, payload)
+      privateData: player.exportPrivateGameData(),
+      otherPlayersData: playersGameData.filter(
+        (otherPlayer) => otherPlayer.gameId !== player.gameId
+      ),
+    };
+    events.emitTetrisGameData(player.socket, payload);
   }
 }
