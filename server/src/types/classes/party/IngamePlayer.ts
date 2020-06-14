@@ -3,7 +3,7 @@ import { Player } from "../Player";
 export abstract class IngamePlayer {
   hasLoadedGame: boolean;
   isDisconnected: boolean;
-  private _gameId: number;
+  private _gameId: number; //ID in the party itself (like player 1, 2 etc)
   private _pseudo: string;
   private _socket: SocketIO.Socket;
 

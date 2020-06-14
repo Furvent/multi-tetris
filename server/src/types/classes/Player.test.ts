@@ -1,6 +1,6 @@
-import { Player } from "../../types/classes/Player";
+import { Player } from "./Player";
 import SocketMock from "socket.io-mock";
-import { PlayersManager } from "../../types/classes/PlayersManager";
+import { PlayersManager } from "./PlayersManager";
 
 const id = "12345"
 const pseudo = "bob"

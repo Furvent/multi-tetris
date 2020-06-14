@@ -5,7 +5,7 @@ import { TetrisParty } from "../../tetris/classes/TetrisParty";
 import { IngamePlayer } from "./IngamePlayer";
 
 /**
- * TODO: utiliser un module de création d'id pour les parties. Peut être même
+ * TODO: utiliser un module de création d'id pour les parties.
  */
 export class PartiesManager {
   const;
@@ -83,7 +83,7 @@ export class PartiesManager {
     let newParty: IParty;
     switch (lobby.lobbyType) {
       case "tetris":
-        newParty = new TetrisParty(lobby, this.addIdToIParty());
+        newParty = new TetrisParty(lobby, this.getIdToParty());
         return newParty;
       default:
         throw `Lobby with id ${lobby.getId()} doesn't have a valid lobby type: ${
@@ -92,7 +92,7 @@ export class PartiesManager {
     }
   }
 
-  private addIdToIParty(): string {
+  private getIdToParty(): string {
     return (this.idUsedIncrementator++).toString();
   }
 
