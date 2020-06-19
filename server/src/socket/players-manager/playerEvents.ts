@@ -1,4 +1,4 @@
-import { PlayersManager } from "../../types/classes/PlayersManager";
+import { PlayersManager } from "../../classes/classes/PlayersManager";
 // import { logEmit } from "../../utils/index";
 // import Server from "../../types/classes/server";
 import log from '../../private-module/PrivateLogger'

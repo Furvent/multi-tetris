@@ -1,9 +1,9 @@
-import { LobbiesManager } from "../../types/classes/LobbiesManager";
+import { LobbiesManager } from "../../classes/classes/LobbiesManager";
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby";
 import { PayloadPlayerAvailability } from "../../../../share/types/PayloadPlayerAvailability";
 import { logEmit } from "../../utils/index";
-import Server from "../../types/classes/server";
+import Server from "../../classes/classes/server";
 import log from '../../private-module/PrivateLogger'
 
 export function lobbyEventsListener(socket: SocketIO.Socket) {
