@@ -132,7 +132,7 @@ export class LobbiesManager {
   /**
    * Just to tests purpose
    */
-  getLobbies():Lobby[] | string {
+  getLobbies():Lobby[] {
     try {
       if (process.env.NODE_ENV === "test") {
         log.info("In LobbiesManager, getLobbies called")
@@ -142,7 +142,7 @@ export class LobbiesManager {
       }
     } catch (error) {
       log.error(error);
-      return "Can't get lobbies just like that you know"
+      return []
     }
   }
 

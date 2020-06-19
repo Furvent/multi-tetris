@@ -7,6 +7,7 @@ import log from "../../../private-module/PrivateLogger";
 import { TetrisPublicPlayerGameData } from "../../../../../share/types/tetris/tetrisPublicPlayerGameData";
 import { TetrisGameData } from "../../../../../share/types/tetris/tetrisGameData";
 import { IngamePlayer } from "../../classes/party/IngamePlayer";
+import { TetrisGameState } from "../enums/tetrisGameState";
 
 export class TetrisParty extends IParty implements ISocketIORoom {
   id: string;
@@ -26,21 +27,21 @@ export class TetrisParty extends IParty implements ISocketIORoom {
     this.initiateGame();
   }
 
-  connectPlayersSocketsToSocketIORoomAndLoadEventsListener() {
+  connectPlayersSocketsToSocketIORoomAndLoadEventsListener(): void {
     this.players.forEach((player) => {
       player.socket.join(this.socketIORoomName);
       events.loadTetrisEventsListener(player.socket);
     });
   }
 
-  updateLoop() {
+  updateLoop(): void {
     log.debug(`Update loop called in party with id ${this.id}`);
   }
 
   /**
    * For each player, emit private and public data game
    */
-  sendDataToClients() {
+  sendDataToClients(): void {
     const playersGameData = this.createPlayersGameDataToEmit();
     this.players.forEach((player) => {
       this.sendDataToSocket(player, playersGameData);
@@ -63,8 +64,11 @@ export class TetrisParty extends IParty implements ISocketIORoom {
   }
 
   private initiateGame() {
-    events.emitAskClientToLoadGame(this.socketIORoomName);
-    throw new Error("Method not implemented.");
+    try {
+      events.emitAskClientToLoadGame(this.socketIORoomName);
+    } catch (error) {
+      log.error(error);
+    }
   }
 
   /**

@@ -1,9 +1,7 @@
-import {
-  createNewMockedSocket,
-  createNewMockedPlayer,
-} from "../../classes/Player.test";
 import { TetrisPlayer } from "./TetrisPlayer";
 import { PlayersManager } from "../../classes/PlayersManager";
+import SocketMock from "socket.io-mock";
+import { Player } from "../../classes/Player";
 
 const id = "12345";
 const pseudo = "Bob";
@@ -36,7 +34,7 @@ test("Export private game data", () => {
   })
 })
 
-export function createNewTetrisPlayer(
+function createNewTetrisPlayer(
   id: string,
   pseudo: string,
   gameId: number
@@ -48,4 +46,14 @@ export function createNewTetrisPlayer(
     mockedTetrisPlayer = new TetrisPlayer(mockedLobbyPlayer, gameId);
   }
   return mockedTetrisPlayer
+}
+
+function createNewMockedPlayer(mockedSocket: SocketIO.Socket, pseudo?: string): Player | null {
+  return PlayersManager.getInstance().createPlayer(mockedSocket, pseudo)
+}
+
+function createNewMockedSocket(id: string): any {
+  const mockedSocket = new SocketMock();
+  mockedSocket.id = id;
+  return mockedSocket;
 }

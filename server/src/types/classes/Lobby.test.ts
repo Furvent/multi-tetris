@@ -1,7 +1,7 @@
 import { Lobby } from "./Lobby";
-import { createNewMockedSocket, createNewMockedPlayer } from "./Player.test";
+import SocketMock from "socket.io-mock";
 import { PlayersManager } from "./PlayersManager";
-import { LobbiesManager } from "./LobbiesManager";
+import { Player } from "./Player";
 
 const id_1 = "12345";
 const pseudo_1 = "Bob";
@@ -145,3 +145,13 @@ test("Lobby is not full but all ready", () => {
   }
   expect(mockedLobby.isGameReadyToLaunch()).toBe(false);
 });
+
+function createNewMockedPlayer(mockedSocket: SocketIO.Socket, pseudo?: string): Player | null {
+  return PlayersManager.getInstance().createPlayer(mockedSocket, pseudo)
+}
+
+function createNewMockedSocket(id: string): any {
+  const mockedSocket = new SocketMock();
+  mockedSocket.id = id;
+  return mockedSocket;
+}
