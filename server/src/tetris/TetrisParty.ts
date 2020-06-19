@@ -18,7 +18,7 @@ export class TetrisParty extends IParty implements ISocketIORoom {
   constructor(lobby: Lobby, id: string) {
     super();
     this.id = id;
-    this.players = lobby.players.map(
+    this.players = lobby.lobbyUsers.map(
       (player, index) => new TetrisPlayer(player, index)
     );
     this.socketIORoomName = `party${this.id}`;

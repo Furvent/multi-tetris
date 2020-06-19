@@ -1,10 +1,10 @@
 import { IngamePlayer } from "../party/IngamePlayer";
-import { Player } from "../lobby/Player";
+import { LobbyUser } from "../lobby/LobbyUser";
 import { TetrisPrivatePlayerGameData } from "../../../share/types/tetris/tetrisPrivatePlayerGameData"
 import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPublicPlayerGameData"
 
 export class TetrisPlayer extends IngamePlayer {
-  constructor(playerFromLobby: Player, gameId: number) {
+  constructor(playerFromLobby: LobbyUser, gameId: number) {
     super(playerFromLobby, gameId)
   }
 

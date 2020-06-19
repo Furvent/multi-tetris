@@ -1,17 +1,17 @@
-import { Player } from "./Player";
+import { LobbyUser } from "./LobbyUser";
 import { PayloadPublicLobby } from "../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../share/types/PayloadPrivateLobby";
-import { PlayersManager } from "./PlayersManager";
+import { LobbyUsersManager } from "./LobbyUsersManager";
 import log from "../private-module/PrivateLogger";
 import { ISocketIORoom } from "../interfaces/ISocketIORoom";
 
 /**
- * NOTE : C'est dans cette classe que devrait être stocké le fait que les joueurs sont prêts, et non pas dans la classe Player.
+ * NOTE : C'est dans cette classe que devrait être stocké le fait que les utilisateurs sont prêts, et non pas dans la classe LobbyUser.
  */
 export class Lobby implements ISocketIORoom {
-  readonly MAX_PLAYER = 2
+  readonly MAX_USER = 2
 
-  players: Player[];
+  lobbyUsers: LobbyUser[];
   private id: string;
   private roomName: string;
   // socketIORoomName == socket.io special channel's name
@@ -20,7 +20,7 @@ export class Lobby implements ISocketIORoom {
   lobbyType = "tetris";
 
   constructor(id: string, roomName: string) {
-    this.players = [];
+    this.lobbyUsers = [];
     this.id = id;
     this.socketIORoomName = `room${this.id}`;
     this.roomName = roomName;
@@ -30,11 +30,11 @@ export class Lobby implements ISocketIORoom {
   }
 
   isFull(): boolean {
-    return this.players.length >= this.MAX_PLAYER;
+    return this.lobbyUsers.length >= this.MAX_USER;
   }
 
   isEmpty(): boolean {
-    return this.players.length <= 0;
+    return this.lobbyUsers.length <= 0;
   }
 
   getId(): string {
@@ -45,43 +45,43 @@ export class Lobby implements ISocketIORoom {
     return this.socketIORoomName;
   }
 
-  addPlayer(socket: SocketIO.Socket): void {
+  addLobbyUser(socket: SocketIO.Socket): void {
     try {
-      if (this.getPlayerWithId(socket.id) !== undefined)
-        throw this.errorPlayerIsAlreadyInLobby(socket.id);
+      if (this.getLobbyUserWithId(socket.id) !== undefined)
+        throw this.errorLobbyUserIsAlreadyInLobby(socket.id);
       else {
-        this.addPlayerWithPlayersManager(socket);
+        this.addLobbyUserWithLobbyUsersManager(socket);
       }
     } catch (error) {
       log.error(
-        `In lobby with id ${this.id}, problem when trying to create a new player: ${error}`
+        `In lobby with id ${this.id}, problem when trying to create a new lobbyUser: ${error}`
       );
     }
   }
 
-  removePlayer(playerToRemove: SocketIO.Socket): void {
+  removeLobbyUser(lobbyUserToRemove: SocketIO.Socket): void {
     try {
-      const playerIndex = this.players.findIndex(
-        (player) => player.id === playerToRemove.id
+      const lobbyUserIndex = this.lobbyUsers.findIndex(
+        (lobbyUser) => lobbyUser.id === lobbyUserToRemove.id
       );
-      if (playerIndex === -1) {
-        throw this.errorThisPlayerIsNotInsideLobby(playerToRemove.id);
+      if (lobbyUserIndex === -1) {
+        throw this.errorThisLobbyUserIsNotInsideLobby(lobbyUserToRemove.id);
       }
-      this.players.splice(playerIndex, 1);
-      playerToRemove.leave(this.socketIORoomName);
+      this.lobbyUsers.splice(lobbyUserIndex, 1);
+      lobbyUserToRemove.leave(this.socketIORoomName);
     } catch (error) {
       log.error(
-        `In lobby with id ${this.id}, problem when trying to delete a player: ${error}`
+        `In lobby with id ${this.id}, problem when trying to delete a lobby user: ${error}`
       );
     }
   }
 
-  getPlayerWithId(id: string): Player | undefined {
-    return this.players.find((player) => player.id === id);
+  getLobbyUserWithId(id: string): LobbyUser | undefined {
+    return this.lobbyUsers.find((lobbyUser) => lobbyUser.id === id);
   }
 
   isGameReadyToLaunch(): boolean {
-    return this.isFull() && this.areEveryPlayersReady();
+    return this.isFull() && this.areEveryLobbyUsersReady();
   }
 
   createPartyFromLobby() {
@@ -93,46 +93,46 @@ export class Lobby implements ISocketIORoom {
       id: this.id,
       isFull: this.isFull(),
       name: this.roomName,
-      numberOfPlayers: this.players.length,
+      numberOfLobbyUsers: this.lobbyUsers.length,
     };
   }
 
   exportInPrivateLobby(): PayloadPrivateLobby {
     return {
       ...this.exportInPublicLobby(),
-      players: this.players.map((player) => player.exportToLobbyPlayer()),
+      lobbyUsers: this.lobbyUsers.map((lobbyUser) => lobbyUser.exportDataToLobby()),
     };
   }
 
-  private addPlayerWithPlayersManager(playerSocket: SocketIO.Socket): void {
-    const newPlayer = PlayersManager.getInstance().getPlayerWithSocketId(
-      playerSocket.id
+  private addLobbyUserWithLobbyUsersManager(lobbyUserSocket: SocketIO.Socket): void {
+    const newLobbyUser = LobbyUsersManager.getInstance().getLobbyUserWithSocketId(
+      lobbyUserSocket.id
     );
-    if (newPlayer !== undefined) {
-      this.players.push(newPlayer);
-      // Add player to the private lobby's room (room == socket.io special channel)
-      playerSocket.join(this.socketIORoomName);
+    if (newLobbyUser !== undefined) {
+      this.lobbyUsers.push(newLobbyUser);
+      // Add lobbyUser to the private lobby's room (room == socket.io special channel)
+      lobbyUserSocket.join(this.socketIORoomName);
       log.info(
-        `In lobby with id ${this.id}, player with id ${playerSocket.id} was added`
+        `In lobby with id ${this.id}, lobbyUser with id ${lobbyUserSocket.id} was added`
       );
     } else {
-      throw this.errorCantCreatePlayerWithPlayersManager(playerSocket.id);
+      throw this.errorCantCreateLobbyUserWithLobbyUsersManager(lobbyUserSocket.id);
     }
   }
 
-  private areEveryPlayersReady() {
-    return this.players.every(player => player.isReadyInPrivateLobby)
+  private areEveryLobbyUsersReady() {
+    return this.lobbyUsers.every(lobbyUser => lobbyUser.isReadyInPrivateLobby)
   }
 
-  private errorPlayerIsAlreadyInLobby(playerId): string {
-    return `Player with id ${playerId} is already in loby ${this.id}`;
+  private errorLobbyUserIsAlreadyInLobby(lobbyUserId): string {
+    return `LobbyUser with id ${lobbyUserId} is already in loby ${this.id}`;
   }
 
-  private errorThisPlayerIsNotInsideLobby(playerId: string): string {
-    return `Player ${playerId} is not inside`;
+  private errorThisLobbyUserIsNotInsideLobby(lobbyUserId: string): string {
+    return `LobbyUser ${lobbyUserId} is not inside`;
   }
 
-  private errorCantCreatePlayerWithPlayersManager(socketId: string): string {
-    return `Can't create player with socket's id ${socketId} with PlayersManager`;
+  private errorCantCreateLobbyUserWithLobbyUsersManager(socketId: string): string {
+    return `Can't create lobbyUser with socket's id ${socketId} with LobbyUsersManager`;
   }
 }

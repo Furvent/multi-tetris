@@ -1,10 +1,10 @@
 import { logEmit } from "@/utils";
 
-export function emitCreateNewPlayer(
+export function emitCreateNewLobbyUser(
   socket: SocketIOClient.Socket,
   pseudo: string
 ): void {
-  const eventName = "player:createNewPlayer";
+  const eventName = "lobbyUser:createNewLobbyUser";
   socket.emit(eventName, pseudo);
   logEmit(eventName, pseudo);
 }

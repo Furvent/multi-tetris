@@ -34,9 +34,9 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { Prop } from "vue-property-decorator";
-import { PayloadLobbyPlayer } from "../../../../../../share/types/PayloadLobbyPlayer";
+import { PayloadLobbyUser } from "../../../../../../share/types/PayloadLobbyUser";
 import {
-  emitChangePlayerAvailabilityInPrivateLobby,
+  emitChangeLobbyUserAvailabilityInPrivateLobby,
   emitLeavePrivateLobby
 } from "../../socket/lobbyEvents";
 
@@ -66,20 +66,20 @@ export default class extends Vue {
     return this.$store.getters.getPrivateLobby.id;
   }
 
-  getPlayerAvailabilityCSSClass(player: PayloadLobbyPlayer) {
+  getPlayerAvailabilityCSSClass(player: PayloadLobbyUser) {
     return {
       red: !player.isReady,
       green: player.isReady
     };
   }
 
-  getPlayerAvailability(player: PayloadLobbyPlayer) {
+  getPlayerAvailability(player: PayloadLobbyUser) {
     return player.isReady ? "ready" : "not ready";
   }
 
   changeAvailabilityStatus() {
     this.isReady = !this.isReady;
-    emitChangePlayerAvailabilityInPrivateLobby(this.getPlayerSocket(), {
+    emitChangeLobbyUserAvailabilityInPrivateLobby(this.getPlayerSocket(), {
       availability: this.isReady,
       lobbyId: this.getPrivateLobbyId()
     });

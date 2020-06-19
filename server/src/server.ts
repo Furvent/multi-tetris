@@ -7,10 +7,10 @@ import Express from "express";
 
 import loadServerEvents from "./socket/server/index";
 import { loadLobbyEventsListener } from "./socket/lobbies-manager";
-import { loadPlayerEventsListener } from "./socket/players-manager";
+import { loadLobbyUserEventsListener } from "./socket/lobbyUsers-manager";
 import { LobbiesManager } from "./lobby/LobbiesManager";
 import log from "./private-module/PrivateLogger";
-import { PlayersManager } from "./lobby/PlayersManager";
+import { LobbyUsersManager } from "./lobby/LobbyUsersManager";
 
 // TODO: Create Party Manager
 export default class Server {
@@ -34,7 +34,7 @@ export default class Server {
       log.info(`Connected client with id ${socket.id}`);
       loadServerEvents(socket);
       loadLobbyEventsListener(socket);
-      loadPlayerEventsListener(socket);
+      loadLobbyUserEventsListener(socket);
     });
   }
 
@@ -55,6 +55,6 @@ export default class Server {
   // Managers = controllers
   private initManagers() {
     LobbiesManager.getInstance();
-    PlayersManager.getInstance();
+    LobbyUsersManager.getInstance();
   }
 }

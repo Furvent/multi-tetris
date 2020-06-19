@@ -1,6 +1,6 @@
 import { PayloadPublicLobby } from "../../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../../share/types/PayloadPrivateLobby";
-import { PayloadPlayerAvailability } from "../../../../../share/types/PayloadPlayerAvailability";
+import { PayloadLobbyUserAvailability } from "../../../../../share/types/PayloadLobbyUserAvailability";
 import { logEmit, logListener } from "@/utils";
 import { Store } from "vuex";
 import { State } from "../tetris/store/lobby-tetris-store";
@@ -46,11 +46,11 @@ export function emitGetLobbies(socket: SocketIOClient.Socket): void {
   logEmit(eventName);
 }
 
-export function emitChangePlayerAvailabilityInPrivateLobby(
+export function emitChangeLobbyUserAvailabilityInPrivateLobby(
   socket: SocketIOClient.Socket,
-  payload: PayloadPlayerAvailability
+  payload: PayloadLobbyUserAvailability
 ): void {
-  const eventName = "lobby:changePlayerAvailability";
+  const eventName = "lobby:changeLobbyUserAvailability";
   socket.emit(eventName, payload);
   logEmit(eventName, payload);
 }
@@ -65,7 +65,7 @@ export function emitJoinLobby(
 }
 
 export function emitLeavePrivateLobby(socket: SocketIOClient.Socket) {
-  const eventName = "lobby:playerLeavePrivateLobby";
+  const eventName = "lobby:userLeavePrivateLobby";
   socket.emit(eventName);
   logEmit(eventName);
 }

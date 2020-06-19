@@ -1,13 +1,13 @@
 import { TetrisPlayer } from "./TetrisPlayer";
-import { PlayersManager } from "../lobby/PlayersManager";
+import { LobbyUsersManager } from "../lobby/LobbyUsersManager";
 import SocketMock from "socket.io-mock";
-import { Player } from "../lobby/Player";
+import { LobbyUser } from "../lobby/LobbyUser";
 
 const id = "12345";
 const pseudo = "Bob";
 
 test("Create new Tetris player", () => {
-  PlayersManager.getInstance().resetPlayers();
+  LobbyUsersManager.getInstance().resetLobbyUsers();
   const mockedSocket = createNewMockedSocket(id);
   const mockedLobbyPlayer = createNewMockedPlayer(mockedSocket, pseudo);
   let mockedTetrisPlayer: TetrisPlayer | null = null;
@@ -25,7 +25,7 @@ test("Create new Tetris player", () => {
 })
 
 test("Export private game data", () => {
-  PlayersManager.getInstance().resetPlayers();
+  LobbyUsersManager.getInstance().resetLobbyUsers();
   const mockedTetrisPlayer = createNewTetrisPlayer(id, pseudo, 0);
   expect(mockedTetrisPlayer?.exportPrivateGameData()).toEqual({
     gameId: 0,
@@ -48,8 +48,8 @@ function createNewTetrisPlayer(
   return mockedTetrisPlayer
 }
 
-function createNewMockedPlayer(mockedSocket: SocketIO.Socket, pseudo?: string): Player | null {
-  return PlayersManager.getInstance().createPlayer(mockedSocket, pseudo)
+function createNewMockedPlayer(mockedSocket: SocketIO.Socket, pseudo?: string): LobbyUser | null {
+  return LobbyUsersManager.getInstance().createLobbyUser(mockedSocket, pseudo)
 }
 
 function createNewMockedSocket(id: string): any {

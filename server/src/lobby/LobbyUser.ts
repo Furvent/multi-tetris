@@ -1,6 +1,6 @@
-import { PayloadLobbyPlayer } from "../../../share/types/PayloadLobbyPlayer";
+import { PayloadLobbyUser } from "../../../share/types/PayloadLobbyUser";
 
-export class Player {
+export class LobbyUser {
   /**
    * SocketIO.Socket.id
    */
@@ -14,10 +14,10 @@ export class Player {
     this.pseudo = pseudo;
     this.socket = socket;
     this.isReadyInPrivateLobby = false;
-    console.log(`New player created. Pseudo: ${this.pseudo}`);
+    console.log(`New lobbyUser created. Pseudo: ${this.pseudo}`);
   }
 
-  exportToLobbyPlayer(): PayloadLobbyPlayer {
+  exportDataToLobby(): PayloadLobbyUser {
     return {
       pseudo: this.pseudo,
       isReady: this.isReadyInPrivateLobby,

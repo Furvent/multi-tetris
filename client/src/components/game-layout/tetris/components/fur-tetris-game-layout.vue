@@ -61,7 +61,7 @@ import {
   emitJoinLobby,
   emitCreateNewLobby
 } from "../../socket/lobbyEvents";
-import { emitCreateNewPlayer } from "../../socket/playerEvents"
+import { emitCreateNewLobbyUser } from "../../socket/lobbyUserEvents"
 import FurTetrisPrivateLobby from "./fur-tetris-private-lobby.vue";
 
 @Component({
@@ -109,7 +109,7 @@ export default class extends Vue {
     const socket = io("http://localhost:7070");
     this.$store.commit("setPlayerSocket", socket);
     loadLobbyEventsListener(socket, this.$store, true);
-    emitCreateNewPlayer(socket, this.$store.getters.getOwnPseudo);
+    emitCreateNewLobbyUser(socket, this.$store.getters.getOwnPseudo);
     emitGetLobbies(socket);
   }
 }

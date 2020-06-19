@@ -1,7 +1,7 @@
 import { LobbiesManager } from "../../lobby/LobbiesManager";
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby";
-import { PayloadPlayerAvailability } from "../../../../share/types/PayloadPlayerAvailability";
+import { PayloadLobbyUserAvailability } from "../../../../share/types/PayloadLobbyUserAvailability";
 import { logEmit } from "../../utils/index";
 import Server from "../../server";
 import log from '../../private-module/PrivateLogger'
@@ -9,30 +9,30 @@ import log from '../../private-module/PrivateLogger'
 export function lobbyEventsListener(socket: SocketIO.Socket) {
   socket.on("lobby:createNewLobby", (roomName?: string) => {
     log.info(
-      `Player with socket's id ${socket.id} want to create a new lobby with name: ${roomName}`
+      `LobbyUser with socket's id ${socket.id} want to create a new lobby with name: ${roomName}`
     );
-    LobbiesManager.getInstance().playerCreateLobby(socket, roomName);
+    LobbiesManager.getInstance().lobbyUserCreateLobby(socket, roomName);
   });
 
   socket.on("lobby:joinLobbyWithId", id => {
     log.info(
-      `Player with socket's id ${socket.id} want to join lobby with id ${id}`
+      `LobbyUser with socket's id ${socket.id} want to join lobby with id ${id}`
     );
-    LobbiesManager.getInstance().playerJoinLobbyWithId(id, socket);
+    LobbiesManager.getInstance().lobbyUserJoinLobbyWithId(id, socket);
   });
 
   socket.on("lobby:getLobbies", () => {
-    log.info(`Player with socket's id ${socket.id} asked lobbies`);
-    LobbiesManager.getInstance().playerAskPublicLobbies(socket);
+    log.info(`LobbyUser with socket's id ${socket.id} asked lobbies`);
+    LobbiesManager.getInstance().lobbyUserAskPublicLobbies(socket);
   });
 
   socket.on(
-    "lobby:changePlayerAvailability",
-    (payload: PayloadPlayerAvailability) => {
+    "lobby:changeLobbyUserAvailability",
+    (payload: PayloadLobbyUserAvailability) => {
       log.info(
-        `Player with socket's id ${socket.id} changed his availability in loby ${payload.lobbyId}`
+        `LobbyUser with socket's id ${socket.id} changed his availability in loby ${payload.lobbyId}`
       );
-      LobbiesManager.getInstance().playerChangeAvailabiltyStatusInPrivateLobby(
+      LobbiesManager.getInstance().lobbyUserChangeAvailabiltyStatusInPrivateLobby(
         socket,
         payload.lobbyId,
         payload.availability
@@ -40,14 +40,14 @@ export function lobbyEventsListener(socket: SocketIO.Socket) {
     }
   );
 
-  socket.on("lobby:playerLeavePrivateLobby", () => {
-    log.info(`Player with id ${socket.id} want to leave his private lobby`)
-    LobbiesManager.getInstance().playerLeavePrivateLobby(socket)
+  socket.on("lobby:userLeavePrivateLobby", () => {
+    log.info(`LobbyUser with id ${socket.id} want to leave his private lobby`)
+    LobbiesManager.getInstance().lobbyUserLeavePrivateLobby(socket)
   })
 
   socket.on("disconnect", () => {
-    log.info(`Player with id ${socket.id} unexpectedly deconnected from client lobby area. That's so sad... :'/`)
-    LobbiesManager.getInstance().playerDeconnectedFromClient(socket)
+    log.info(`LobbyUser with id ${socket.id} unexpectedly deconnected from client lobby area. That's so sad... :'/`)
+    LobbiesManager.getInstance().lobbyUserDeconnectedFromClient(socket)
   })
 }
 

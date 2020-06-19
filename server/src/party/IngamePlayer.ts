@@ -1,4 +1,4 @@
-import { Player } from "../lobby/Player";
+import { LobbyUser } from "../lobby/LobbyUser";
 
 export abstract class IngamePlayer {
   hasLoadedGame: boolean;
@@ -7,7 +7,7 @@ export abstract class IngamePlayer {
   private _pseudo: string;
   private _socket: SocketIO.Socket;
 
-  constructor(playerFromLobby: Player, gameId: number) {
+  constructor(playerFromLobby: LobbyUser, gameId: number) {
     this.hasLoadedGame = false;
     this.isDisconnected = false;
     this._pseudo = playerFromLobby.pseudo;

@@ -1,6 +1,6 @@
-import { PayloadLobbyPlayer } from "./PayloadLobbyPlayer";
+import { PayloadLobbyUser } from "./PayloadLobbyUser";
 import {PayloadPublicLobby} from "./PayloadPublicLobby"
 
 export interface PayloadPrivateLobby extends PayloadPublicLobby {
-    players: PayloadLobbyPlayer[]
+    lobbyUsers: PayloadLobbyUser[]
 }
