@@ -1,5 +1,5 @@
-import { PlayersManager } from "../../classes/PlayersManager";
-import { LobbiesManager } from "../../classes/LobbiesManager";
+import { PlayersManager } from "../lobby/PlayersManager";
+import { LobbiesManager } from "../lobby/LobbiesManager";
 import { TetrisParty } from "./TetrisParty";
 import SocketMock from "socket.io-mock";
 

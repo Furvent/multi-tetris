@@ -1,9 +1,9 @@
-import Server from "../../classes/classes/server";
+import Server from "../../server";
 
 import { logEmit } from "../../utils/index";
 import log from '../../private-module/PrivateLogger'
 import { TetrisGameData } from "../../../../share/types/tetris/tetrisGameData";
-import { PartiesManager } from "../../classes/classes/party/PartiesManager";
+import { PartiesManager } from "../../party/PartiesManager";
 
 export function tetrisEventsListener(socket: SocketIO.Socket) {
   // socket.on()

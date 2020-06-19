@@ -1,4 +1,4 @@
-import { PayloadLobbyPlayer } from "../../../../share/types/PayloadLobbyPlayer";
+import { PayloadLobbyPlayer } from "../../../share/types/PayloadLobbyPlayer";
 
 export class Player {
   /**

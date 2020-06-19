@@ -1,8 +1,8 @@
 import { Player } from "./Player";
-import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
-import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby";
+import { PayloadPublicLobby } from "../../../share/types/PayloadPublicLobby";
+import { PayloadPrivateLobby } from "../../../share/types/PayloadPrivateLobby";
 import { PlayersManager } from "./PlayersManager";
-import log from "../../private-module/PrivateLogger";
+import log from "../private-module/PrivateLogger";
 import { ISocketIORoom } from "../interfaces/ISocketIORoom";
 
 /**

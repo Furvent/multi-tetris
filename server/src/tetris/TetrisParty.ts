@@ -1,13 +1,13 @@
-import { IParty } from "../../interfaces/IParty";
-import { Lobby } from "../../classes/Lobby";
+import { IParty } from "../interfaces/IParty";
+import { Lobby } from "../lobby/Lobby";
 import { TetrisPlayer } from "./TetrisPlayer";
-import { ISocketIORoom } from "../../interfaces/ISocketIORoom";
-import * as events from "../../../socket/tetris/index";
-import log from "../../../private-module/PrivateLogger";
-import { TetrisPublicPlayerGameData } from "../../../../../share/types/tetris/tetrisPublicPlayerGameData";
-import { TetrisGameData } from "../../../../../share/types/tetris/tetrisGameData";
-import { IngamePlayer } from "../../classes/party/IngamePlayer";
-import { TetrisGameState } from "../enums/tetrisGameState";
+import { ISocketIORoom } from "../interfaces/ISocketIORoom";
+import * as events from "../socket/tetris/index";
+import log from "../private-module/PrivateLogger";
+import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPublicPlayerGameData";
+import { TetrisGameData } from "../../../share/types/tetris/tetrisGameData";
+import { IngamePlayer } from "../party/IngamePlayer";
+import { TetrisGameState } from "./enums/tetrisGameState";
 
 export class TetrisParty extends IParty implements ISocketIORoom {
   id: string;

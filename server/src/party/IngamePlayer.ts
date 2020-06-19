@@ -1,4 +1,4 @@
-import { Player } from "../Player";
+import { Player } from "../lobby/Player";
 
 export abstract class IngamePlayer {
   hasLoadedGame: boolean;

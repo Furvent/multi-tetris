@@ -5,12 +5,12 @@ import SocketIo from "socket.io";
 
 import Express from "express";
 
-import loadServerEvents from "../../socket/server/index";
-import { loadLobbyEventsListener } from "../../socket/lobbies-manager";
-import { loadPlayerEventsListener } from "../../socket/players-manager";
-import { LobbiesManager } from "./LobbiesManager";
-import log from "../../private-module/PrivateLogger";
-import { PlayersManager } from "./PlayersManager";
+import loadServerEvents from "./socket/server/index";
+import { loadLobbyEventsListener } from "./socket/lobbies-manager";
+import { loadPlayerEventsListener } from "./socket/players-manager";
+import { LobbiesManager } from "./lobby/LobbiesManager";
+import log from "./private-module/PrivateLogger";
+import { PlayersManager } from "./lobby/PlayersManager";
 
 // TODO: Create Party Manager
 export default class Server {

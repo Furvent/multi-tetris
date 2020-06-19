@@ -1,5 +1,4 @@
-import { IngamePlayer } from "../classes/party/IngamePlayer";
-import { Lobby } from "../classes/Lobby";
+import { IngamePlayer } from "../party/IngamePlayer";
 
 export abstract class IParty {
   protected abstract players: IngamePlayer[];

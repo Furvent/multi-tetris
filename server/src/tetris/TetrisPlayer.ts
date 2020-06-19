@@ -1,7 +1,7 @@
-import { IngamePlayer } from "../../classes/party/IngamePlayer";
-import { Player } from "../../classes/Player";
-import { TetrisPrivatePlayerGameData } from "../../../../../share/types/tetris/tetrisPrivatePlayerGameData"
-import { TetrisPublicPlayerGameData } from "../../../../../share/types/tetris/tetrisPublicPlayerGameData"
+import { IngamePlayer } from "../party/IngamePlayer";
+import { Player } from "../lobby/Player";
+import { TetrisPrivatePlayerGameData } from "../../../share/types/tetris/tetrisPrivatePlayerGameData"
+import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPublicPlayerGameData"
 
 export class TetrisPlayer extends IngamePlayer {
   constructor(playerFromLobby: Player, gameId: number) {

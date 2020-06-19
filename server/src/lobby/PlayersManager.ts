@@ -1,5 +1,5 @@
 import { Player } from "./Player";
-import log from "../../private-module/PrivateLogger";
+import log from "../private-module/PrivateLogger";
 
 export class PlayersManager {
   private static instance: PlayersManager;

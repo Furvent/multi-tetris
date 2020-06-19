@@ -1,7 +1,7 @@
-import { IParty } from "../../interfaces/IParty";
-import { Lobby } from "../Lobby";
-import log from "../../../private-module/PrivateLogger";
-import { TetrisParty } from "../../tetris/classes/TetrisParty";
+import { IParty } from "../interfaces/IParty";
+import { Lobby } from "../lobby/Lobby";
+import log from "../private-module/PrivateLogger";
+import { TetrisParty } from "../tetris/TetrisParty";
 import { IngamePlayer } from "./IngamePlayer";
 
 /**

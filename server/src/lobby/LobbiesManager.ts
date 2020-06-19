@@ -1,9 +1,9 @@
 import { Lobby } from "./Lobby";
-import { emitUpdatePrivateLobby, emitPublicLobbies } from "../../socket/lobbies-manager";
-import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
-import log from "../../private-module/PrivateLogger";
+import { emitUpdatePrivateLobby, emitPublicLobbies } from "../socket/lobbies-manager";
+import { PayloadPublicLobby } from "../../../share/types/PayloadPublicLobby";
+import log from "../private-module/PrivateLogger";
 import { PlayersManager } from "./PlayersManager";
-import { PartiesManager } from "./party/PartiesManager";
+import { PartiesManager } from "../party/PartiesManager";
 
 /**
  * Is singleton

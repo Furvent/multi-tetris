@@ -1,7 +1,7 @@
 import { TetrisPlayer } from "./TetrisPlayer";
-import { PlayersManager } from "../../classes/PlayersManager";
+import { PlayersManager } from "../lobby/PlayersManager";
 import SocketMock from "socket.io-mock";
-import { Player } from "../../classes/Player";
+import { Player } from "../lobby/Player";
 
 const id = "12345";
 const pseudo = "Bob";
