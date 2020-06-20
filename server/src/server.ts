@@ -12,7 +12,6 @@ import { LobbiesManager } from "./lobby/LobbiesManager";
 import log from "./private-module/PrivateLogger";
 import { LobbyUsersManager } from "./lobby/LobbyUsersManager";
 
-// TODO: Create Party Manager
 export default class Server {
   public static io: SocketIO.Server;
 
@@ -42,7 +41,7 @@ export default class Server {
     try {
       global.globalConfig = JSON.parse(
         fs
-          .readFileSync(__dirname + "/../../../../config/server-config.json")
+          .readFileSync(__dirname + "/../../config/server-config.json")
           .toString()
       );
     } catch (error) {

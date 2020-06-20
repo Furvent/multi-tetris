@@ -51,7 +51,7 @@ export default class extends Vue {
   }
 
   get lobbyPlayers() {
-    return this.$store.getters.getPrivateLobby.players;
+    return this.$store.getters.getPrivateLobby.lobbyUsers;
   }
 
   get readyCheckText() {

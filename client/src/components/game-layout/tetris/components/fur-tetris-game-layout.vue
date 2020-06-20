@@ -32,7 +32,7 @@
               <v-container>
                 <v-row align="center">
                   <v-col cols="4">Lobby's name: {{ lobby.name }}</v-col>
-                  <v-col cols="4">Players: {{ lobby.numberOfPlayers }}</v-col>
+                  <v-col cols="4">Players: {{ lobby.numberOfLobbyUsers }}</v-col>
                   <v-col cols="4">
                     <v-btn class="text-center" @click="joinLobby(lobby.id)">JOIN LOBBY</v-btn>
                   </v-col>
@@ -72,7 +72,6 @@ import FurTetrisPrivateLobby from "./fur-tetris-private-lobby.vue";
 })
 export default class extends Vue {
   partyNameTextField = "";
-  hasJoinedPrivateLobby = false;
 
   mounted() {
     if (this.getPlayerSocket() === undefined) {
@@ -84,12 +83,8 @@ export default class extends Vue {
     return this.$store.getters.getPublicLobbies;
   }
 
-  get privateLobby() {
-    return this.$store.getters.getPrivateLobby;
-  }
-
   get isInPrivateLobby(): boolean {
-    return this.$store.getters.getPrivateLobby.players !== undefined;
+    return this.$store.getters.getPrivateLobby.lobbyUsers !== undefined;
   }
 
   getPlayerSocket() {
