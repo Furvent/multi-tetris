@@ -87,7 +87,7 @@ export default class extends Vue {
     return this.$store.getters.getPrivateLobby.lobbyUsers !== undefined;
   }
 
-  getPlayerSocket() {
+  getPlayerSocket(): SocketIOClient.Socket {
     return this.$store.getters.getPlayerSocket;
   }
 

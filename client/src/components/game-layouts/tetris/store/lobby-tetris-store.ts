@@ -1,5 +1,6 @@
 import { PayloadPublicLobby } from "../../../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../../../share/types/PayloadPrivateLobby";
+import { Socket } from 'socket.io-client';
 
 // Not type safe for now, to further amelioration, search vuex-module-decorator
 export default {
