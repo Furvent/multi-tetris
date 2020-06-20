@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import TetrisLobbyStore from '../components/game-layout/tetris/store/lobby-tetris-store'
+import TetrisLobbyStore from '../components/game-layouts/tetris/store/lobby-tetris-store'
 
 Vue.use(Vuex)
 

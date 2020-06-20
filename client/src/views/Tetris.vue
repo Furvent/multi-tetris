@@ -27,7 +27,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 
-import FurTetrisGameLayout from "@/components/game-layout/tetris/components/fur-tetris-game-layout";
+import FurTetrisGameLayout from "@/components/game-layouts/tetris/components/fur-tetris-game-layout";
 
 @Component({
   name: "fur-tetris",
