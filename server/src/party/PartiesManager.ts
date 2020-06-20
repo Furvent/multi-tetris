@@ -40,7 +40,7 @@ export class PartiesManager {
 
   public playerLoadedTheGame(playerSocket: SocketIO.Socket): void {
     try {
-      // First we search if player exist, and get his IngamePlayer's ref
+      // First we search if player exists, and get his IngamePlayer's ref
       const ingamePlayer = this.getIngamePlayerWithId(playerSocket.id);
       if (ingamePlayer === null) {
         throw this.errorNoPlayerFoundWithThisSocketId(playerSocket.id);
@@ -53,6 +53,19 @@ export class PartiesManager {
       ingamePlayer.hasLoadedGame = true;
     } catch (error) {
       log.error(`Problem in method playerLoadedTheGame(): ${error}`);
+    }
+  }
+
+  public playerDisconnected(playerSocket: SocketIO.Socket): void {
+    try {
+      // Firest we search if player exists, and get his IngamePlayer's ref
+      const ingamePlayer = this.getIngamePlayerWithId(playerSocket.id);
+      if (ingamePlayer === null) {
+        throw this.errorNoPlayerFoundWithThisSocketId(playerSocket.id);
+      }
+      ingamePlayer.isDisconnected = true;
+    } catch (error) {
+      log.error(`Problem in method playerDisconnected(): ${error}`);
     }
   }
 
