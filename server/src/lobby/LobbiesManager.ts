@@ -1,5 +1,8 @@
 import { Lobby } from "./Lobby";
-import { emitUpdatePrivateLobby, emitPublicLobbies } from "../socket/lobbies-manager";
+import {
+  emitUpdatePrivateLobby,
+  emitPublicLobbies,
+} from "../socket/lobbies-manager";
 import { PayloadPublicLobby } from "../../../share/types/PayloadPublicLobby";
 import log from "../private-module/PrivateLogger";
 import { LobbyUsersManager } from "./LobbyUsersManager";
@@ -75,7 +78,7 @@ export class LobbiesManager {
     lobbyUser: SocketIO.Socket,
     lobbyId: string,
     availability: boolean = false
-  ) {
+  ): void {
     try {
       const lobby = this.getLobbyWithId(lobbyId);
       if (lobby === undefined) {
@@ -95,7 +98,7 @@ export class LobbiesManager {
 
       // Launch game
       if (lobby.isGameReadyToLaunch()) {
-        PartiesManager.getInstance().addParty(lobby);
+        this.launchGameToLobby(lobby);
       }
     } catch (error) {
       log.error(
@@ -132,17 +135,17 @@ export class LobbiesManager {
   /**
    * Just to tests purpose
    */
-  getLobbies():Lobby[] {
+  getLobbies(): Lobby[] {
     try {
       if (process.env.NODE_ENV === "test") {
-        log.info("In LobbiesManager, getLobbies called")
+        log.info("In LobbiesManager, getLobbies called");
         return this.lobbies;
       } else {
         throw this.errorTryingGetAllLobbiesOutsideTestEnv();
       }
     } catch (error) {
       log.error(error);
-      return []
+      return [];
     }
   }
 
@@ -152,7 +155,7 @@ export class LobbiesManager {
   resetLobbies() {
     try {
       if (process.env.NODE_ENV === "test") {
-        log.info("In LobbiesManager, resetLobbies called")
+        log.info("In LobbiesManager, resetLobbies called");
         this.lobbies = [];
       } else {
         throw this.errorTryingResetLobbiesOutsideTestEnv();
@@ -163,17 +166,21 @@ export class LobbiesManager {
   }
 
   private exportAllLobbies(): PayloadPublicLobby[] {
-    return this.lobbies.map(lobby => lobby.exportInPublicLobby());
+    return this.lobbies.map((lobby) => lobby.exportInPublicLobby());
   }
 
   private getLobbyWithId(id: string): Lobby | undefined {
-    const lobbySearched = this.lobbies.find(lobby => lobby.getId() === id);
+    const lobbySearched = this.lobbies.find((lobby) => lobby.getId() === id);
     return lobbySearched;
   }
 
-  private findLobbyUserLobby(lobbyUserSearched: SocketIO.Socket): Lobby | undefined {
-    return this.lobbies.find(lobby => {
-      return lobby.lobbyUsers.some(lobbyUser => lobbyUser.id === lobbyUserSearched.id);
+  private findLobbyUserLobby(
+    lobbyUserSearched: SocketIO.Socket
+  ): Lobby | undefined {
+    return this.lobbies.find((lobby) => {
+      return lobby.lobbyUsers.some(
+        (lobbyUser) => lobbyUser.id === lobbyUserSearched.id
+      );
     });
   }
 
@@ -192,7 +199,9 @@ export class LobbiesManager {
     lobbyUserSocket: SocketIO.Socket
   ): void {
     // TODO: implement try catch
-    const lobbyUser = LobbyUsersManager.getInstance().getLobbyUserWithSocketId(lobbyUserSocket.id);
+    const lobbyUser = LobbyUsersManager.getInstance().getLobbyUserWithSocketId(
+      lobbyUserSocket.id
+    );
     if (lobbyUser) {
       lobbyUser.isReadyInPrivateLobby = false;
     }
@@ -216,7 +225,7 @@ export class LobbiesManager {
         );
       }
       const lobbyToDeleteIndex = this.lobbies.findIndex(
-        lobby => lobby.getId() === lobbyToDelete.getId()
+        (lobby) => lobby.getId() === lobbyToDelete.getId()
       );
       this.lobbies.splice(lobbyToDeleteIndex, 1);
     } catch (error) {
@@ -226,11 +235,30 @@ export class LobbiesManager {
     }
   }
 
+  private launchGameToLobby(lobby: Lobby): void {
+    try {
+      // First init party
+      PartiesManager.getInstance().addParty(lobby);
+      // Then clean lobby
+      while (lobby.lobbyUsers.length > 0) {
+        lobby.removeLobbyUser(lobby.lobbyUsers[0].socket);
+      }
+      // And delete lobby
+      this.deleteEmptyLobby(lobby);
+    } catch (error) {
+      log.error(
+        `Problem when trying to launch game to lobby with id ${lobby.getId()}: ${error}`
+      );
+    }
+  }
+
   private createRoomName(lobbyUserId: string): string {
     const lobbyUserPseudo = LobbyUsersManager.getInstance().getLobbyUserWithSocketId(
       lobbyUserId
     )?.pseudo;
-    return lobbyUserPseudo ? `${lobbyUserPseudo}'s room` : `room ${this.idUsedIncrementator}`;
+    return lobbyUserPseudo
+      ? `${lobbyUserPseudo}'s room`
+      : `room ${this.idUsedIncrementator}`;
   }
 
   private errorLobbyUserIsAlreadyInAnotherLobby(
@@ -263,10 +291,10 @@ export class LobbiesManager {
   }
 
   private errorTryingResetLobbiesOutsideTestEnv(): string {
-    return `WARNING: something try to reset lobbies outside test env`
+    return `WARNING: something try to reset lobbies outside test env`;
   }
 
   private errorTryingGetAllLobbiesOutsideTestEnv(): string {
-    return `WARNING: something try to get all lobbies outside test env`
+    return `WARNING: something try to get all lobbies outside test env`;
   }
 }
