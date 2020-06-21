@@ -13,16 +13,16 @@ export function tetrisEventsListener(socket: SocketIO.Socket) {
     );
     PartiesManager.getInstance().playerLoadedTheGame(socket);
   });
-  socket.on("disconnected", () => {
+  socket.on("disconnect", () => {
     log.info(`Player IN PARTY with socket's id ${socket.id} disconnected `);
     PartiesManager.getInstance().playerDisconnected(socket);
   })
 }
 
-export function emitAskClientToLoadGame(socketIORoomName: string): void {
+export function emitAskClientToLoadGame(socket: SocketIO.Socket): void {
   const eventName = "tetris:askClientToLoadGame";
-  logEmit(eventName, "no-payload", socketIORoomName);
-  Server.io.to(socketIORoomName).emit(eventName);
+  logEmit(eventName, "no-payload");
+  socket.emit(eventName);
 }
 
 export function emitTetrisGameData(

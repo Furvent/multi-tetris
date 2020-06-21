@@ -7,22 +7,24 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import { loadTetrisPartyEventsListener, emitClientLoadedGame } from "../socket/tetrisEvents";
+import { Prop } from "vue-property-decorator";
+import {
+  loadTetrisPartyEventsListener,
+  emitClientLoadedGame
+} from "../socket/tetrisEvents";
 
 @Component({
-  name: "fur-tetris-game-layout"
+  name: "fur-tetris-party"
 })
 export default class extends Vue {
-  ctx: CanvasRenderingContext2D;
+  ctx: CanvasRenderingContext2D | null = null;
 
   mounted() {
-    const canvas = <HTMLCanvasElement>document.getElementById("game-canvas");
+    const canvas = document.getElementById("game-canvas") as HTMLCanvasElement;
     this.ctx = canvas.getContext("2d");
     loadTetrisPartyEventsListener(this.getPlayerSocket(), this.$store, true);
     // TODO: remove, just for test purpose
-    setTimeout(() => {
-      emitClientLoadedGame(this.getPlayerSocket());
-    }, 1000);
+    setTimeout(() => emitClientLoadedGame(this.getPlayerSocket()), 1000);
   }
 
   getPlayerSocket(): SocketIOClient.Socket {

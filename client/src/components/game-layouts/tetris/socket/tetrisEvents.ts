@@ -16,13 +16,11 @@ export function loadTetrisPartyEventsListener(
     if (debug) {
       logListener("tetris:gameData", gameData);
     }
-    store.commit("")
+    store.commit("setGameData", gameData);
   });
 }
 
-export function emitClientLoadedGame(
-  socket: SocketIOClient.Socket,
-): void {
+export function emitClientLoadedGame(socket: SocketIOClient.Socket): void {
   const eventName = "tetris:clientLoadedGame";
   socket.emit(eventName);
   logEmit(eventName);

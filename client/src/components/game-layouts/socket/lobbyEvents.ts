@@ -29,6 +29,13 @@ export function loadLobbyEventsListener(
     }
     store.commit("setPublicLobbies", lobbies);
   });
+
+  socket.on("tetris:askClientToLoadGame", () => {
+    if (debug) {
+      logListener("tetris:askClientToLoadGame");
+    }
+    store.commit("setcanLoadTetrisPartyComponent");
+  });
 }
 
 export function emitCreateNewLobby(

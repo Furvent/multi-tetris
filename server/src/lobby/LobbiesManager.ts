@@ -58,7 +58,7 @@ export class LobbiesManager {
       );
       newLobby.addLobbyUser(lobbyUser);
       this.lobbies.push(newLobby);
-      this.lobbyUserAskPublicLobbies(lobbyUser);
+      emitPublicLobbies(this.exportAllLobbies());
       emitUpdatePrivateLobby(
         newLobby.exportInPrivateLobby(),
         newLobby.getSocketIORoom()

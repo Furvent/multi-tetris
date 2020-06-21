@@ -1,50 +1,55 @@
 <template>
-  <div class="tetris-main-component-container">
-    <!-- To show and create Lobbies -->
-    <v-container>
-      <v-row justify="center">
-        <v-col cols="8">
-          <!-- Add Lobby  -->
-          <div class="tetris-lobby-searched" v-if="!isInPrivateLobby">
-            <v-card>
-              <v-container>
-                <v-row align="center">
-                  <v-col cols="8">
-                    <v-text-field
-                      name="name"
-                      label="Enter lobby's name"
-                      id="id"
-                      v-model="partyNameTextField"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="4">
-                    <v-btn
-                      class="text-center"
-                      :disabled="partyNameTextField == ''"
-                      @click="createNewLobby()"
-                    >CREATE LOBBY</v-btn>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card>
-            <!-- Lobbies  -->
-            <v-card v-for="lobby in publicLobbies" :key="lobby.id">
-              <v-container>
-                <v-row align="center">
-                  <v-col cols="4">Lobby's name: {{ lobby.name }}</v-col>
-                  <v-col cols="4">Players: {{ lobby.numberOfLobbyUsers }}</v-col>
-                  <v-col cols="4">
-                    <v-btn class="text-center" @click="joinLobby(lobby.id)">JOIN LOBBY</v-btn>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card>
-          </div>
-          <!-- When inside a private lobby -->
-          <fur-tetris-private-lobby v-if="isInPrivateLobby"></fur-tetris-private-lobby>
-        </v-col>
-      </v-row>
-    </v-container>
+  <div>
+    <div v-if="canLoadTetrisPartyComponent" class="tetris-party-component">
+      <fur-tetris-party></fur-tetris-party>
+    </div>
+    <div v-else class="tetris-lobby-main-component-container">
+      <!-- To show and create Lobbies -->
+      <v-container>
+        <v-row justify="center">
+          <v-col cols="8">
+            <!-- Add Lobby  -->
+            <div class="tetris-lobby-searched" v-if="!isInPrivateLobby">
+              <v-card>
+                <v-container>
+                  <v-row align="center">
+                    <v-col cols="8">
+                      <v-text-field
+                        name="name"
+                        label="Enter lobby's name"
+                        id="id"
+                        v-model="partyNameTextField"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="4">
+                      <v-btn
+                        class="text-center"
+                        :disabled="partyNameTextField == ''"
+                        @click="createNewLobby()"
+                      >CREATE LOBBY</v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+              <!-- Lobbies  -->
+              <v-card v-for="lobby in publicLobbies" :key="lobby.id">
+                <v-container>
+                  <v-row align="center">
+                    <v-col cols="4">Lobby's name: {{ lobby.name }}</v-col>
+                    <v-col cols="4">Players: {{ lobby.numberOfLobbyUsers }}</v-col>
+                    <v-col cols="4">
+                      <v-btn class="text-center" @click="joinLobby(lobby.id)">JOIN LOBBY</v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+            </div>
+            <!-- When inside a private lobby -->
+            <fur-tetris-private-lobby v-if="isInPrivateLobby"></fur-tetris-private-lobby>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
   </div>
 </template>
 
@@ -61,13 +66,15 @@ import {
   emitJoinLobby,
   emitCreateNewLobby
 } from "../../socket/lobbyEvents";
-import { emitCreateNewLobbyUser } from "../../socket/lobbyUserEvents"
+import { emitCreateNewLobbyUser } from "../../socket/lobbyUserEvents";
 import FurTetrisPrivateLobby from "./fur-tetris-private-lobby.vue";
+import FurTetrisParty from "./fur-tetris-party.vue";
 
 @Component({
   name: "fur-tetris-game-layout",
   components: {
-    FurTetrisPrivateLobby
+    FurTetrisPrivateLobby,
+    FurTetrisParty
   }
 })
 export default class extends Vue {
@@ -85,6 +92,10 @@ export default class extends Vue {
 
   get isInPrivateLobby(): boolean {
     return this.$store.getters.getPrivateLobby.lobbyUsers !== undefined;
+  }
+
+  get canLoadTetrisPartyComponent(): boolean {
+    return this.$store.getters.getCanLoadTetrisPartyComponent;
   }
 
   getPlayerSocket(): SocketIOClient.Socket {
