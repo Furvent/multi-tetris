@@ -27,8 +27,6 @@ export class LobbiesManager {
     return LobbiesManager.instance;
   }
 
-  // Launch party
-
   lobbyUserJoinLobbyWithId(lobbyId: string, lobbyUser: SocketIO.Socket): void {
     try {
       this.checkIfLobbyUserIsInAnotherLobby(lobbyUser);

@@ -15,12 +15,21 @@ export class TetrisParty extends IParty implements ISocketIORoom {
   protected players: TetrisPlayer[];
   gameState: string;
 
-  constructor(lobby: Lobby, id: string) {
+  constructor(config: TetrisPartyConfig) {
     super();
-    this.id = id;
-    this.players = lobby.lobbyUsers.map(
-      (player, index) => new TetrisPlayer(player, index)
-    );
+    this.id = config.id;
+    if (config.lobby) {
+      this.players = config.lobby.lobbyUsers.map(
+        (player, index) => new TetrisPlayer(player, index)
+      );
+    } else if (config.player){
+      this.players = [];
+      this.players.push(config.player)
+    } else {
+      this.players = [];
+      throw 'New party created without player, there is a problem';
+    }
+
     this.socketIORoomName = `party${this.id}`;
     this.connectPlayersSocketsToSocketIORoomAndLoadEventsListener();
     this.gameState = TetrisGameState.Loading;
@@ -93,4 +102,10 @@ export class TetrisParty extends IParty implements ISocketIORoom {
     };
     events.emitTetrisGameData(player.socket, payload);
   }
+}
+
+interface TetrisPartyConfig {
+  id: string;
+  lobby?: Lobby;
+  player?: TetrisPlayer;
 }

@@ -45,6 +45,7 @@
         </v-col>
       </v-row>
     </v-container>
+    <!-- If game launched -->
     <div v-else>
       <fur-tetris-party></fur-tetris-party>
     </div>
@@ -54,6 +55,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 import io from "socket.io-client";
 import { PayloadPublicLobby } from "../../../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../../../share/types/PayloadPrivateLobby";
@@ -77,10 +79,14 @@ import FurTetrisParty from "./fur-tetris-party.vue";
 })
 export default class extends Vue {
   partyNameTextField = "";
+ 
+  @Prop({default: false}) readonly playSolo
 
   mounted() {
     if (this.getPlayerSocket() === undefined) {
       this.createSocketAndLoadListeners();
+    }
+    if (this.playSolo) {
     }
   }
 

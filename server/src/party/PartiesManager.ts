@@ -3,6 +3,8 @@ import { Lobby } from "../lobby/Lobby";
 import log from "../private-module/PrivateLogger";
 import { TetrisParty } from "../tetris/TetrisParty";
 import { IngamePlayer } from "./IngamePlayer";
+import { TetrisPlayer } from "../tetris/TetrisPlayer";
+import { LobbyUser } from "../lobby/LobbyUser";
 
 /**
  * TODO: utiliser un module de création d'id pour les parties.
@@ -69,6 +71,25 @@ export class PartiesManager {
     }
   }
 
+  public addSoloParty(
+    playerSocket: SocketIO.Socket,
+    gameName: string,
+    pseudo = "Not named Player"
+  ) {
+    try {
+      const tempLobbyUser = new LobbyUser(playerSocket, pseudo);
+      const newPlayer = new TetrisPlayer(tempLobbyUser, 0);
+      const newParty = this.createSoloParty(newPlayer, gameName);
+      if (newParty) {
+        this.parties.push(newParty);
+      } else {
+        throw `Cannot create new solo party with player with socket id: ${playerSocket.id}, newParty is undefined`
+      }
+    } catch (error) {
+      log.error(`Problem in method addSoloParty(): ${error}`)
+    }
+  }
+
   private getIngamePlayerWithId(playerSocketId: string): IngamePlayer | null {
     let playerSearched: IngamePlayer | null = null;
     for (let party of this.parties) {
@@ -96,12 +117,26 @@ export class PartiesManager {
     let newParty: IParty;
     switch (lobby.lobbyType) {
       case "tetris":
-        newParty = new TetrisParty(lobby, this.getIdToParty());
+        newParty = new TetrisParty({ lobby, id: this.getIdToParty() });
         return newParty;
       default:
         throw `Lobby with id ${lobby.getId()} doesn't have a valid lobby type: ${
           lobby.lobbyType
         }`;
+    }
+  }
+
+  private createSoloParty(
+    player: TetrisPlayer,
+    gameName: string
+  ): IParty | undefined {
+    let newParty: IParty;
+    switch (gameName) {
+      case "tetris":
+        newParty = new TetrisParty({ player, id: this.getIdToParty() });
+        return newParty;
+      default:
+        throw `Can't create a new solo party with that game name: ${gameName}`;
     }
   }
 

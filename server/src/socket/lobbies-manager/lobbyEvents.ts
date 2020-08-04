@@ -2,9 +2,11 @@ import { LobbiesManager } from "../../lobby/LobbiesManager";
 import { PayloadPublicLobby } from "../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../share/types/PayloadPrivateLobby";
 import { PayloadLobbyUserAvailability } from "../../../../share/types/PayloadLobbyUserAvailability";
+import { PayloadCreateSoloParty } from "../../../../share/types/PayloadCreateSoloParty";
 import { logEmit } from "../../utils/index";
 import Server from "../../server";
-import log from '../../private-module/PrivateLogger'
+import log from "../../private-module/PrivateLogger";
+import { PartiesManager } from "../../party/PartiesManager";
 
 export function lobbyEventsListener(socket: SocketIO.Socket) {
   socket.on("lobby:createNewLobby", (roomName?: string) => {
@@ -14,7 +16,7 @@ export function lobbyEventsListener(socket: SocketIO.Socket) {
     LobbiesManager.getInstance().lobbyUserCreateLobby(socket, roomName);
   });
 
-  socket.on("lobby:joinLobbyWithId", id => {
+  socket.on("lobby:joinLobbyWithId", (id) => {
     log.info(
       `LobbyUser with socket's id ${socket.id} want to join lobby with id ${id}`
     );
@@ -41,14 +43,25 @@ export function lobbyEventsListener(socket: SocketIO.Socket) {
   );
 
   socket.on("lobby:userLeavePrivateLobby", () => {
-    log.info(`LobbyUser with id ${socket.id} want to leave his private lobby`)
-    LobbiesManager.getInstance().lobbyUserLeavePrivateLobby(socket)
-  })
+    log.info(`LobbyUser with id ${socket.id} want to leave his private lobby`);
+    LobbiesManager.getInstance().lobbyUserLeavePrivateLobby(socket);
+  });
+
+  socket.on("lobby:userWantPlaySolo", (payload: PayloadCreateSoloParty) => {
+    log.info(`User with id ${socket.id} want to play solo`);
+    PartiesManager.getInstance().addSoloParty(
+      socket,
+      payload.gameType,
+      payload.pseudo
+    );
+  });
 
   socket.on("disconnect", () => {
-    log.info(`LobbyUser with id ${socket.id} unexpectedly deconnected from client lobby area. That's so sad... :'/`)
-    LobbiesManager.getInstance().lobbyUserDeconnectedFromClient(socket)
-  })
+    log.info(
+      `LobbyUser with id ${socket.id} unexpectedly deconnected from client lobby area. That's so sad... :'/`
+    );
+    LobbiesManager.getInstance().lobbyUserDeconnectedFromClient(socket);
+  });
 }
 
 export function emitUpdatePrivateLobby(
@@ -70,5 +83,7 @@ export function emitPublicLobbies(
 ) {
   const eventName = "lobby:allLobbies";
   logEmit(eventName, lobbies);
-  (typeof socket == "undefined") ? Server.io.emit(eventName, lobbies) : socket.emit(eventName, lobbies);
+  typeof socket == "undefined"
+    ? Server.io.emit(eventName, lobbies)
+    : socket.emit(eventName, lobbies);
 }
