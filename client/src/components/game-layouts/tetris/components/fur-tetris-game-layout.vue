@@ -1,7 +1,7 @@
 <template>
   <div class="tetris-main-component-container">
     <!-- To show and create Lobbies -->
-    <v-container>
+    <v-container v-if="!displayPartyComponent">
       <v-row justify="center">
         <v-col cols="8">
           <!-- Add Lobby  -->
@@ -45,6 +45,9 @@
         </v-col>
       </v-row>
     </v-container>
+    <div v-else>
+      <fur-tetris-party></fur-tetris-party>
+    </div>
   </div>
 </template>
 
@@ -59,16 +62,18 @@ import {
   loadLobbyEventsListener,
   emitGetLobbies,
   emitJoinLobby,
-  emitCreateNewLobby
+  emitCreateNewLobby,
 } from "../../socket/lobbyEvents";
-import { emitCreateNewLobbyUser } from "../../socket/lobbyUserEvents"
+import { emitCreateNewLobbyUser } from "../../socket/lobbyUserEvents";
 import FurTetrisPrivateLobby from "./fur-tetris-private-lobby.vue";
+import FurTetrisParty from "./fur-tetris-party.vue";
 
 @Component({
   name: "fur-tetris-game-layout",
   components: {
-    FurTetrisPrivateLobby
-  }
+    FurTetrisPrivateLobby,
+    FurTetrisParty,
+  },
 })
 export default class extends Vue {
   partyNameTextField = "";
@@ -85,6 +90,10 @@ export default class extends Vue {
 
   get isInPrivateLobby(): boolean {
     return this.$store.getters.getPrivateLobby.lobbyUsers !== undefined;
+  }
+
+  get displayPartyComponent(): boolean {
+    return this.$store.getters.getHaveServerAskedToLoadGame;
   }
 
   getPlayerSocket(): SocketIOClient.Socket {
