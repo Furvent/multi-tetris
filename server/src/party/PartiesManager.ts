@@ -40,6 +40,24 @@ export class PartiesManager {
     }
   }
 
+  public addSoloParty(
+    playerSocket: SocketIO.Socket,
+    gameName: string,
+    pseudo = "Not named Player"
+  ) {
+    try {
+      const tempLobbyUser = new LobbyUser(playerSocket, pseudo);
+      const newParty = this.createSoloParty(tempLobbyUser, gameName);
+      if (newParty) {
+        this.parties.push(newParty);
+      } else {
+        throw `Cannot create new solo party with player with socket id: ${playerSocket.id}, newParty is undefined`
+      }
+    } catch (error) {
+      log.error(`Problem in method addSoloParty(): ${error}`)
+    }
+  }
+
   public playerLoadedTheGame(playerSocket: SocketIO.Socket): void {
     try {
       // First we search if player exists, and get his IngamePlayer's ref
@@ -68,25 +86,6 @@ export class PartiesManager {
       ingamePlayer.isDisconnected = true;
     } catch (error) {
       log.error(`Problem in method playerDisconnected(): ${error}`);
-    }
-  }
-
-  public addSoloParty(
-    playerSocket: SocketIO.Socket,
-    gameName: string,
-    pseudo = "Not named Player"
-  ) {
-    try {
-      const tempLobbyUser = new LobbyUser(playerSocket, pseudo);
-      const newPlayer = new TetrisPlayer(tempLobbyUser, 0);
-      const newParty = this.createSoloParty(newPlayer, gameName);
-      if (newParty) {
-        this.parties.push(newParty);
-      } else {
-        throw `Cannot create new solo party with player with socket id: ${playerSocket.id}, newParty is undefined`
-      }
-    } catch (error) {
-      log.error(`Problem in method addSoloParty(): ${error}`)
     }
   }
 
@@ -127,7 +126,7 @@ export class PartiesManager {
   }
 
   private createSoloParty(
-    player: TetrisPlayer,
+    player: LobbyUser,
     gameName: string
   ): IParty | undefined {
     let newParty: IParty;

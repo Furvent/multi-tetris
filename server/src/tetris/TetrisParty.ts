@@ -8,26 +8,50 @@ import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPu
 import { TetrisGameData } from "../../../share/types/tetris/tetrisGameData";
 import { IngamePlayer } from "../party/IngamePlayer";
 import { TetrisGameState } from "./enums/tetrisGameState";
+import { TetrominoBlueprint } from "./Tetromino";
+import fs from "fs";
+import { LobbyUser } from "../lobby/LobbyUser";
 
+/**
+ * This class is the Tetris party controller
+ */
 export class TetrisParty extends IParty implements ISocketIORoom {
   id: string;
-  private socketIORoomName: string;
-  protected players: TetrisPlayer[];
+  socketIORoomName: string;
+  players: TetrisPlayer[];
   gameState: string;
+  private tetrominosConfig: TetrominoBlueprint[];
 
   constructor(config: TetrisPartyConfig) {
     super();
+    if (!config.lobby && !config.player) {
+      throw "Can't create new tetris party without lobby or player, there must be one of the two";
+    }
     this.id = config.id;
+    // Load tetrominos configs
+    // TODO to improve: only load one time to global config (at first tetris party launched) to avoid useless memory consumption and file access
+    this.tetrominosConfig = JSON.parse(
+      fs
+        .readFileSync(
+          __dirname + "/../../../config/classic-tetrominos-shapes.json"
+        )
+        .toString()
+    );
+    if (!this.tetrominosConfig) {
+      throw "Can't load tetrominos config";
+    }
+
+    // Initiate player(s)
     if (config.lobby) {
       this.players = config.lobby.lobbyUsers.map(
-        (player, index) => new TetrisPlayer(player, index)
+        (player, index) => new TetrisPlayer(player, index, this.tetrominosConfig)
       );
-    } else if (config.player){
+    } else if (config.player) {
       this.players = [];
-      this.players.push(config.player)
+      this.players.push(new TetrisPlayer(config.player, 0, this.tetrominosConfig));
     } else {
       this.players = [];
-      throw 'New party created without player, there is a problem';
+      throw "New party created without player, there is a problem";
     }
 
     this.socketIORoomName = `party${this.id}`;
@@ -107,5 +131,5 @@ export class TetrisParty extends IParty implements ISocketIORoom {
 interface TetrisPartyConfig {
   id: string;
   lobby?: Lobby;
-  player?: TetrisPlayer;
+  player?: LobbyUser;
 }

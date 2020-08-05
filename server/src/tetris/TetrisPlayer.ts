@@ -2,10 +2,14 @@ import { IngamePlayer } from "../party/IngamePlayer";
 import { LobbyUser } from "../lobby/LobbyUser";
 import { TetrisPrivatePlayerGameData } from "../../../share/types/tetris/tetrisPrivatePlayerGameData"
 import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPublicPlayerGameData"
+import { TetrominoBlueprint } from "./Tetromino";
 
 export class TetrisPlayer extends IngamePlayer {
-  constructor(playerFromLobby: LobbyUser, gameId: number) {
+  private tetrominosConfig: TetrominoBlueprint[];
+
+  constructor(playerFromLobby: LobbyUser, gameId: number, tetrominosConfig: TetrominoBlueprint[]) {
     super(playerFromLobby, gameId)
+    this.tetrominosConfig = tetrominosConfig;
   }
 
   exportPrivateGameData(): TetrisPrivatePlayerGameData {

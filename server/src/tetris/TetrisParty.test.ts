@@ -41,20 +41,27 @@ test("expect to get a player", () => {
   );
   LobbiesManager.getInstance().lobbyUserJoinLobbyWithId("0", mockedSocket_3);
   const mockedLobby = LobbiesManager.getInstance().getLobbies()[0];
-  const mockedParty = new TetrisParty({lobby:mockedLobby, id: mockedTetrisPartyId});
-  const mockedTetrisPlayer_1 = mockedParty.getPlayerWithId(mockedSocketId_1)
-  const mockedTetrisPlayer_2 = mockedParty.getPlayerWithId(mockedSocketId_2)
-  const mockedTetrisPlayer_3 = mockedParty.getPlayerWithId(mockedSocketId_3)
-  expect(mockedParty).toEqual({
-    gameState: "LOADING",
-    id: "0",
-    players: [
-      mockedTetrisPlayer_1,
-      mockedTetrisPlayer_2,
-      mockedTetrisPlayer_3
-    ],
-    socketIORoomName:"party0"
+  const mockedParty = new TetrisParty({
+    lobby: mockedLobby,
+    id: mockedTetrisPartyId,
   });
+  const mockedTetrisPlayer_1 = mockedParty.getPlayerWithId(mockedSocketId_1);
+  const mockedTetrisPlayer_2 = mockedParty.getPlayerWithId(mockedSocketId_2);
+  const mockedTetrisPlayer_3 = mockedParty.getPlayerWithId(mockedSocketId_3);
+  // Here to test we use expect.objectContaining to have partiel match.
+  // We don't want to check tetromino config data
+  expect(mockedParty).toEqual(
+    expect.objectContaining({
+      gameState: "LOADING",
+      id: "0",
+      players: [
+        mockedTetrisPlayer_1,
+        mockedTetrisPlayer_2,
+        mockedTetrisPlayer_3,
+      ],
+      socketIORoomName: "party0",
+    })
+  );
 });
 
 function createNewMockedSocket(id: string): any {
