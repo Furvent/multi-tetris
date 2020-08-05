@@ -67,6 +67,9 @@ export class TetrisParty extends IParty implements ISocketIORoom {
     });
   }
 
+  /**
+   * Loop called by PartiesManager each server frame only when generic game state is set to running
+   */
   updateLoop(): void {
     log.debug(`Update loop called in party with id ${this.id}`);
   }
