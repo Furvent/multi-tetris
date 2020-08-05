@@ -7,10 +7,10 @@ import log from "../private-module/PrivateLogger";
 import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPublicPlayerGameData";
 import { TetrisGameData } from "../../../share/types/tetris/tetrisGameData";
 import { IngamePlayer } from "../party/IngamePlayer";
-import { TetrisGameState } from "./enums/tetrisGameState";
 import { TetrominoBlueprint } from "./Tetromino";
 import fs from "fs";
 import { LobbyUser } from "../lobby/LobbyUser";
+import { GenericGameState } from "../party/enum/GameState";
 
 /**
  * This class is the Tetris party controller
@@ -19,7 +19,7 @@ export class TetrisParty extends IParty implements ISocketIORoom {
   id: string;
   socketIORoomName: string;
   players: TetrisPlayer[];
-  gameState: string;
+  gameState: GenericGameState;
   private tetrominosConfig: TetrominoBlueprint[];
 
   constructor(config: TetrisPartyConfig) {
@@ -56,7 +56,7 @@ export class TetrisParty extends IParty implements ISocketIORoom {
 
     this.socketIORoomName = `party${this.id}`;
     this.connectPlayersSocketsToSocketIORoomAndLoadEventsListener();
-    this.gameState = TetrisGameState.Loading;
+    this.gameState = GenericGameState.Loading;
     this.initiateGame();
   }
 
@@ -94,6 +94,16 @@ export class TetrisParty extends IParty implements ISocketIORoom {
       (player) => player.socket.id === playerSearchedSocketId
     );
     return playerToFind ? playerToFind : null;
+  }
+
+  getGameState(): GenericGameState {
+    return this.gameState;
+  }
+
+  checkIfPartyHasFinishedLoadingAndStartIt(): void {
+    if (this.players.every(player => player.hasLoadedGame)) {
+      this.gameState = GenericGameState.Running;
+    }
   }
 
   private initiateGame() {

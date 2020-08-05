@@ -18,6 +18,7 @@ export class TetrisGameBoard {
     this._occupiedCells = [];
     this._tetrominosSequence = [];
     this.tetrominosConfig = tetrominosConfig;
+    this.createTetrominosSequence();
   }
 
   get tetrominosSequence(): string[] {
