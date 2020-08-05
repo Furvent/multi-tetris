@@ -65,6 +65,7 @@ import {
   emitGetLobbies,
   emitJoinLobby,
   emitCreateNewLobby,
+  emitUserWantPlaySolo,
 } from "../../socket/lobbyEvents";
 import { emitCreateNewLobbyUser } from "../../socket/lobbyUserEvents";
 import FurTetrisPrivateLobby from "./fur-tetris-private-lobby.vue";
@@ -79,14 +80,24 @@ import FurTetrisParty from "./fur-tetris-party.vue";
 })
 export default class extends Vue {
   partyNameTextField = "";
- 
-  @Prop({default: false}) readonly playSolo
+
+  @Prop({ default: false }) playSolo!: boolean;
 
   mounted() {
     if (this.getPlayerSocket() === undefined) {
       this.createSocketAndLoadListeners();
     }
     if (this.playSolo) {
+      emitUserWantPlaySolo(this.getPlayerSocket(), {
+        gameType: "tetris",
+        pseudo: this.$store.getters.getOwnPseudo,
+      });
+    } else {
+      emitCreateNewLobbyUser(
+        this.getPlayerSocket(),
+        this.$store.getters.getOwnPseudo
+      );
+      emitGetLobbies(this.getPlayerSocket());
     }
   }
 
@@ -119,8 +130,6 @@ export default class extends Vue {
     const socket = io("http://localhost:7070");
     this.$store.commit("setPlayerSocket", socket);
     loadLobbyEventsListener(socket, this.$store, true);
-    emitCreateNewLobbyUser(socket, this.$store.getters.getOwnPseudo);
-    emitGetLobbies(socket);
   }
 }
 </script>

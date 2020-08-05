@@ -41,7 +41,7 @@ test("expect to get a player", () => {
   );
   LobbiesManager.getInstance().lobbyUserJoinLobbyWithId("0", mockedSocket_3);
   const mockedLobby = LobbiesManager.getInstance().getLobbies()[0];
-  const mockedParty = new TetrisParty(mockedLobby, mockedTetrisPartyId);
+  const mockedParty = new TetrisParty({lobby:mockedLobby, id: mockedTetrisPartyId});
   const mockedTetrisPlayer_1 = mockedParty.getPlayerWithId(mockedSocketId_1)
   const mockedTetrisPlayer_2 = mockedParty.getPlayerWithId(mockedSocketId_2)
   const mockedTetrisPlayer_3 = mockedParty.getPlayerWithId(mockedSocketId_3)

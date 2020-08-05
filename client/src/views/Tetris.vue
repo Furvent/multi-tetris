@@ -64,8 +64,7 @@ export default class extends Vue {
   }
   
   debugLaunchParty() {
-    
-    userWantDebug = true;
+    this.userWantDebug = true;
   }
 
   closeDialog() {
