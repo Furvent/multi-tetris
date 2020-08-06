@@ -16,7 +16,7 @@ import { GenericGameState } from "../party/enum/GameState";
  * This class is the Tetris party controller
  */
 export class TetrisParty extends IParty implements ISocketIORoom {
-  
+
   private readonly BOARD_WIDTH = 10;
   private readonly BOARD_HEIGHT = 22;
   private readonly TETROMINO_MOVEMENT_TIMER = 2000; // milliseconds
@@ -50,12 +50,12 @@ export class TetrisParty extends IParty implements ISocketIORoom {
     if (config.lobby) {
       this.players = config.lobby.lobbyUsers.map(
         (player, index) =>
-          new TetrisPlayer(player, index, this.tetrominosConfig)
+          new TetrisPlayer(player, index, this.tetrominosConfig, this.TETROMINO_MOVEMENT_TIMER)
       );
     } else if (config.player) {
       this.players = [];
       this.players.push(
-        new TetrisPlayer(config.player, 0, this.tetrominosConfig)
+        new TetrisPlayer(config.player, 0, this.tetrominosConfig, this.TETROMINO_MOVEMENT_TIMER)
       );
     } else {
       this.players = [];

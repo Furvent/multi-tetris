@@ -1,9 +1,10 @@
 import { GameTimer } from "../utils/GameTimer";
+import { GamePosition } from "./TetrisGameBoard";
 
 export class Tetromino {
   blueprint: TetrominoBlueprint;
   currentDirection: TetrominoDirection;
-  _currentPosition: number[];
+  _currentPosition: GamePosition[];
   timer: GameTimer;
 
   constructor(
@@ -17,15 +18,15 @@ export class Tetromino {
     this.timer = new GameTimer(moveTick);
   }
 
-  get currentPosition(): number[] {
+  get currentPosition(): GamePosition[] {
     return this._currentPosition;
   }
 
-  set currentPosition(newPosition: number[]) {
+  set currentPosition(newPosition: GamePosition[]) {
     this._currentPosition = newPosition;
   }
 
-  public getCurrentShape(): number[] {
+  public getCurrentShape(): GamePosition[] {
     return this.blueprint.shapes[this.currentDirection];
   }
 
@@ -77,19 +78,25 @@ export class Tetromino {
 /**
  * With this data we can place a tetromino on board. Shapes are different position in an area with a fixe square side.
  * There is side * side positions in an area.
+ * Example with the 'J' tetromino
  * |_|X|X|_| This is the tetromino area with a side of 4 for 16 positions
- * |_|X|_|_| Tetromino is occupied position 2, 3, 6 and 10
- * |_|X|_|_|
+ * |_|X|_|_| It is oriented to bottom
+ * |_|X|_|_| Tetromino is occupying positions {x: 2, y: 1}, {x: 3, y: 1}, {x: 2, y: 2} and {x: 2, y: 3}
+ * |_|_|_|_|
+ * 
+ * |X|_|_|_| Now it is oriented to right
+ * |X|X|X|_| And it is occupying positions {x: 2, y: 1}, {x: 3, y: 1}, {x: 2, y: 2} and {x: 2, y: 3}
+ * |_|_|_|_| 
  * |_|_|_|_|
  */
-export interface TetrominoBlueprint {
+export type TetrominoBlueprint = {
   name: string;
   side: number;
   shapes: {
-    top: number[];
-    right: number[];
-    bottom: number[];
-    left: number[];
+    top: GamePosition[];
+    right: GamePosition[];
+    bottom: GamePosition[];
+    left: GamePosition[];
   };
 }
 

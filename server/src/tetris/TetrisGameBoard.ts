@@ -1,4 +1,3 @@
-
 import log from "../private-module/PrivateLogger";
 import { TetrominoBlueprint, Tetromino, TetrominoDirection } from "./Tetromino";
 import { shuffle } from "../utils/index";
@@ -16,7 +15,10 @@ export class TetrisGameBoard {
   private readonly tetrominosConfig: TetrominoBlueprint[];
   private readonly tetrominoMovementTimer;
 
-  constructor(tetrominosConfig: TetrominoBlueprint[], tetrominoMovementTimer: number) {
+  constructor(
+    tetrominosConfig: TetrominoBlueprint[],
+    tetrominoMovementTimer: number
+  ) {
     this.tetrominosConfig = tetrominosConfig;
     this.tetrominoMovementTimer = tetrominoMovementTimer;
     this._occupiedCells = [];
@@ -38,7 +40,7 @@ export class TetrisGameBoard {
   }
 
   public isTetrominosSequenceEmpty() {
-    return this._tetrominosSequence.length <= 0; 
+    return this._tetrominosSequence.length <= 0;
   }
 
   public createTetrominosSequence(): void {
@@ -55,24 +57,32 @@ export class TetrisGameBoard {
     }
   }
 
-  public assignNewTetrominoOnBoard(direction: TetrominoDirection = TetrominoDirection.RIGHT): void {
+  public assignNewTetrominoOnBoard(
+    direction: TetrominoDirection = TetrominoDirection.RIGHT
+  ): void {
     try {
       if (this._tetrominosSequence.length <= 0) {
         throw `Tetrominos sequence is empty`;
       }
-      this._currentTetrominoOnBoard = new Tetromino(this.getBlueprintWithName(this._tetrominosSequence[0]),this.tetrominoMovementTimer, direction);
+      this._currentTetrominoOnBoard = new Tetromino(
+        this.getBlueprintWithName(this._tetrominosSequence[0]),
+        this.tetrominoMovementTimer,
+        direction
+      );
       this._tetrominosSequence.shift();
     } catch (error) {
-      log.error(`Cannot assign new tetromino on board: ${error}`)
+      log.error(`Cannot assign new tetromino on board: ${error}`);
     }
   }
 
   private getBlueprintWithName(name: string): TetrominoBlueprint {
-      const blueprint = this.tetrominosConfig.find(blueprintStored => blueprintStored.name === name)
-      if (!blueprint) {
-        throw `no blueprint found with name ${name}`
-      }
-      return blueprint;
+    const blueprint = this.tetrominosConfig.find(
+      (blueprintStored) => blueprintStored.name === name
+    );
+    if (!blueprint) {
+      throw `no blueprint found with name ${name}`;
+    }
+    return blueprint;
   }
 
   /**
@@ -80,3 +90,8 @@ export class TetrisGameBoard {
    */
   public updateLoop() {}
 }
+
+export type GamePosition = {
+  x: number;
+  y: number;
+};
