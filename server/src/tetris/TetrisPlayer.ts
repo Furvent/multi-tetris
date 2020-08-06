@@ -10,33 +10,42 @@ import { TetrisGameBoard } from "./TetrisGameBoard";
  */
 export class TetrisPlayer extends IngamePlayer {
   private tetrominosConfig: TetrominoBlueprint[];
-  private _playerBoard: TetrisGameBoard;
+  private _board: TetrisGameBoard;
 
   constructor(
     playerFromLobby: LobbyUser,
     gameId: number,
-    tetrominosConfig: TetrominoBlueprint[]
+    tetrominosConfig: TetrominoBlueprint[],
+    tetrominoMovementTimer: number
   ) {
     super(playerFromLobby, gameId);
     this.tetrominosConfig = tetrominosConfig;
-    this._playerBoard = new TetrisGameBoard(this.tetrominosConfig);
+    this._board = new TetrisGameBoard(this.tetrominosConfig, tetrominoMovementTimer);
   }
 
-  exportPrivateGameData(): TetrisPrivatePlayerGameData {
+  get board(): TetrisGameBoard {
+    return this._board;
+  }
+
+  public haveNoTetrominoOnBoard(): boolean {
+    return !this._board.currentTetrominoOnBoard;
+  }
+
+  public isTetrominoSequenceEmpty(): boolean {
+    return this._board.tetrominosSequence.length <= 0
+  }
+
+  public exportPrivateGameData(): TetrisPrivatePlayerGameData {
     return {
       ...this.exportPublicGameData(),
       isDisconnected: this.isDisconnected,
     };
   }
 
-  exportPublicGameData(): TetrisPublicPlayerGameData {
+  public exportPublicGameData(): TetrisPublicPlayerGameData {
     return {
       gameId: this.gameId,
       pseudo: this.pseudo,
     };
-  }
-
-  get playerBoard(): TetrisGameBoard {
-    return this._playerBoard;
   }
 }

@@ -7,7 +7,7 @@ import log from "../private-module/PrivateLogger";
 import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPublicPlayerGameData";
 import { TetrisGameData } from "../../../share/types/tetris/tetrisGameData";
 import { IngamePlayer } from "../party/IngamePlayer";
-import { TetrominoBlueprint } from "./Tetromino";
+import { TetrominoBlueprint, TetrominoDirection } from "./Tetromino";
 import fs from "fs";
 import { LobbyUser } from "../lobby/LobbyUser";
 import { GenericGameState } from "../party/enum/GameState";
@@ -16,6 +16,11 @@ import { GenericGameState } from "../party/enum/GameState";
  * This class is the Tetris party controller
  */
 export class TetrisParty extends IParty implements ISocketIORoom {
+  
+  private readonly BOARD_WIDTH = 10;
+  private readonly BOARD_HEIGHT = 22;
+  private readonly TETROMINO_MOVEMENT_TIMER = 2000; // milliseconds
+
   id: string;
   socketIORoomName: string;
   players: TetrisPlayer[];
@@ -44,11 +49,14 @@ export class TetrisParty extends IParty implements ISocketIORoom {
     // Initiate player(s)
     if (config.lobby) {
       this.players = config.lobby.lobbyUsers.map(
-        (player, index) => new TetrisPlayer(player, index, this.tetrominosConfig)
+        (player, index) =>
+          new TetrisPlayer(player, index, this.tetrominosConfig)
       );
     } else if (config.player) {
       this.players = [];
-      this.players.push(new TetrisPlayer(config.player, 0, this.tetrominosConfig));
+      this.players.push(
+        new TetrisPlayer(config.player, 0, this.tetrominosConfig)
+      );
     } else {
       this.players = [];
       throw "New party created without player, there is a problem";
@@ -72,6 +80,27 @@ export class TetrisParty extends IParty implements ISocketIORoom {
    */
   updateLoop(): void {
     log.debug(`Update loop called in party with id ${this.id}`);
+    this.players.forEach((player) => {
+      try {
+        // Check if tetromino sequence is empty
+        if (player.isTetrominoSequenceEmpty()) {
+          player.board.createTetrominosSequence();
+        }
+        // Check if no tetromino on board
+        if (player.haveNoTetrominoOnBoard()) {
+          player.board.assignNewTetrominoOnBoard();
+          // Set position
+          const tetromino = player.board.currentTetrominoOnBoard;
+        }
+        // check if player input
+        // If input, set tetromino pos
+        // check tetromino movement timer
+        // If over, set tetromino pos
+        // check position and collision
+      } catch (error) {
+        log.error(`Problem in update loop of player with gameId ${player.gameId}: ${error}`)
+      }
+    });
   }
 
   /**
@@ -104,7 +133,7 @@ export class TetrisParty extends IParty implements ISocketIORoom {
   }
 
   checkIfPartyHasFinishedLoadingAndStartIt(): void {
-    if (this.players.every(player => player.hasLoadedGame)) {
+    if (this.players.every((player) => player.hasLoadedGame)) {
       this.gameState = GenericGameState.Running;
     }
   }

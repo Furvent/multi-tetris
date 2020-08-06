@@ -1,6 +1,6 @@
 
 import log from "../private-module/PrivateLogger";
-import { TetrominoBlueprint, Tetromino } from "./Tetromino";
+import { TetrominoBlueprint, Tetromino, TetrominoDirection } from "./Tetromino";
 import { shuffle } from "../utils/index";
 
 /**
@@ -8,16 +8,20 @@ import { shuffle } from "../utils/index";
  */
 export class TetrisGameBoard {
   /**
-   * Array use to store cells occupied by static tetromino, those already positionned at the bottom of the board.
+   * Array use to store cells occupied by static tetromino at the bottom of the board.
    */
-  private _tetrominosSequence: string[];
   private _occupiedCells: number[];
+  private _tetrominosSequence: string[];
+  private _currentTetrominoOnBoard: Tetromino | null;
   private readonly tetrominosConfig: TetrominoBlueprint[];
+  private readonly tetrominoMovementTimer;
 
-  constructor(tetrominosConfig: TetrominoBlueprint[]) {
+  constructor(tetrominosConfig: TetrominoBlueprint[], tetrominoMovementTimer: number) {
+    this.tetrominosConfig = tetrominosConfig;
+    this.tetrominoMovementTimer = tetrominoMovementTimer;
     this._occupiedCells = [];
     this._tetrominosSequence = [];
-    this.tetrominosConfig = tetrominosConfig;
+    this._currentTetrominoOnBoard = null;
     this.createTetrominosSequence();
   }
 
@@ -27,6 +31,10 @@ export class TetrisGameBoard {
 
   get occupiedCells(): number[] {
     return this._occupiedCells;
+  }
+
+  get currentTetrominoOnBoard(): Tetromino | null {
+    return this._currentTetrominoOnBoard;
   }
 
   public isTetrominosSequenceEmpty() {
@@ -45,6 +53,26 @@ export class TetrisGameBoard {
     } catch (error) {
       `Problem when trying to create a new tetromino sequence: ${error}`;
     }
+  }
+
+  public assignNewTetrominoOnBoard(direction: TetrominoDirection = TetrominoDirection.RIGHT): void {
+    try {
+      if (this._tetrominosSequence.length <= 0) {
+        throw `Tetrominos sequence is empty`;
+      }
+      this._currentTetrominoOnBoard = new Tetromino(this.getBlueprintWithName(this._tetrominosSequence[0]),this.tetrominoMovementTimer, direction);
+      this._tetrominosSequence.shift();
+    } catch (error) {
+      log.error(`Cannot assign new tetromino on board: ${error}`)
+    }
+  }
+
+  private getBlueprintWithName(name: string): TetrominoBlueprint {
+      const blueprint = this.tetrominosConfig.find(blueprintStored => blueprintStored.name === name)
+      if (!blueprint) {
+        throw `no blueprint found with name ${name}`
+      }
+      return blueprint;
   }
 
   /**
