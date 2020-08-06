@@ -3,6 +3,9 @@ import { Lobby } from "../lobby/Lobby";
 import log from "../private-module/PrivateLogger";
 import { TetrisParty } from "../tetris/TetrisParty";
 import { IngamePlayer } from "./IngamePlayer";
+import { TetrisPlayer } from "../tetris/TetrisPlayer";
+import { LobbyUser } from "../lobby/LobbyUser";
+import { GenericGameState } from "./enum/GameState";
 
 /**
  * TODO: utiliser un module de création d'id pour les parties.
@@ -38,10 +41,28 @@ export class PartiesManager {
     }
   }
 
+  public addSoloParty(
+    playerSocket: SocketIO.Socket,
+    gameName: string,
+    pseudo = "Not named Player"
+  ) {
+    try {
+      const tempLobbyUser = new LobbyUser(playerSocket, pseudo);
+      const newParty = this.createSoloParty(tempLobbyUser, gameName);
+      if (newParty) {
+        this.parties.push(newParty);
+      } else {
+        throw `Cannot create new solo party with player with socket id: ${playerSocket.id}, newParty is undefined`;
+      }
+    } catch (error) {
+      log.error(`Problem in method addSoloParty(): ${error}`);
+    }
+  }
+
   public playerLoadedTheGame(playerSocket: SocketIO.Socket): void {
     try {
       // First we search if player exists, and get his IngamePlayer's ref
-      const ingamePlayer = this.getIngamePlayerWithId(playerSocket.id);
+      const ingamePlayer = this.getIngamePlayerWithSocketId(playerSocket.id);
       if (ingamePlayer === null) {
         throw this.errorNoPlayerFoundWithThisSocketId(playerSocket.id);
       }
@@ -59,7 +80,7 @@ export class PartiesManager {
   public playerDisconnected(playerSocket: SocketIO.Socket): void {
     try {
       // Firest we search if player exists, and get his IngamePlayer's ref
-      const ingamePlayer = this.getIngamePlayerWithId(playerSocket.id);
+      const ingamePlayer = this.getIngamePlayerWithSocketId(playerSocket.id);
       if (ingamePlayer === null) {
         throw this.errorNoPlayerFoundWithThisSocketId(playerSocket.id);
       }
@@ -69,7 +90,9 @@ export class PartiesManager {
     }
   }
 
-  private getIngamePlayerWithId(playerSocketId: string): IngamePlayer | null {
+  private getIngamePlayerWithSocketId(
+    playerSocketId: string
+  ): IngamePlayer | null {
     let playerSearched: IngamePlayer | null = null;
     for (let party of this.parties) {
       playerSearched = party.getPlayerWithId(playerSocketId);
@@ -86,8 +109,12 @@ export class PartiesManager {
   private initLoopUpdate(): void {
     setInterval(() => {
       this.parties.forEach((party) => {
-        party.updateLoop();
-        party.sendDataToClients();
+        if (party.getGameState() === GenericGameState.Running) {
+          party.updateLoop();
+          party.sendDataToClients();
+        } else if (party.getGameState() === GenericGameState.Loading) {
+          party.checkIfPartyHasFinishedLoadingAndStartIt();
+        }
       });
     }, 1000); // For debug, each second. TODO: put 100 back
   }
@@ -96,12 +123,26 @@ export class PartiesManager {
     let newParty: IParty;
     switch (lobby.lobbyType) {
       case "tetris":
-        newParty = new TetrisParty(lobby, this.getIdToParty());
+        newParty = new TetrisParty({ lobby, id: this.getIdToParty() });
         return newParty;
       default:
         throw `Lobby with id ${lobby.getId()} doesn't have a valid lobby type: ${
           lobby.lobbyType
         }`;
+    }
+  }
+
+  private createSoloParty(
+    player: LobbyUser,
+    gameName: string
+  ): IParty | undefined {
+    let newParty: IParty;
+    switch (gameName) {
+      case "tetris":
+        newParty = new TetrisParty({ player, id: this.getIdToParty() });
+        return newParty;
+      default:
+        throw `Can't create a new solo party with that game name: ${gameName}`;
     }
   }
 

@@ -1,6 +1,6 @@
 import { PayloadPublicLobby } from "../../../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../../../share/types/PayloadPrivateLobby";
-import { Socket } from 'socket.io-client';
+import { Socket } from "socket.io-client";
 
 // Not type safe for now, to further amelioration, search vuex-module-decorator
 export default {
@@ -8,7 +8,8 @@ export default {
     playerPseudo: "",
     publicLobbies: new Array(),
     privateLobby: {},
-    playerSocket: undefined
+    playerSocket: undefined,
+    haveServerAskedToLoadGame: false,
   },
 
   getters: {
@@ -16,13 +17,16 @@ export default {
       return state.playerPseudo;
     },
     getPublicLobbies: (state: State) => {
-      return state.publicLobbies
+      return state.publicLobbies;
     },
     getPrivateLobby: (state: State) => {
-      return state.privateLobby
+      return state.privateLobby;
     },
     getPlayerSocket: (state: State) => {
-      return state.playerSocket
+      return state.playerSocket;
+    },
+    getHaveServerAskedToLoadGame: (state: State) => {
+      return state.haveServerAskedToLoadGame;
     }
   },
 
@@ -31,20 +35,24 @@ export default {
       state.playerPseudo = newPseudo;
     },
     setPublicLobbies: (state: State, lobbies: PayloadPublicLobby[]) => {
-      state.publicLobbies = lobbies
+      state.publicLobbies = lobbies;
     },
     setPrivateLobby: (state: State, lobby: PayloadPrivateLobby) => {
-      state.privateLobby = lobby
+      state.privateLobby = lobby;
     },
     setPlayerSocket: (state: State, socket: SocketIOClient.Socket) => {
-      state.playerSocket = socket
+      state.playerSocket = socket;
+    },
+    setHaveServerAskedToLoadGame: (state: State, value: boolean) => {
+      state.haveServerAskedToLoadGame = value;
     }
-  }
+  },
 };
 
 export interface State {
   playerPseudo: string;
   publicLobbies: PayloadPublicLobby[];
   privateLobby: PayloadPrivateLobby;
-  playerSocket: SocketIOClient.Socket
+  playerSocket: SocketIOClient.Socket;
+  haveServerAskedToLoadGame: boolean;
 }

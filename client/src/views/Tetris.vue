@@ -4,7 +4,8 @@
       <v-btn @click="joinLobbyArea()">Lobby Area</v-btn>
       <v-btn @click="debugLaunchParty()">Debug Launch Party</v-btn>
     </div>
-    <fur-tetris-game-layout v-if="showLobbyToPlayer"></fur-tetris-game-layout>
+    <fur-tetris-game-layout v-if="showTetrisComponentToPlayer" :play-solo="userWantDebug"></fur-tetris-game-layout>
+    
     <!-- DIALOG -->
     <v-dialog v-model="showDialogAskPseudo" persistent max-width="500px">
       <v-card>
@@ -47,8 +48,8 @@ export default class extends Vue {
     return !(this.userWantJoinLobby || this.userWantDebug);
   }
 
-  get showLobbyToPlayer() {
-    return this.userWantJoinLobby;
+  get showTetrisComponentToPlayer() {
+    return this.userWantJoinLobby | this.userWantDebug;
   }
 
   mounted() {
@@ -63,7 +64,7 @@ export default class extends Vue {
   }
   
   debugLaunchParty() {
-    userWantDebug = true;
+    this.userWantDebug = true;
   }
 
   closeDialog() {

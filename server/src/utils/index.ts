@@ -1,1 +1,2 @@
-export * from './logHelper'
+export * from "./logHelper";
+export * from "./shuffle";

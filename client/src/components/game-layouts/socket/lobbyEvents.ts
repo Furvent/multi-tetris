@@ -1,6 +1,7 @@
 import { PayloadPublicLobby } from "../../../../../share/types/PayloadPublicLobby";
 import { PayloadPrivateLobby } from "../../../../../share/types/PayloadPrivateLobby";
 import { PayloadLobbyUserAvailability } from "../../../../../share/types/PayloadLobbyUserAvailability";
+import { PayloadCreateSoloParty } from "../../../../../share/types/PayloadCreateSoloParty";
 import { logEmit, logListener } from "@/utils";
 import { Store } from "vuex";
 import { State } from "../tetris/store/lobby-tetris-store";
@@ -31,11 +32,8 @@ export function loadLobbyEventsListener(
   });
 
   socket.on("tetris:askClientToLoadGame", () => {
-    if (debug) {
-      logListener("tetris:askClientToLoadGame");
-    }
-    store.commit("setcanLoadTetrisPartyComponent");
-  });
+    store.commit("setHaveServerAskedToLoadGame", true);
+  })
 }
 
 export function emitCreateNewLobby(
@@ -75,4 +73,10 @@ export function emitLeavePrivateLobby(socket: SocketIOClient.Socket) {
   const eventName = "lobby:userLeavePrivateLobby";
   socket.emit(eventName);
   logEmit(eventName);
+}
+
+export function emitUserWantPlaySolo(socket: SocketIOClient.Socket, payload: PayloadCreateSoloParty) {
+  const eventName = "lobby:userWantPlaySolo";
+  socket.emit(eventName, payload);
+  logEmit(eventName, payload)
 }
