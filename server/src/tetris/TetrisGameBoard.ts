@@ -9,7 +9,7 @@ export class TetrisGameBoard {
   /**
    * Array use to store cells occupied by static tetromino at the bottom of the board.
    */
-  private _occupiedCells: number[];
+  private _occupiedStaticCells: number[];
   private _tetrominosSequence: string[];
   private _currentTetrominoOnBoard: Tetromino | null;
   private readonly tetrominosConfig: TetrominoBlueprint[];
@@ -21,7 +21,7 @@ export class TetrisGameBoard {
   ) {
     this.tetrominosConfig = tetrominosConfig;
     this.tetrominoMovementTimer = tetrominoMovementTimer;
-    this._occupiedCells = [];
+    this._occupiedStaticCells = [];
     this._tetrominosSequence = [];
     this._currentTetrominoOnBoard = null;
     this.createTetrominosSequence();
@@ -31,8 +31,8 @@ export class TetrisGameBoard {
     return this._tetrominosSequence;
   }
 
-  get occupiedCells(): number[] {
-    return this._occupiedCells;
+  get occupiedStaticCells(): number[] {
+    return this._occupiedStaticCells;
   }
 
   get currentTetrominoOnBoard(): Tetromino | null {

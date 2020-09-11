@@ -7,7 +7,7 @@ import log from "../private-module/PrivateLogger";
 import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPublicPlayerGameData";
 import { TetrisGameData } from "../../../share/types/tetris/tetrisGameData";
 import { IngamePlayer } from "../party/IngamePlayer";
-import { TetrominoBlueprint, TetrominoDirection } from "./Tetromino";
+import { TetrominoBlueprint } from "./Tetromino";
 import fs from "fs";
 import { LobbyUser } from "../lobby/LobbyUser";
 import { GenericGameState } from "../party/enum/GameState";
@@ -91,6 +91,11 @@ export class TetrisParty extends IParty implements ISocketIORoom {
           player.board.assignNewTetrominoOnBoard();
           // Set position
           const tetromino = player.board.currentTetrominoOnBoard;
+          if (!tetromino) {
+            throw 'Cannot set new tetromino on board, value is null'
+          }
+          
+          
         }
         // check if player input
         // If input, set tetromino pos

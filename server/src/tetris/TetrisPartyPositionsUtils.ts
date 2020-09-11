@@ -1,4 +1,3 @@
-import { TetrisPlayer } from "./TetrisPlayer";
 import { Tetromino } from "./Tetromino";
 import { GamePosition } from "./TetrisGameBoard";
 
@@ -7,19 +6,16 @@ import { GamePosition } from "./TetrisGameBoard";
  * @param player
  */
 export function placeNewTetromino(
-  player: TetrisPlayer,
+  newTetromino: Tetromino,
   boardDimension: BoardDimension
 ): void {
-  const tetromino = player.board.currentTetrominoOnBoard;
-  if (!tetromino) {
-    throw `Current tetromino in player's board is null`;
-  }
   // Determinate the top left corner of tetromino area (see TetrominoBlueprint to get explanation)
   // It depends to the board dimension
   const tetrominoAreaTopLeftPositionOnBoard = {
-    x: Math.round(boardDimension.width / 2 - tetromino.blueprint.side / 2) + 1, // We add '1' because it's 'x' cells of space and we want the next one
+    x: Math.round(boardDimension.width / 2 - newTetromino.blueprint.side / 2) + 1, // We add '1' because it's 'x' cells of space and we want the next one
     y: 1, // We want new tetromino to be at the top of the board
   };
+  determinateTetrominoPositionOnBoard(newTetromino, tetrominoAreaTopLeftPositionOnBoard);
 }
 
 /**
@@ -33,7 +29,7 @@ export function determinateTetrominoPositionOnBoard(
   tetrominoAreaOriginPosition: GamePosition
 ) {
   // We find in blueprint shapes the good one, determinate by direction
-  const shape = tetromino.blueprint.shapes[tetromino.currentDirection];
+  const shape = tetromino.getCurrentShape();
   tetromino.currentPosition = shape.map((shapePos) => {
     return {
       x: tetrominoAreaOriginPosition.x + shapePos.x - 1,

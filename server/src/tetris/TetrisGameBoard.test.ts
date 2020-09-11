@@ -42,7 +42,7 @@ test("Create new TetrisGameBoard", () => {
   );
   expect(mockedTetrisGameBoard).toEqual({
     _currentTetrominoOnBoard: null,
-    _occupiedCells: [],
+    _occupiedStaticCells: [],
     _tetrominosSequence: [mockedTetrominoBlueprint[0].name],
     tetrominoMovementTimer: mockedTetrominoTimer,
     tetrominosConfig: mockedTetrominoBlueprint,
