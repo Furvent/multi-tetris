@@ -6,15 +6,36 @@ import { TetrominoBlueprint } from "./Tetromino";
 
 const id = "12345";
 const pseudo = "Bob";
-const mockedTetrominoBluprints: TetrominoBlueprint[] = [
+const mockedTetrominoTimer = 2000;
+const mockedTetrominoBlueprint: TetrominoBlueprint[] = [
   {
-    name: "mockedBluprint",
+    name: "mockedBlueprint",
     side: 4,
     shapes: {
-      top: [1, 1, 1, 1],
-      right: [1, 1, 1, 1],
-      bottom: [1, 1, 1, 1],
-      left: [1, 1, 1, 1],
+      top: [
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+      ],
+      bottom: [
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+      ],
+      left: [
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+      ],
+      right: [
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+        { x: 1, y: 1 },
+      ],
     },
   },
 ];
@@ -28,17 +49,19 @@ test("Create new Tetris player", () => {
     mockedTetrisPlayer = new TetrisPlayer(
       mockedLobbyPlayer,
       0,
-      mockedTetrominoBluprints
+      mockedTetrominoBlueprint,
+      mockedTetrominoTimer
     );
   }
-  expect(mockedTetrisPlayer).toEqual({
-    _gameId: 0,
-    _pseudo: "Bob",
-    _socket: mockedSocket,
-    hasLoadedGame: false,
-    isDisconnected: false,
-    tetrominosConfig: mockedTetrominoBluprints
-  });
+  expect(mockedTetrisPlayer).toEqual(
+    expect.objectContaining({
+      _gameId: 0,
+      _pseudo: "Bob",
+      _socket: mockedSocket,
+      hasLoadedGame: false,
+      isDisconnected: false,
+    })
+  );
 });
 
 test("Export private game data", () => {
@@ -63,7 +86,8 @@ function createNewTetrisPlayer(
     mockedTetrisPlayer = new TetrisPlayer(
       mockedLobbyPlayer,
       gameId,
-      mockedTetrominoBluprints
+      mockedTetrominoBlueprint,
+      mockedTetrominoTimer
     );
   }
   return mockedTetrisPlayer;

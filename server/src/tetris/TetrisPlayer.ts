@@ -5,11 +5,7 @@ import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPu
 import { TetrominoBlueprint } from "./Tetromino";
 import { TetrisGameBoard } from "./TetrisGameBoard";
 
-/**
- * TODO : remove ref to tetrominos config if unused at the end, just dispatch it to board
- */
 export class TetrisPlayer extends IngamePlayer {
-  private tetrominosConfig: TetrominoBlueprint[];
   private _board: TetrisGameBoard;
 
   constructor(
@@ -19,8 +15,7 @@ export class TetrisPlayer extends IngamePlayer {
     tetrominoMovementTimer: number
   ) {
     super(playerFromLobby, gameId);
-    this.tetrominosConfig = tetrominosConfig;
-    this._board = new TetrisGameBoard(this.tetrominosConfig, tetrominoMovementTimer);
+    this._board = new TetrisGameBoard(tetrominosConfig, tetrominoMovementTimer);
   }
 
   get board(): TetrisGameBoard {

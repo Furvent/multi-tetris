@@ -46,7 +46,7 @@ export class TetrisGameBoard {
   public createTetrominosSequence(): void {
     try {
       if (this._tetrominosSequence.length > 0) {
-        throw `tetromino sequence isn't empty but a new one is created`;
+        throw `tetromino sequence isn't empty but a new one is asked`;
       }
       let tetrominosNames = this.tetrominosConfig.map((blueprint) => {
         return blueprint.name;
