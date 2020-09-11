@@ -28,7 +28,7 @@ export class TetrisGameBoard {
   }
 
   get tetrominosSequence(): string[] {
-    return this.tetrominosSequence;
+    return this._tetrominosSequence;
   }
 
   get occupiedCells(): number[] {
