@@ -1,5 +1,6 @@
 import { TetrominoBlueprint } from "./Tetromino";
 import { BoardDimension } from "./TetrisPartyPositionsUtils";
+import { GamePosition } from "./TetrisGameBoard";
 
 export const mockedBlueprintTetrominoTypeJ: TetrominoBlueprint = {
   name: "J",
@@ -31,6 +32,13 @@ export const mockedBlueprintTetrominoTypeJ: TetrominoBlueprint = {
     ],
   },
 };
+
+export const mockedTetrominoTypeJPositionsCreationAtRight: GamePosition[] = [
+  {x: 4, y: 1},
+  {x: 4, y: 2},
+  {x: 5, y: 2},
+  {x: 6, y: 2},
+]
 
 export const mockedBoardDimension: BoardDimension = {
   width: 10,

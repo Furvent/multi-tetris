@@ -4,7 +4,7 @@ import { GamePosition } from "./TetrisGameBoard";
 export class Tetromino {
   blueprint: TetrominoBlueprint;
   currentDirection: TetrominoDirection;
-  _currentPosition: GamePosition[];
+  private _currentPosition: GamePosition[];
   timer: GameTimer;
 
   constructor(
