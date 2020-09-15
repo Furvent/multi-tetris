@@ -7,22 +7,28 @@ import log from "../private-module/PrivateLogger";
 import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPublicPlayerGameData";
 import { TetrisGameData } from "../../../share/types/tetris/tetrisGameData";
 import { IngamePlayer } from "../party/IngamePlayer";
-import { TetrominoBlueprint } from "./Tetromino";
+import { TetrominoBlueprint, Tetromino } from "./Tetromino";
 import fs from "fs";
 import { LobbyUser } from "../lobby/LobbyUser";
 import { GenericGameState } from "../party/enum/GameState";
-import { placeNewTetromino, BoardDimension, moveTetrominoWithVector } from "./TetrisPartyPositionsUtils";
+import {
+  placeNewTetromino,
+  BoardDimension,
+  moveTetrominoWithVector,
+  checkIfCollisionBetweenPositionsAndBoardBottom,
+  checkIfCollisionBetweenPositionsAndPositions,
+  determinateNextPositionsWithVector,
+} from "./TetrisPartyPositionsUtils";
+import { GamePosition } from "./TetrisGameBoard";
 
 /**
  * This class is the Tetris party controller
  */
 export class TetrisParty extends IParty implements ISocketIORoom {
-
   private readonly BOARD_DIMENSION: BoardDimension = {
     width: 10,
     height: 22,
-  }
-  private readonly BOARD_HEIGHT = 22;
+  };
   private readonly TETROMINO_MOVEMENT_TIMER = 2000; // milliseconds
 
   id: string;
@@ -54,12 +60,22 @@ export class TetrisParty extends IParty implements ISocketIORoom {
     if (config.lobby) {
       this.players = config.lobby.lobbyUsers.map(
         (player, index) =>
-          new TetrisPlayer(player, index, this.tetrominosConfig, this.TETROMINO_MOVEMENT_TIMER)
+          new TetrisPlayer(
+            player,
+            index,
+            this.tetrominosConfig,
+            this.TETROMINO_MOVEMENT_TIMER
+          )
       );
     } else if (config.player) {
       this.players = [];
       this.players.push(
-        new TetrisPlayer(config.player, 0, this.tetrominosConfig, this.TETROMINO_MOVEMENT_TIMER)
+        new TetrisPlayer(
+          config.player,
+          0,
+          this.tetrominosConfig,
+          this.TETROMINO_MOVEMENT_TIMER
+        )
       );
     } else {
       this.players = [];
@@ -96,24 +112,37 @@ export class TetrisParty extends IParty implements ISocketIORoom {
           // Set position
           const newTetromino = player.board.currentTetrominoOnBoard;
           if (!newTetromino) {
-            throw 'Cannot set new tetromino on board, value is null'
+            throw "Cannot set new tetromino on board, value is null";
           }
-          placeNewTetromino(newTetromino, this.BOARD_DIMENSION)
+          placeNewTetromino(newTetromino, this.BOARD_DIMENSION);
         }
         // check if player input
+
         // If input, set tetromino pos
+
         // check tetromino movement timer
         if (player.board.currentTetrominoOnBoard?.movementTimerEnded()) {
-          // Move tetromino to the bottom
-          moveTetrominoWithVector(player.board.currentTetrominoOnBoard, {x: 0, y: 1});
-          // Reinit timer
-          player.board.currentTetrominoOnBoard.launchTimer();
+          const nextTetrominoPos = determinateNextPositionsWithVector(
+            player.board.currentTetrominoOnBoard.currentPosition,
+            { x: 0, y: 1 }
+          );
+          // If collision
+          if (this.checkIfTetrominoNextPosHaveCollision(nextTetrominoPos, player.board.occupiedStaticCells)) {
+            // We freeze tetromino
+          } else {
+            // Else we move tetromino to the bottom
+            moveTetrominoWithVector(player.board.currentTetrominoOnBoard, {
+              x: 0,
+              y: 1,
+            });
+            // And launch again timer
+            player.board.currentTetrominoOnBoard.launchTimer();
+          }
         }
-        // check position and collision
-          // Collision with board.occupiedStaticCells
-          // Collision with board's bottom
       } catch (error) {
-        log.error(`Problem in update loop of player with gameId ${player.gameId}: ${error}`)
+        log.error(
+          `Problem in update loop of player with gameId ${player.gameId}: ${error}`
+        );
       }
     });
   }
@@ -196,6 +225,24 @@ export class TetrisParty extends IParty implements ISocketIORoom {
       ),
     };
     events.emitTetrisGameData(player.socket, payload);
+  }
+
+  private checkIfTetrominoNextPosHaveCollision(
+    nextTetrominoPos: GamePosition[],
+    boardOccupiedStaticCells: GamePosition[]
+  ) {
+    {
+      return (
+        checkIfCollisionBetweenPositionsAndBoardBottom(
+          nextTetrominoPos,
+          this.BOARD_DIMENSION.height
+        ) ||
+        checkIfCollisionBetweenPositionsAndPositions(
+          nextTetrominoPos,
+          boardOccupiedStaticCells
+        )
+      );
+    }
   }
 }
 

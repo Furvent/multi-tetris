@@ -10,8 +10,8 @@ import {
   determinateTetrominoPositionOnBoard,
   placeNewTetromino,
   moveTetrominoWithVector,
-  checkIfCollisionBetweenTetrominoAndBoardBottom,
-  checkIfCollisionBetweenTetrominoAndOccupiedStaticCells,
+  checkIfCollisionBetweenPositionsAndBoardBottom,
+  checkIfCollisionBetweenPositionsAndPositions,
 } from "./TetrisPartyPositionsUtils";
 
 const mockedTetrominoTimer = 2000;
@@ -63,49 +63,49 @@ test("Function moveTetrominoWithVector()", () => {
   ]);
 });
 
-test("Collision function checkIfCollisionBetweenTetrominoAndBoardBottom()", () => {
+test("Collision function checkIfCollisionBetweenPositionsAndBoardBottom()", () => {
   const mockedTetromino = new Tetromino(
     mockedBlueprintTetrominoTypeJ,
     mockedTetrominoTimer
   );
   placeNewTetromino(mockedTetromino, mockedBoardDimension);
   expect(
-    checkIfCollisionBetweenTetrominoAndBoardBottom(
-      mockedTetromino,
+    checkIfCollisionBetweenPositionsAndBoardBottom(
+      mockedTetromino.currentPosition,
       mockedBoardDimension.height
     )
   ).toBe(false);
   moveTetrominoWithVector(mockedTetromino, { x: 0, y: 20 });
   expect(
-    checkIfCollisionBetweenTetrominoAndBoardBottom(
-      mockedTetromino,
+    checkIfCollisionBetweenPositionsAndBoardBottom(
+      mockedTetromino.currentPosition,
       mockedBoardDimension.height
     )
   ).toBe(false);
   moveTetrominoWithVector(mockedTetromino, { x: 0, y: 1 });
   expect(
-    checkIfCollisionBetweenTetrominoAndBoardBottom(
-      mockedTetromino,
+    checkIfCollisionBetweenPositionsAndBoardBottom(
+      mockedTetromino.currentPosition,
       mockedBoardDimension.height
     )
   ).toBe(true);
 });
 
-test("Collision function checkIfCollisionBetweenTetrominoAndOccupiedStaticCells()", () => {
+test("Collision function checkIfCollisionBetweenPositionsAndPositions()", () => {
   const mockedTetromino = new Tetromino(
     mockedBlueprintTetrominoTypeJ,
     mockedTetrominoTimer
   );
   placeNewTetromino(mockedTetromino, mockedBoardDimension);
   expect(
-    checkIfCollisionBetweenTetrominoAndOccupiedStaticCells(
-      mockedTetromino,
+    checkIfCollisionBetweenPositionsAndPositions(
+      mockedTetromino.currentPosition,
       mockedOccupiedStaticCells1
     )
   ).toBe(false);
   expect(
-    checkIfCollisionBetweenTetrominoAndOccupiedStaticCells(
-      mockedTetromino,
+    checkIfCollisionBetweenPositionsAndPositions(
+      mockedTetromino.currentPosition,
       mockedOccupiedStaticCells2
     )
   ).toBe(true);

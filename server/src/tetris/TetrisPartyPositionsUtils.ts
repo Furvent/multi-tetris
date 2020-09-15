@@ -50,33 +50,42 @@ export function moveTetrominoWithVector(
   if (tetromino.currentPosition.length <= 0) {
     throw "In moveTetrominoWithVector(), cannot move a tetromino if no current position";
   }
-  tetromino.currentPosition = tetromino.currentPosition.map((pos) => {
+  tetromino.currentPosition = determinateNextPositionsWithVector(
+    tetromino.currentPosition,
+    vector
+  );
+}
+
+// Function check collision with occupiedStaticCells
+// Not optimised
+export function checkIfCollisionBetweenPositionsAndPositions(
+  positions1: GamePosition[],
+  positions2: GamePosition[]
+): boolean {
+  return positions1.some((pos1) => {
+    return positions2.some((pos2) =>
+      checkIfCollsionBetweenTwoPos(pos1, pos2)
+    );
+  });
+}
+
+export function checkIfCollisionBetweenPositionsAndBoardBottom(
+  positions: GamePosition[],
+  boardHeight: number
+): boolean {
+  return positions.some((pos) => pos.y > boardHeight);
+}
+
+export function determinateNextPositionsWithVector(
+  currentPos: GamePosition[],
+  vector: Vector
+): GamePosition[] {
+  return currentPos.map((pos) => {
     return {
       x: pos.x + vector.x,
       y: pos.y + vector.y,
     };
   });
-}
-
-// Function check collision with occupiedStaticCells
-// Not optimised
-export function checkIfCollisionBetweenTetrominoAndOccupiedStaticCells(
-  tetromino: Tetromino,
-  occupiedCells: GamePosition[]
-): boolean {
-  return tetromino.currentPosition.some((tetrominoPos) => {
-    return occupiedCells.some((occupiedCell) =>
-      checkIfCollsionBetweenTwoPos(tetrominoPos, occupiedCell)
-    );
-  });
-}
-
-// Function check collision with board's bottom
-export function checkIfCollisionBetweenTetrominoAndBoardBottom(
-  tetromino: Tetromino,
-  boardHeight: number
-): boolean {
-  return tetromino.currentPosition.some((pos) => pos.y > boardHeight);
 }
 
 function checkIfCollsionBetweenTwoPos(
