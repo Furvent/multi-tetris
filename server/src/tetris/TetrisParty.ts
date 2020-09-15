@@ -11,13 +11,17 @@ import { TetrominoBlueprint } from "./Tetromino";
 import fs from "fs";
 import { LobbyUser } from "../lobby/LobbyUser";
 import { GenericGameState } from "../party/enum/GameState";
+import { placeNewTetromino, BoardDimension } from "./TetrisPartyPositionsUtils";
 
 /**
  * This class is the Tetris party controller
  */
 export class TetrisParty extends IParty implements ISocketIORoom {
 
-  private readonly BOARD_WIDTH = 10;
+  private readonly BOARD_DIMENSION: BoardDimension = {
+    width: 10,
+    height: 22,
+  }
   private readonly BOARD_HEIGHT = 22;
   private readonly TETROMINO_MOVEMENT_TIMER = 2000; // milliseconds
 
@@ -90,16 +94,19 @@ export class TetrisParty extends IParty implements ISocketIORoom {
         if (player.haveNoTetrominoOnBoard()) {
           player.board.assignNewTetrominoOnBoard();
           // Set position
-          const tetromino = player.board.currentTetrominoOnBoard;
-          if (!tetromino) {
+          const newTetromino = player.board.currentTetrominoOnBoard;
+          if (!newTetromino) {
             throw 'Cannot set new tetromino on board, value is null'
           }
-          
-          
+          placeNewTetromino(newTetromino, this.BOARD_DIMENSION)
         }
         // check if player input
         // If input, set tetromino pos
         // check tetromino movement timer
+        if (player.board.currentTetrominoOnBoard?.movementTimerEnded()) {
+          // Move tetromino to the bottom
+          
+        }
         // If over, set tetromino pos
         // check position and collision
       } catch (error) {
