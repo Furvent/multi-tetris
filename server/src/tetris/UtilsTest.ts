@@ -44,3 +44,17 @@ export const mockedBoardDimension: BoardDimension = {
   width: 10,
   height: 22,
 }
+
+export const mockedOccupiedStaticCells1: GamePosition[] = [
+  {x: 4, y: 22},
+  {x: 5, y: 22},
+  {x: 6, y: 22},
+  {x: 7, y: 22},
+]
+
+export const mockedOccupiedStaticCells2: GamePosition[] = [
+  {x: 4, y: 2},
+  {x: 5, y: 2},
+  {x: 6, y: 2},
+  {x: 7, y: 2},
+]

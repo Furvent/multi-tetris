@@ -11,7 +11,7 @@ import { TetrominoBlueprint } from "./Tetromino";
 import fs from "fs";
 import { LobbyUser } from "../lobby/LobbyUser";
 import { GenericGameState } from "../party/enum/GameState";
-import { placeNewTetromino, BoardDimension } from "./TetrisPartyPositionsUtils";
+import { placeNewTetromino, BoardDimension, moveTetrominoWithVector } from "./TetrisPartyPositionsUtils";
 
 /**
  * This class is the Tetris party controller
@@ -105,10 +105,13 @@ export class TetrisParty extends IParty implements ISocketIORoom {
         // check tetromino movement timer
         if (player.board.currentTetrominoOnBoard?.movementTimerEnded()) {
           // Move tetromino to the bottom
-          
+          moveTetrominoWithVector(player.board.currentTetrominoOnBoard, {x: 0, y: 1});
+          // Reinit timer
+          player.board.currentTetrominoOnBoard.launchTimer();
         }
-        // If over, set tetromino pos
         // check position and collision
+          // Collision with board.occupiedStaticCells
+          // Collision with board's bottom
       } catch (error) {
         log.error(`Problem in update loop of player with gameId ${player.gameId}: ${error}`)
       }
@@ -166,7 +169,7 @@ export class TetrisParty extends IParty implements ISocketIORoom {
     }
   }
 
-  private checkIfAllPlayersLoadedTheGameAndSetTetrisGameState(): void {
+  checkIfAllPlayersLoadedTheGameAndSetTetrisGameState(): void {
     if (this.players.every((player) => player.hasLoadedGame)) {
       this.gameState = GenericGameState.Running;
     }

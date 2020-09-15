@@ -70,8 +70,12 @@ export class Tetromino {
   /**
    * Use to know if tetromino can be moved
    */
-  public movementTimerEnded() {
+  public movementTimerEnded(): boolean {
     return this.timer.isOver;
+  }
+
+  public launchTimer(): void {
+    this.timer.launch();
   }
 }
 

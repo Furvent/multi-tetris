@@ -48,14 +48,42 @@ export function moveTetrominoWithVector(
   vector: Vector
 ): void {
   if (tetromino.currentPosition.length <= 0) {
-    throw 'In moveTetrominoWithVector(), cannot move a tetromino if no current position'
+    throw "In moveTetrominoWithVector(), cannot move a tetromino if no current position";
   }
-  tetromino.currentPosition = tetromino.currentPosition.map(pos => {
+  tetromino.currentPosition = tetromino.currentPosition.map((pos) => {
     return {
       x: pos.x + vector.x,
-      y: pos.y + vector.y
-    }
-  })
+      y: pos.y + vector.y,
+    };
+  });
+}
+
+// Function check collision with occupiedStaticCells
+// Not optimised
+export function checkIfCollisionBetweenTetrominoAndOccupiedStaticCells(
+  tetromino: Tetromino,
+  occupiedCells: GamePosition[]
+): boolean {
+  return tetromino.currentPosition.some((tetrominoPos) => {
+    return occupiedCells.some((occupiedCell) =>
+      checkIfCollsionBetweenTwoPos(tetrominoPos, occupiedCell)
+    );
+  });
+}
+
+// Function check collision with board's bottom
+export function checkIfCollisionBetweenTetrominoAndBoardBottom(
+  tetromino: Tetromino,
+  boardHeight: number
+): boolean {
+  return tetromino.currentPosition.some((pos) => pos.y > boardHeight);
+}
+
+function checkIfCollsionBetweenTwoPos(
+  pos1: GamePosition,
+  pos2: GamePosition
+): boolean {
+  return pos1.x === pos2.x && pos1.y === pos2.y;
 }
 
 export type BoardDimension = {
