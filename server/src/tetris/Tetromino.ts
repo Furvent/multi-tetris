@@ -1,10 +1,10 @@
 import { GameTimer } from "../utils/GameTimer";
-import { GamePosition } from "./TetrisGameBoard";
+import { BoardPosition } from "../../../share/types/tetris/tetrisGameData";
 
 export class Tetromino {
   blueprint: TetrominoBlueprint;
   currentDirection: TetrominoDirection;
-  private _currentPosition: GamePosition[];
+  private _currentPosition: BoardPosition[];
   timer: GameTimer;
 
   constructor(
@@ -18,15 +18,15 @@ export class Tetromino {
     this.timer = new GameTimer(moveTick);
   }
 
-  get currentPosition(): GamePosition[] {
+  get currentPosition(): BoardPosition[] {
     return this._currentPosition;
   }
 
-  set currentPosition(newPosition: GamePosition[]) {
+  set currentPosition(newPosition: BoardPosition[]) {
     this._currentPosition = newPosition;
   }
 
-  public getCurrentShape(): GamePosition[] {
+  public getCurrentShape(): BoardPosition[] {
     return this.blueprint.shapes[this.currentDirection];
   }
 
@@ -97,10 +97,10 @@ export type TetrominoBlueprint = {
   name: string;
   side: number;
   shapes: {
-    top: GamePosition[];
-    right: GamePosition[];
-    bottom: GamePosition[];
-    left: GamePosition[];
+    top: BoardPosition[];
+    right: BoardPosition[];
+    bottom: BoardPosition[];
+    left: BoardPosition[];
   };
 }
 

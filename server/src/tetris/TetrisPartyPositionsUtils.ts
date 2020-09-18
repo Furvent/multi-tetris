@@ -1,5 +1,5 @@
 import { Tetromino } from "./Tetromino";
-import { GamePosition } from "./TetrisGameBoard";
+import { BoardPosition } from "../../../share/types/tetris/tetrisGameData";
 
 /**
  * Use to place a new tetronimo on the board
@@ -31,7 +31,7 @@ export function placeNewTetromino(
  */
 export function determinateTetrominoPositionOnBoard(
   tetromino: Tetromino,
-  tetrominoAreaOriginPosition: GamePosition
+  tetrominoAreaOriginPosition: BoardPosition
 ): void {
   // We find in blueprint shapes the good one, determinate by direction
   const shape = tetromino.getCurrentShape();
@@ -59,8 +59,8 @@ export function moveTetrominoWithVector(
 // Function check collision with occupiedStaticCells
 // Not optimised
 export function checkIfCollisionBetweenPositionsAndPositions(
-  positions1: GamePosition[],
-  positions2: GamePosition[]
+  positions1: BoardPosition[],
+  positions2: BoardPosition[]
 ): boolean {
   return positions1.some((pos1) => {
     return positions2.some((pos2) =>
@@ -70,16 +70,16 @@ export function checkIfCollisionBetweenPositionsAndPositions(
 }
 
 export function checkIfCollisionBetweenPositionsAndBoardBottom(
-  positions: GamePosition[],
+  positions: BoardPosition[],
   boardHeight: number
 ): boolean {
   return positions.some((pos) => pos.y > boardHeight);
 }
 
 export function determinateNextPositionsWithVector(
-  currentPos: GamePosition[],
+  currentPos: BoardPosition[],
   vector: Vector
-): GamePosition[] {
+): BoardPosition[] {
   return currentPos.map((pos) => {
     return {
       x: pos.x + vector.x,
@@ -89,8 +89,8 @@ export function determinateNextPositionsWithVector(
 }
 
 function checkIfCollsionBetweenTwoPos(
-  pos1: GamePosition,
-  pos2: GamePosition
+  pos1: BoardPosition,
+  pos2: BoardPosition
 ): boolean {
   return pos1.x === pos2.x && pos1.y === pos2.y;
 }

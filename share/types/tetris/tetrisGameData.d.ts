@@ -16,7 +16,7 @@ export type TetrisPublicPlayerGameData = {
   gameId: number;
   pseudo: string;
   staticCells: BoardPosition[]
-  currentTetrominoCells: BoardPosition []
+  currentTetrominoCells?: BoardPosition []
 }
 
 export type BoardPosition = {

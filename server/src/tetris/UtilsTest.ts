@@ -1,6 +1,6 @@
 import { TetrominoBlueprint } from "./Tetromino";
 import { BoardDimension } from "./TetrisPartyPositionsUtils";
-import { GamePosition } from "./TetrisGameBoard";
+import { BoardPosition } from "../../../share/types/tetris/tetrisGameData";
 
 export const mockedBlueprintTetrominoTypeJ: TetrominoBlueprint = {
   name: "J",
@@ -33,7 +33,7 @@ export const mockedBlueprintTetrominoTypeJ: TetrominoBlueprint = {
   },
 };
 
-export const mockedTetrominoTypeJPositionsCreationAtRight: GamePosition[] = [
+export const mockedTetrominoTypeJPositionsCreationAtRight: BoardPosition[] = [
   {x: 4, y: 1},
   {x: 4, y: 2},
   {x: 5, y: 2},
@@ -45,14 +45,14 @@ export const mockedBoardDimension: BoardDimension = {
   height: 22,
 }
 
-export const mockedOccupiedStaticCells1: GamePosition[] = [
+export const mockedOccupiedStaticCells1: BoardPosition[] = [
   {x: 4, y: 22},
   {x: 5, y: 22},
   {x: 6, y: 22},
   {x: 7, y: 22},
 ]
 
-export const mockedOccupiedStaticCells2: GamePosition[] = [
+export const mockedOccupiedStaticCells2: BoardPosition[] = [
   {x: 4, y: 2},
   {x: 5, y: 2},
   {x: 6, y: 2},

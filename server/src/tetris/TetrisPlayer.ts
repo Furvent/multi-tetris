@@ -1,9 +1,8 @@
 import { IngamePlayer } from "../party/IngamePlayer";
 import { LobbyUser } from "../lobby/LobbyUser";
-import { TetrisPrivatePlayerGameData } from "../../../share/types/tetris/tetrisPrivatePlayerGameData";
-import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPublicPlayerGameData";
 import { TetrominoBlueprint } from "./Tetromino";
 import { TetrisGameBoard } from "./TetrisGameBoard";
+import { TetrisPrivatePlayerGameData, TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisGameData";
 
 export class TetrisPlayer extends IngamePlayer {
   private _board: TetrisGameBoard;
@@ -33,7 +32,7 @@ export class TetrisPlayer extends IngamePlayer {
   public exportPrivateGameData(): TetrisPrivatePlayerGameData {
     return {
       ...this.exportPublicGameData(),
-      isDisconnected: this.isDisconnected,
+      debugMessage: "This part is in construction",
     };
   }
 
@@ -41,6 +40,8 @@ export class TetrisPlayer extends IngamePlayer {
     return {
       gameId: this.gameId,
       pseudo: this.pseudo,
+      currentTetrominoCells: this._board.currentTetrominoOnBoard?.currentPosition,
+      staticCells: this._board.occupiedStaticCells
     };
   }
 }

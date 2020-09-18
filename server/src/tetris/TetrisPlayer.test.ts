@@ -70,7 +70,8 @@ test("Export private game data", () => {
   expect(mockedTetrisPlayer?.exportPrivateGameData()).toEqual({
     gameId: 0,
     pseudo: "Bob",
-    isDisconnected: false,
+    debugMessage: "This part is in construction",
+    staticCells: [],
   });
 });
 

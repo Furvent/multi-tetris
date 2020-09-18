@@ -4,8 +4,7 @@ import { TetrisPlayer } from "./TetrisPlayer";
 import { ISocketIORoom } from "../interfaces/ISocketIORoom";
 import * as events from "../socket/tetris/index";
 import log from "../private-module/PrivateLogger";
-import { TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisPublicPlayerGameData";
-import { TetrisGameData } from "../../../share/types/tetris/tetrisGameData";
+import { TetrisGameData, TetrisPublicPlayerGameData, BoardPosition } from "../../../share/types/tetris/tetrisGameData";
 import { IngamePlayer } from "../party/IngamePlayer";
 import { TetrominoBlueprint, Tetromino } from "./Tetromino";
 import fs from "fs";
@@ -19,7 +18,6 @@ import {
   checkIfCollisionBetweenPositionsAndPositions,
   determinateNextPositionsWithVector,
 } from "./TetrisPartyPositionsUtils";
-import { GamePosition } from "./TetrisGameBoard";
 
 /**
  * This class is the Tetris party controller
@@ -187,7 +185,7 @@ export class TetrisParty extends IParty implements ISocketIORoom {
       this.players.forEach((player) => {
         // .join is async call, that's why we emit the event to load game only when we are sure socket is in the room
         player.socket.join(this.socketIORoomName, () => {
-          events.emitAskClientToLoadGame(player.socket);
+          events.emitAskClientToLoadGame(player.socket, {numberOfPlayer: this.players.length, boardDimension: this.BOARD_DIMENSION});
         });
         events.loadTetrisEventsListener(player.socket);
       });
@@ -228,8 +226,8 @@ export class TetrisParty extends IParty implements ISocketIORoom {
   }
 
   private checkIfTetrominoNextPosHaveCollision(
-    nextTetrominoPos: GamePosition[],
-    boardOccupiedStaticCells: GamePosition[]
+    nextTetrominoPos: BoardPosition[],
+    boardOccupiedStaticCells: BoardPosition[]
   ) {
     {
       return (

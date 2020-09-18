@@ -1,6 +1,7 @@
 import log from "../private-module/PrivateLogger";
 import { TetrominoBlueprint, Tetromino, TetrominoDirection } from "./Tetromino";
 import { shuffle } from "../utils/index";
+import { BoardPosition } from "../../../share/types/tetris/tetrisGameData";
 
 /**
  * An Tetris grid is 10 cells width and 22 cells height. Means it's 220 cells numbered 1 to 220, from left top to right bottom.
@@ -9,7 +10,7 @@ export class TetrisGameBoard {
   /**
    * Array use to store cells occupied by static tetromino at the bottom of the board.
    */
-  private _occupiedStaticCells: GamePosition[];
+  private _occupiedStaticCells: BoardPosition[];
   private _tetrominosSequence: string[];
   private _currentTetrominoOnBoard: Tetromino | null;
   private readonly tetrominosConfig: TetrominoBlueprint[];
@@ -23,15 +24,15 @@ export class TetrisGameBoard {
     this.tetrominoMovementTimer = tetrominoMovementTimer;
     this._occupiedStaticCells = [];
     this._tetrominosSequence = [];
-    this._currentTetrominoOnBoard = null;
     this.createTetrominosSequence();
+    this._currentTetrominoOnBoard = null;
   }
 
   get tetrominosSequence(): string[] {
     return this._tetrominosSequence;
   }
 
-  get occupiedStaticCells(): GamePosition[] {
+  get occupiedStaticCells(): BoardPosition[] {
     return this._occupiedStaticCells;
   }
 
@@ -90,8 +91,3 @@ export class TetrisGameBoard {
    */
   public updateLoop() {}
 }
-
-export type GamePosition = {
-  x: number;
-  y: number;
-};
