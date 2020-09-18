@@ -220,7 +220,7 @@ export class TetrisParty extends IParty implements ISocketIORoom {
   ): void {
     const payload: TetrisGameData = {
       privateData: player.exportPrivateGameData(),
-      otherPlayersData: playersGameData.filter(
+      othersPlayersData: playersGameData.filter(
         (otherPlayer) => otherPlayer.gameId !== player.gameId
       ),
     };

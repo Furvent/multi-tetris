@@ -1,6 +1,8 @@
+import { BoardDimension } from "../../../../../../../share/types/tetris/tetrisGameData";
+
 export class TetrisGameRenderer {
   private ctx: CanvasRenderingContext2D;
-  private numberOfplayers: number;
+  private numberOfPlayers: number;
   private playersBoardsTopLeftAnchors: PlayerBoardTopLeftAnchor[];
   /**
    * Pixel, generate at instantiation
@@ -18,15 +20,19 @@ export class TetrisGameRenderer {
   private readonly BORDER_BOARD_THICK = 3;
 
   private readonly COLOR_BORDER_BOARD = "#333333";
-  private readonly COLOR_TEXT_HEADER = "#FF0000";
   private readonly COLOR_CELL_OCCUPIED = "#00FF00";
+  private readonly COLOR_TEXT_HEADER = "#FF0000";
+  private readonly COLOR_TEXT_FOOTER = "#0000FF";
 
   constructor(
     ctx: CanvasRenderingContext2D,
-    numberOfplayers: number,
-    boardDimension: BoardDimension
+    boardDimension: BoardDimension,
+    numberOfPlayers: number
   ) {
-    this.numberOfplayers = numberOfplayers;
+    if (!ctx) throw `In TetrisGameRenderer, no ctx provided`;
+    if (!boardDimension) throw `In TetrisGameRenderer, no board dimension provided`
+    if (!numberOfPlayers) throw `In TetrisGameRenderer, no number of players provided`
+    this.numberOfPlayers = numberOfPlayers;
     this.ctx = ctx;
     this.playersBoardsTopLeftAnchors = this.determinateTopLeftAnchors();
     this.BOARD_WIDTH = Math.round(this.CELL_PIXEL_SIZE * boardDimension.width);
@@ -42,7 +48,9 @@ export class TetrisGameRenderer {
     try {
       // Local player grid is always at the left
       this.drawLocalPlayerGrid(localPlayerDataToDraw);
-      this.drawOthersPlayersGrids(othersPlayersDataToDraw);
+      if (this.numberOfPlayers > 1) {
+        this.drawOthersPlayersGrids(othersPlayersDataToDraw);
+      }
     } catch (error) {
       `Error on render: ${error}`;
     }
@@ -50,7 +58,7 @@ export class TetrisGameRenderer {
 
   private determinateTopLeftAnchors(): PlayerBoardTopLeftAnchor[] {
     const topLeftAnchorsList: PlayerBoardTopLeftAnchor[] = [];
-    for (let index = 0; index < this.numberOfplayers; index++) {
+    for (let index = 0; index < this.numberOfPlayers; index++) {
       topLeftAnchorsList.push({
         anchorPositionOrder: index + 1,
         topLeftAnchor: {
@@ -67,13 +75,29 @@ export class TetrisGameRenderer {
     const anchor = this.getAnchorByPositionOrder(1);
     if (!anchor)
       throw "No anchor found to local player in drawLocalPlayerGrid()";
-    this.drawHeader(anchor, data.board.pseudo);
-    this.drawPlayingField(anchor, data.board);
+    this.drawHeader(anchor, data.pseudo);
+    this.drawPlayingField(anchor, data.staticCells, data.currentTetrominoCells);
     this.drawFooter(anchor, data.debugMessage);
   }
 
   private drawOthersPlayersGrids(data: CommonPlayerBoardDataToDraw[]): void {
-    throw "method drawOthersPlayersGrids() not implemented"
+    data.forEach((boardData, index) => {
+      const playerBoardAnchor = this.getAnchorByPositionOrder(index + 2);
+      if (!playerBoardAnchor) {
+        throw `In drawOthersPlayersGrids(), no player board anchor at position ${index +
+          2}`;
+      }
+      this.drawOtherPlayer(boardData, playerBoardAnchor);
+    });
+  }
+
+  drawOtherPlayer(
+    boardData: CommonPlayerBoardDataToDraw,
+    anchor: CanvasPosition
+  ): void {
+    this.drawHeader(anchor, boardData.pseudo);
+    this.drawPlayingField(anchor, boardData.staticCells, boardData.currentTetrominoCells);
+    this.drawFooter(anchor);
   }
 
   private drawHeader(anchor: CanvasPosition, pseudo: string): void {
@@ -96,7 +120,8 @@ export class TetrisGameRenderer {
 
   private drawPlayingField(
     anchor: CanvasPosition,
-    board: CommonPlayerBoardDataToDraw
+    staticCells: BoardPosition[],
+    tetromino: BoardPosition[]
   ): void {
     const playingFieldAnchor: CanvasPosition = {
       x: anchor.x,
@@ -112,7 +137,8 @@ export class TetrisGameRenderer {
     );
     // Draw occupied cell:
     this.ctx.fillStyle = this.COLOR_CELL_OCCUPIED;
-    const cellsToColor = board.currentTetrominoCells.concat(board.staticsCells);
+    // Draw in same color tetromino and static cells
+    const cellsToColor = tetromino.concat(staticCells);
     cellsToColor.forEach((cell) => {
       const cellPosOnCanvas = this.translatePosFromBoardCellToCanvasPixel(
         cell,
@@ -127,7 +153,10 @@ export class TetrisGameRenderer {
     });
   }
 
-  private drawFooter(anchor: CanvasPosition, debugMessage: string): void {
+  private drawFooter(
+    anchor: CanvasPosition,
+    debugMessage = "no data for now"
+  ): void {
     const footerAnchor = {
       x: anchor.x,
       y: anchor.y + this.HEADER_HEIGHT + this.PLAYING_FIELD_HEIGHT,
@@ -138,6 +167,13 @@ export class TetrisGameRenderer {
       footerAnchor.y,
       this.BOARD_WIDTH,
       this.FOOTER_HEIGHT
+    );
+    this.ctx.fillStyle = this.COLOR_TEXT_FOOTER;
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(
+      debugMessage,
+      Math.round(footerAnchor.x + this.BOARD_WIDTH / 2), // X pos on canvas
+      Math.round(footerAnchor.y + this.FOOTER_HEIGHT / 2) // Y pos on canvas
     );
   }
 
@@ -184,18 +220,12 @@ type BoardPosition = {
   y: number;
 };
 
-type BoardDimension = {
-  width: number;
-  height: number;
-};
-
-type LocalPlayerDataToDraw = {
+export interface LocalPlayerDataToDraw extends CommonPlayerBoardDataToDraw {
   debugMessage: string;
-  board: CommonPlayerBoardDataToDraw;
 };
 
-type CommonPlayerBoardDataToDraw = {
-  staticsCells: BoardPosition[];
+export interface CommonPlayerBoardDataToDraw {
+  staticCells: BoardPosition[];
   currentTetrominoCells: BoardPosition[];
   pseudo: string;
 };

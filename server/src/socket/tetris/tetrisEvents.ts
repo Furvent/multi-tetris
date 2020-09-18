@@ -2,7 +2,7 @@ import Server from "../../server";
 
 import { logEmit } from "../../utils/index";
 import log from "../../private-module/PrivateLogger";
-import { TetrisGameData } from "../../../../share/types/tetris/tetrisGameData";
+import { TetrisGameData, InitTetrisPartyData } from "../../../../share/types/tetris/tetrisGameData";
 import { PartiesManager } from "../../party/PartiesManager";
 
 export function tetrisEventsListener(socket: SocketIO.Socket) {
@@ -19,10 +19,10 @@ export function tetrisEventsListener(socket: SocketIO.Socket) {
   })
 }
 
-export function emitAskClientToLoadGame(socket: SocketIO.Socket): void {
+export function emitAskClientToLoadGame(socket: SocketIO.Socket, payload: InitTetrisPartyData): void {
   const eventName = "tetris:askClientToLoadGame";
-  logEmit(eventName, "no-payload");
-  socket.emit(eventName);
+  logEmit(eventName, payload);
+  socket.emit(eventName, payload);
 }
 
 export function emitTetrisGameData(

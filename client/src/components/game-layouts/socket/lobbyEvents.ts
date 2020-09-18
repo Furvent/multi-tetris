@@ -5,6 +5,7 @@ import { PayloadCreateSoloParty } from "../../../../../share/types/PayloadCreate
 import { logEmit, logListener } from "@/utils";
 import { Store } from "vuex";
 import { State } from "../tetris/store/lobby-tetris-store";
+import { InitTetrisPartyData } from '../../../../../share/types/tetris/tetrisGameData';
 
 /**
  * The type Store<State> is maybe a wrong way to handle vuex's store with typescript
@@ -31,7 +32,9 @@ export function loadLobbyEventsListener(
     store.commit("setPublicLobbies", lobbies);
   });
 
-  socket.on("tetris:askClientToLoadGame", () => {
+  socket.on("tetris:askClientToLoadGame", (payload: InitTetrisPartyData) => {
+    store.commit("setNumberOfPlayer", payload.numberOfPlayer);
+    store.commit("setBoardDimension", payload.boardDimension);
     store.commit("setHaveServerAskedToLoadGame", true);
   })
 }
