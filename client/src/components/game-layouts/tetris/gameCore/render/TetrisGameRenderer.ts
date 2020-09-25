@@ -30,8 +30,10 @@ export class TetrisGameRenderer {
     numberOfPlayers: number
   ) {
     if (!ctx) throw `In TetrisGameRenderer, no ctx provided`;
-    if (!boardDimension) throw `In TetrisGameRenderer, no board dimension provided`
-    if (!numberOfPlayers) throw `In TetrisGameRenderer, no number of players provided`
+    if (!boardDimension)
+      throw `In TetrisGameRenderer, no board dimension provided`;
+    if (!numberOfPlayers)
+      throw `In TetrisGameRenderer, no number of players provided`;
     this.numberOfPlayers = numberOfPlayers;
     this.ctx = ctx;
     this.playersBoardsTopLeftAnchors = this.determinateTopLeftAnchors();
@@ -96,7 +98,11 @@ export class TetrisGameRenderer {
     anchor: CanvasPosition
   ): void {
     this.drawHeader(anchor, boardData.pseudo);
-    this.drawPlayingField(anchor, boardData.staticCells, boardData.currentTetrominoCells);
+    this.drawPlayingField(
+      anchor,
+      boardData.staticCells,
+      boardData.currentTetrominoCells
+    );
     this.drawFooter(anchor);
   }
 
@@ -121,7 +127,7 @@ export class TetrisGameRenderer {
   private drawPlayingField(
     anchor: CanvasPosition,
     staticCells: BoardPosition[],
-    tetromino: BoardPosition[]
+    tetromino: BoardPosition[] = []
   ): void {
     const playingFieldAnchor: CanvasPosition = {
       x: anchor.x,
@@ -137,7 +143,7 @@ export class TetrisGameRenderer {
     );
     // Draw occupied cell:
     this.ctx.fillStyle = this.COLOR_CELL_OCCUPIED;
-    // Draw in same color tetromino and static cells
+    // Draw in same color tetromino and static cells. May change.
     const cellsToColor = tetromino.concat(staticCells);
     cellsToColor.forEach((cell) => {
       const cellPosOnCanvas = this.translatePosFromBoardCellToCanvasPixel(
@@ -222,10 +228,10 @@ type BoardPosition = {
 
 export interface LocalPlayerDataToDraw extends CommonPlayerBoardDataToDraw {
   debugMessage: string;
-};
+}
 
 export interface CommonPlayerBoardDataToDraw {
   staticCells: BoardPosition[];
-  currentTetrominoCells: BoardPosition[];
+  currentTetrominoCells?: BoardPosition[];
   pseudo: string;
-};
+}

@@ -1,7 +1,11 @@
 import { GameInput } from "./GameInput";
 import { TetrisGameRenderer } from "./render/TetrisGameRenderer";
 import { Store } from "vuex";
-import { BoardDimension, TetrisPrivatePlayerGameData, TetrisPublicPlayerGameData } from "../../../../../../share/types/tetris/tetrisGameData";
+import {
+  BoardDimension,
+  TetrisPrivatePlayerGameData,
+  TetrisPublicPlayerGameData,
+} from "../../../../../../share/types/tetris/tetrisGameData";
 
 export class TetrisGameController {
   readonly FPS = 30;
@@ -27,7 +31,8 @@ export class TetrisGameController {
     this.store = store;
     try {
       const numberOfPlayers: number = this.store.getters.getNumberOfPlayer;
-      const boardDimension: BoardDimension = this.store.getters.getNumberOfPlayer;
+      const boardDimension: BoardDimension = this.store.getters
+        .getNumberOfPlayer;
       this.gameRenderer = new TetrisGameRenderer(
         ctx,
         boardDimension,
@@ -48,10 +53,14 @@ export class TetrisGameController {
       // Force store type
       // TetrisPrivatePlayerGameData && TetrisPublicPlayerGameData is more or less LocalPlayerDataToDraw && CommonPlayerBoardDataToDraw
       // To improve
-      const localPlayerData: TetrisPrivatePlayerGameData = this.store.getters.getLocalPlayerData;
-      const othersPlayersData: TetrisPublicPlayerGameData[] = this.store.getters.getLocalPlayerData;
+      const localPlayerData: TetrisPrivatePlayerGameData = this.store.getters
+        .getLocalPlayerData;
+      const othersPlayersData: TetrisPublicPlayerGameData[] = this.store.getters
+        .getOthersPlayersData;
 
-      this.gameRenderer?.draw(localPlayerData, othersPlayersData);
+      if (this.gameRenderer && localPlayerData && othersPlayersData) {
+        this.gameRenderer.draw(localPlayerData, othersPlayersData);
+      }
     }, this.LOOP_TIMEOUT);
   }
 }

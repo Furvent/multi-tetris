@@ -7,6 +7,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import { TetrisGameController, TetrisGameOptions } from "../gameCore/TetrisGameController";
 import {
   loadTetrisPartyEventsListener,
   emitClientLoadedGame,
@@ -30,6 +31,10 @@ export default class extends Vue {
     setTimeout(() => {
       emitClientLoadedGame(this.playerSocket);
     }, 1000);
+    const options: TetrisGameOptions = {
+      numberOfPlayer: this.$store.getters.getNumberOfPlayer
+    }
+    const party = new TetrisGameController(this.ctx, this.playerSocket, options, this.$store);
   }
 
   get playerSocket(): SocketIOClient.Socket {
