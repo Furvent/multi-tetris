@@ -11,8 +11,8 @@ export default {
 
   getters: {
     getFullGameData: (state: StateParty) => state.gameData,
-    getLocalPlayerData: (state: StateParty) => state.gameData?.privateData,
-    getOthersPlayersData: (state: StateParty) => state.gameData?.othersPlayersData,
+    getLocalPlayerData: (state: StateParty) => state.gameData.privateData || null,
+    getOthersPlayersData: (state: StateParty) => state.gameData.othersPlayersData || null,
     getOwnGameData: (state: StateParty) => state.gameData.privateData,
     getOtherPlayersGameData: (state: StateParty) =>
       state.gameData.othersPlayersData,
