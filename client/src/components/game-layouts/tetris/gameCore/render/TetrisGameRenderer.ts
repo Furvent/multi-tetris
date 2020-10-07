@@ -36,25 +36,26 @@ export class TetrisGameRenderer {
       throw `In TetrisGameRenderer, no number of players provided`;
     this.numberOfPlayers = numberOfPlayers;
     this.ctx = ctx;
-    this.playersBoardsTopLeftAnchors = this.determinateTopLeftAnchors();
     this.BOARD_WIDTH = Math.round(this.CELL_PIXEL_SIZE * boardDimension.width);
     this.PLAYING_FIELD_HEIGHT = Math.round(
       this.CELL_PIXEL_SIZE * boardDimension.height
     );
+    this.playersBoardsTopLeftAnchors = this.determinateTopLeftAnchors();
   }
 
   public draw(
     localPlayerDataToDraw: LocalPlayerDataToDraw,
-    othersPlayersDataToDraw: CommonPlayerBoardDataToDraw[]
+    othersPlayersDataToDraw: CommonPlayerBoardDataToDraw[] | null
   ) {
+    console.log("draw called in GameRenderer");
     try {
       // Local player grid is always at the left
       this.drawLocalPlayerGrid(localPlayerDataToDraw);
-      if (this.numberOfPlayers > 1) {
+      if (this.numberOfPlayers > 1 && othersPlayersDataToDraw) {
         this.drawOthersPlayersGrids(othersPlayersDataToDraw);
       }
     } catch (error) {
-      `Error on render: ${error}`;
+      console.error(`Error on render: ${error}`);
     }
   }
 

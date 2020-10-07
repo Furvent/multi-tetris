@@ -1,4 +1,7 @@
-import { TetrisGameData, BoardDimension } from "../../../../../../share/types/tetris/tetrisGameData";
+import {
+  TetrisGameData,
+  BoardDimension,
+} from "../../../../../../share/types/tetris/tetrisGameData";
 
 // Not type safe for now, to further amelioration, search vuex-module-decorator
 export default {
@@ -11,8 +14,20 @@ export default {
 
   getters: {
     getFullGameData: (state: StateParty) => state.gameData,
-    getLocalPlayerData: (state: StateParty) => state.gameData.privateData || null,
-    getOthersPlayersData: (state: StateParty) => state.gameData.othersPlayersData || null,
+    getLocalPlayerData: (state: StateParty) => {
+      if (state.gameData) {
+        return state.gameData.privateData || null;
+      } else {
+        return null;
+      }
+    },
+    getOthersPlayersData: (state: StateParty) => {
+      if (state.gameData) {
+        return state.gameData.othersPlayersData || null;
+      } else {
+        return null;
+      }
+    },
     getOwnGameData: (state: StateParty) => state.gameData.privateData,
     getOtherPlayersGameData: (state: StateParty) =>
       state.gameData.othersPlayersData,

@@ -31,17 +31,19 @@ export class TetrisGameController {
     this.store = store;
     try {
       const numberOfPlayers: number = this.store.getters.getNumberOfPlayer;
-      const boardDimension: BoardDimension = this.store.getters
-        .getNumberOfPlayer;
+      const boardDimension: BoardDimension = {
+        width: 10,
+        height: 22,
+      };
       this.gameRenderer = new TetrisGameRenderer(
         ctx,
         boardDimension,
         numberOfPlayers
       );
+      this.init();
     } catch (error) {
       console.error(`Error when init TetrisGameController: ${error}`);
     }
-    this.init();
   }
 
   private init() {
@@ -58,7 +60,7 @@ export class TetrisGameController {
       const othersPlayersData: TetrisPublicPlayerGameData[] = this.store.getters
         .getOthersPlayersData;
 
-      if (this.gameRenderer && localPlayerData && othersPlayersData) {
+      if (this.gameRenderer && localPlayerData) {
         this.gameRenderer.draw(localPlayerData, othersPlayersData);
       }
     }, this.LOOP_TIMEOUT);
