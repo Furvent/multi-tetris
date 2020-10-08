@@ -18,12 +18,11 @@ export class TetrisGameController {
   private store: Store<any>;
 
   constructor(
-    ctx: CanvasRenderingContext2D,
+    canvasRefs: CanvasRefs,
     playerSocket: SocketIOClient.Socket,
     options: TetrisGameOptions,
     store: Store<any>
   ) {
-    // this.ctx = ctx;
     this.pSocket = playerSocket;
     this.options = options;
     this.gameInput = new GameInput();
@@ -36,7 +35,11 @@ export class TetrisGameController {
         height: 22,
       };
       this.gameRenderer = new TetrisGameRenderer(
-        ctx,
+        canvasRefs.ctx,
+        {
+          width: canvasRefs.canvas.width,
+          height: canvasRefs.canvas.height,
+        },
         boardDimension,
         numberOfPlayers
       );
@@ -70,3 +73,8 @@ export class TetrisGameController {
 export interface TetrisGameOptions {
   numberOfPlayer: number;
 }
+
+type CanvasRefs = {
+  ctx: CanvasRenderingContext2D;
+  canvas: any;
+};

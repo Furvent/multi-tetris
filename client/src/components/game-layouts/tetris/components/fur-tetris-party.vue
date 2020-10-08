@@ -31,7 +31,10 @@ export default class extends Vue {
       numberOfPlayer: this.$store.getters.getNumberOfPlayer,
     };
     this.party = new TetrisGameController(
-      this.ctx,
+      {
+        ctx: this.ctx,
+        canvas
+      },
       this.playerSocket,
       options,
       this.$store

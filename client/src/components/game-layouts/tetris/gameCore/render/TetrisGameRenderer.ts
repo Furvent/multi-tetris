@@ -1,7 +1,11 @@
-import { BoardDimension } from "../../../../../../../share/types/tetris/tetrisGameData";
+import {
+  BoardDimension,
+  BoardPosition,
+} from "../../../../../../../share/types/tetris/tetrisGameData";
 
 export class TetrisGameRenderer {
   private ctx: CanvasRenderingContext2D;
+  private canvasDimension: CanvasDimension;
   private numberOfPlayers: number;
   private playersBoardsTopLeftAnchors: PlayerBoardTopLeftAnchor[];
   /**
@@ -26,6 +30,7 @@ export class TetrisGameRenderer {
 
   constructor(
     ctx: CanvasRenderingContext2D,
+    canvasDimension: CanvasDimension,
     boardDimension: BoardDimension,
     numberOfPlayers: number
   ) {
@@ -36,6 +41,7 @@ export class TetrisGameRenderer {
       throw `In TetrisGameRenderer, no number of players provided`;
     this.numberOfPlayers = numberOfPlayers;
     this.ctx = ctx;
+    this.canvasDimension = canvasDimension;
     this.BOARD_WIDTH = Math.round(this.CELL_PIXEL_SIZE * boardDimension.width);
     this.PLAYING_FIELD_HEIGHT = Math.round(
       this.CELL_PIXEL_SIZE * boardDimension.height
@@ -49,6 +55,12 @@ export class TetrisGameRenderer {
   ) {
     console.log("draw called in GameRenderer");
     try {
+      this.ctx.clearRect(
+        0,
+        0,
+        this.canvasDimension.width,
+        this.canvasDimension.height
+      );
       // Local player grid is always at the left
       this.drawLocalPlayerGrid(localPlayerDataToDraw);
       if (this.numberOfPlayers > 1 && othersPlayersDataToDraw) {
@@ -219,12 +231,9 @@ type CanvasPosition = {
   y: number;
 };
 
-/**
- * Cell position on board
- */
-type BoardPosition = {
-  x: number;
-  y: number;
+export type CanvasDimension = {
+  width: number;
+  height: number;
 };
 
 export interface LocalPlayerDataToDraw extends CommonPlayerBoardDataToDraw {
