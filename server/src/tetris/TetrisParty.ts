@@ -102,10 +102,12 @@ export class TetrisParty extends IParty implements ISocketIORoom {
       try {
         // Check if tetromino sequence is empty
         if (player.isTetrominoSequenceEmpty()) {
+          log.debug(`Player ${player.gameId} create a new tetromino sequence`)
           player.board.createTetrominosSequence();
         }
         // Check if no tetromino on board
         if (player.haveNoTetrominoOnBoard()) {
+          log.debug(`Player ${player.gameId} assign new tetromino on board`)
           player.board.assignNewTetrominoOnBoard();
           // Set position
           const newTetromino = player.board.currentTetrominoOnBoard;
@@ -113,6 +115,7 @@ export class TetrisParty extends IParty implements ISocketIORoom {
             throw "Cannot set new tetromino on board, value is null";
           }
           placeNewTetromino(newTetromino, this.BOARD_DIMENSION);
+          newTetromino.launchTimer();
         }
         // check if player input
 
@@ -191,7 +194,7 @@ export class TetrisParty extends IParty implements ISocketIORoom {
       });
     } catch (error) {
       log.error(
-        `Problem in method connectPlayersSocketsToSocketIORoomAndLoadEventsListener():${error}`
+        `Problem in method initiateGame(): ${error}`
       );
     }
   }
