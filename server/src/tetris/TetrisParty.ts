@@ -27,7 +27,7 @@ export class TetrisParty extends IParty implements ISocketIORoom {
     width: 10,
     height: 22,
   };
-  private readonly TETROMINO_MOVEMENT_TIMER = 2000; // milliseconds
+  private readonly TETROMINO_MOVEMENT_TIMER = 500; // milliseconds
 
   id: string;
   socketIORoomName: string;
@@ -129,7 +129,8 @@ export class TetrisParty extends IParty implements ISocketIORoom {
           );
           // If collision
           if (this.checkIfTetrominoNextPosHaveCollision(nextTetrominoPos, player.board.occupiedStaticCells)) {
-            // We freeze tetromino
+            // We remove current tetromino and push coords to static cells
+            player.board.freezeCurrentTetromino();
           } else {
             // Else we move tetromino to the bottom
             moveTetrominoWithVector(player.board.currentTetrominoOnBoard, {

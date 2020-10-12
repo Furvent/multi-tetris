@@ -14,7 +14,7 @@ export class TetrisGameBoard {
   private _tetrominosSequence: string[];
   private _currentTetrominoOnBoard: Tetromino | null;
   private readonly tetrominosConfig: TetrominoBlueprint[];
-  private readonly tetrominoMovementTimer;
+  private readonly tetrominoMovementTimer: number;
 
   constructor(
     tetrominosConfig: TetrominoBlueprint[],
@@ -74,6 +74,15 @@ export class TetrisGameBoard {
     } catch (error) {
       log.error(`Cannot assign new tetromino on board: ${error}`);
     }
+  }
+
+  public freezeCurrentTetromino(): void {
+    if (this.currentTetrominoOnBoard) {
+      this._occupiedStaticCells = [...this.currentTetrominoOnBoard?.currentPosition, ...this._occupiedStaticCells];
+    } else {
+      throw `Can't freeze current tetromino, no current tetromino`;
+    }
+    this._currentTetrominoOnBoard = null;
   }
 
   private getBlueprintWithName(name: string): TetrominoBlueprint {
