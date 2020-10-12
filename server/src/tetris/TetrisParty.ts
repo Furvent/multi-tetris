@@ -190,6 +190,8 @@ export class TetrisParty extends IParty implements ISocketIORoom {
     ) {
       moveTetrominoWithVector(player.board.currentTetrominoOnBoard, direction);
     }
+    // Consume player's input
+    player.input = PlayerInput.NONE;
   }
 
   /**
