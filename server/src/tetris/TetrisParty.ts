@@ -4,20 +4,26 @@ import { TetrisPlayer } from "./TetrisPlayer";
 import { ISocketIORoom } from "../interfaces/ISocketIORoom";
 import * as events from "../socket/tetris/index";
 import log from "../private-module/PrivateLogger";
-import { TetrisGameData, TetrisPublicPlayerGameData, BoardPosition } from "../../../share/types/tetris/tetrisGameData";
+import {
+  TetrisGameData,
+  TetrisPublicPlayerGameData,
+  BoardPosition,
+  BoardDimension,
+} from "../../../share/types/tetris/tetrisGameData";
 import { IngamePlayer } from "../party/IngamePlayer";
-import { TetrominoBlueprint, Tetromino } from "./Tetromino";
+import { TetrominoBlueprint } from "./Tetromino";
 import fs from "fs";
 import { LobbyUser } from "../lobby/LobbyUser";
 import { GenericGameState } from "../party/enum/GameState";
 import {
   placeNewTetromino,
-  BoardDimension,
   moveTetrominoWithVector,
   checkIfCollisionBetweenPositionsAndBoardBottom,
   checkIfCollisionBetweenPositionsAndPositions,
   determinateNextPositionsWithVector,
+  Vector,
 } from "./TetrisPartyPositionsUtils";
+import { PlayerInput } from "./enums";
 
 /**
  * This class is the Tetris party controller
@@ -102,12 +108,12 @@ export class TetrisParty extends IParty implements ISocketIORoom {
       try {
         // Check if tetromino sequence is empty
         if (player.isTetrominoSequenceEmpty()) {
-          log.debug(`Player ${player.gameId} create a new tetromino sequence`)
+          log.debug(`Player ${player.gameId} create a new tetromino sequence`);
           player.board.createTetrominosSequence();
         }
         // Check if no tetromino on board
         if (player.haveNoTetrominoOnBoard()) {
-          log.debug(`Player ${player.gameId} assign new tetromino on board`)
+          log.debug(`Player ${player.gameId} assign new tetromino on board`);
           player.board.assignNewTetrominoOnBoard();
           // Set position
           const newTetromino = player.board.currentTetrominoOnBoard;
@@ -118,8 +124,9 @@ export class TetrisParty extends IParty implements ISocketIORoom {
           newTetromino.launchTimer();
         }
         // check if player input
-
-        // If input, set tetromino pos
+        if (player.input !== PlayerInput.NONE) {
+          this.playerMoveTetromino(player.input, player);
+        }
 
         // check tetromino movement timer
         if (player.board.currentTetrominoOnBoard?.movementTimerEnded()) {
@@ -128,7 +135,12 @@ export class TetrisParty extends IParty implements ISocketIORoom {
             { x: 0, y: 1 }
           );
           // If collision
-          if (this.checkIfTetrominoNextPosHaveCollision(nextTetrominoPos, player.board.occupiedStaticCells)) {
+          if (
+            this.checkIfTetrominoNextPosHaveCollision(
+              nextTetrominoPos,
+              player.board.occupiedStaticCells
+            )
+          ) {
             // We remove current tetromino and push coords to static cells
             player.board.freezeCurrentTetromino();
           } else {
@@ -147,6 +159,37 @@ export class TetrisParty extends IParty implements ISocketIORoom {
         );
       }
     });
+  }
+
+  playerMoveTetromino(playerInput: PlayerInput, player: TetrisPlayer) {
+    if (!player.board.currentTetrominoOnBoard) {
+      throw `No current tetromino, cannot move it with player's input`;
+    }
+    let direction: Vector;
+    switch (playerInput) {
+      case PlayerInput.LEFT:
+        direction = { x: -1, y: 0 };
+        break;
+      case PlayerInput.RIGHT:
+        direction = { x: 1, y: 0 };
+        break;
+      default:
+        return;
+    }
+    const nextTetrominoPos = determinateNextPositionsWithVector(
+      player.board.currentTetrominoOnBoard.currentPosition,
+      direction
+    );
+
+    // If collision, cannot move tetromino
+    if (
+      !this.checkIfTetrominoNextPosHaveCollision(
+        nextTetrominoPos,
+        player.board.occupiedStaticCells
+      )
+    ) {
+      moveTetrominoWithVector(player.board.currentTetrominoOnBoard, direction);
+    }
   }
 
   /**
@@ -189,14 +232,15 @@ export class TetrisParty extends IParty implements ISocketIORoom {
       this.players.forEach((player) => {
         // .join is async call, that's why we emit the event to load game only when we are sure socket is in the room
         player.socket.join(this.socketIORoomName, () => {
-          events.emitAskClientToLoadGame(player.socket, {numberOfPlayer: this.players.length, boardDimension: this.BOARD_DIMENSION});
+          events.emitAskClientToLoadGame(player.socket, {
+            numberOfPlayer: this.players.length,
+            boardDimension: this.BOARD_DIMENSION,
+          });
         });
         events.loadTetrisEventsListener(player.socket);
       });
     } catch (error) {
-      log.error(
-        `Problem in method initiateGame(): ${error}`
-      );
+      log.error(`Problem in method initiateGame(): ${error}`);
     }
   }
 

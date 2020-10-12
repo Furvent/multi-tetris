@@ -2,7 +2,10 @@ import { IngamePlayer } from "../party/IngamePlayer";
 import { LobbyUser } from "../lobby/LobbyUser";
 import { TetrominoBlueprint } from "./Tetromino";
 import { TetrisGameBoard } from "./TetrisGameBoard";
-import { TetrisPrivatePlayerGameData, TetrisPublicPlayerGameData } from "../../../share/types/tetris/tetrisGameData";
+import {
+  TetrisPrivatePlayerGameData,
+  TetrisPublicPlayerGameData,
+} from "../../../share/types/tetris/tetrisGameData.d";
 
 export class TetrisPlayer extends IngamePlayer {
   private _board: TetrisGameBoard;
@@ -26,7 +29,7 @@ export class TetrisPlayer extends IngamePlayer {
   }
 
   public isTetrominoSequenceEmpty(): boolean {
-    return this._board.tetrominosSequence.length <= 0
+    return this._board.tetrominosSequence.length <= 0;
   }
 
   public exportPrivateGameData(): TetrisPrivatePlayerGameData {
@@ -40,8 +43,9 @@ export class TetrisPlayer extends IngamePlayer {
     return {
       gameId: this.gameId,
       pseudo: this.pseudo,
-      currentTetrominoCells: this._board.currentTetrominoOnBoard?.currentPosition,
-      staticCells: this._board.occupiedStaticCells
+      currentTetrominoCells: this._board.currentTetrominoOnBoard
+        ?.currentPosition,
+      staticCells: this._board.occupiedStaticCells,
     };
   }
 }

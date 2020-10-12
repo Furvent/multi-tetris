@@ -6,6 +6,7 @@ import { IngamePlayer } from "./IngamePlayer";
 import { TetrisPlayer } from "../tetris/TetrisPlayer";
 import { LobbyUser } from "../lobby/LobbyUser";
 import { GenericGameState } from "./enum/GameState";
+import { PlayerInput } from "../tetris/enums";
 
 /**
  * TODO: utiliser un module de création d'id pour les parties.
@@ -74,6 +75,21 @@ export class PartiesManager {
       ingamePlayer.hasLoadedGame = true;
     } catch (error) {
       log.error(`Problem in method playerLoadedTheGame(): ${error}`);
+    }
+  }
+
+  public playerSendInputs(
+    playerSocket: SocketIO.Socket,
+    input: PlayerInput
+  ): void {
+    try {
+      const player = this.getIngamePlayerWithSocketId(playerSocket.id);
+      if (!player) {
+        throw this.errorNoPlayerFoundWithThisSocketId(playerSocket.id);
+      }
+      player.input = input;
+    } catch (error) {
+      log.error(`Problem in method playerSendInputs(): ${error}`);
     }
   }
 
@@ -150,7 +166,7 @@ export class PartiesManager {
     return (this.idUsedIncrementator++).toString();
   }
 
-  private errorNoPlayerFoundWithThisSocketId(playerSocketId: string) {
-    return `No player with socket's id ${playerSocketId} found`;
+  private errorNoPlayerFoundWithThisSocketId(playerSocketId: string): string {
+    return `No player with socket's id ${playerSocketId} found in a party`;
   }
 }

@@ -1,9 +1,11 @@
-import Server from "../../server";
-
 import { logEmit } from "../../utils/index";
 import log from "../../private-module/PrivateLogger";
-import { TetrisGameData, InitTetrisPartyData } from "../../../../share/types/tetris/tetrisGameData";
+import {
+  TetrisGameData,
+  InitTetrisPartyData,
+} from "../../../../share/types/tetris/tetrisGameData";
 import { PartiesManager } from "../../party/PartiesManager";
+import { PlayerInput } from "../../tetris/enums";
 
 export function tetrisEventsListener(socket: SocketIO.Socket) {
   // socket.on()
@@ -13,13 +15,20 @@ export function tetrisEventsListener(socket: SocketIO.Socket) {
     );
     PartiesManager.getInstance().playerLoadedTheGame(socket);
   });
+  socket.on("tetris:clientInput", (input: PlayerInput) => {
+    log.info(`Player with socket's id ${socket.id} press input ${input}`);
+    PartiesManager.getInstance().playerSendInputs(socket, input);
+  });
   socket.on("disconnect", () => {
     log.info(`Player IN PARTY with socket's id ${socket.id} disconnected `);
     PartiesManager.getInstance().playerDisconnected(socket);
-  })
+  });
 }
 
-export function emitAskClientToLoadGame(socket: SocketIO.Socket, payload: InitTetrisPartyData): void {
+export function emitAskClientToLoadGame(
+  socket: SocketIO.Socket,
+  payload: InitTetrisPartyData
+): void {
   const eventName = "tetris:askClientToLoadGame";
   logEmit(eventName, payload);
   socket.emit(eventName, payload);

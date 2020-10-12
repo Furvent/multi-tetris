@@ -1,4 +1,5 @@
 import { LobbyUser } from "../lobby/LobbyUser";
+import { PlayerInput } from "../tetris/enums";
 
 export abstract class IngamePlayer {
   hasLoadedGame: boolean;
@@ -6,6 +7,7 @@ export abstract class IngamePlayer {
   private _gameId: number; //ID in the party itself (like player 1, 2 etc)
   private _pseudo: string;
   private _socket: SocketIO.Socket;
+  private _input: PlayerInput;
 
   constructor(playerFromLobby: LobbyUser, gameId: number) {
     this.hasLoadedGame = false;
@@ -13,6 +15,7 @@ export abstract class IngamePlayer {
     this._pseudo = playerFromLobby.pseudo;
     this._socket = playerFromLobby.socket;
     this._gameId = gameId;
+    this._input = PlayerInput.NONE;
   }
 
   get pseudo(): string {
@@ -25,6 +28,14 @@ export abstract class IngamePlayer {
 
   get gameId(): number {
     return this._gameId;
+  }
+
+  get input(): PlayerInput {
+    return this._input;
+  }
+
+  set input(newInput: PlayerInput) {
+    this._input = newInput;
   }
 
   abstract exportPrivateGameData();

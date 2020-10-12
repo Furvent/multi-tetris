@@ -1,6 +1,5 @@
 import { TetrominoBlueprint } from "./Tetromino";
-import { BoardDimension } from "./TetrisPartyPositionsUtils";
-import { BoardPosition } from "../../../share/types/tetris/tetrisGameData";
+import { BoardDimension, BoardPosition } from "../../../share/types/tetris/tetrisGameData";
 
 export const mockedBlueprintTetrominoTypeJ: TetrominoBlueprint = {
   name: "J",

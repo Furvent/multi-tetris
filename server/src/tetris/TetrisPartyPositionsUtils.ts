@@ -1,5 +1,5 @@
 import { Tetromino } from "./Tetromino";
-import { BoardPosition } from "../../../share/types/tetris/tetrisGameData";
+import { BoardDimension, BoardPosition } from "../../../share/types/tetris/tetrisGameData";
 
 /**
  * Use to place a new tetronimo on the board
@@ -94,11 +94,6 @@ function checkIfCollsionBetweenTwoPos(
 ): boolean {
   return pos1.x === pos2.x && pos1.y === pos2.y;
 }
-
-export type BoardDimension = {
-  width: number;
-  height: number;
-};
 
 export type Vector = {
   x: number;
